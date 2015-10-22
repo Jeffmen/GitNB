@@ -39,7 +39,9 @@ public class User extends TModel implements Parcelable{
     private String type;
     private Boolean site_admin;
     private int score;
-
+    
+    public User() {}
+    
     protected User(Parcel in) {
         login = in.readString();
         id = in.readInt();

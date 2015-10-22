@@ -1,24 +1,25 @@
 package com.example.gitnb.app;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.example.gitnb.R;
-import com.example.gitnb.api.HandlerInterface;
+import com.example.gitnb.api.RequestManager;
 import com.example.gitnb.api.UserRequest;
 import com.example.gitnb.api.UserRequest.UserCondition;
 import com.example.gitnb.model.User;
 import com.example.gitnb.utils.MessageUtils;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -26,8 +27,10 @@ public class HotUserFragment extends Fragment {
 	
 	private int page = 1;
     private ListView listView;
+    private RecyclerView listView1;
 	private boolean mIsLoading;
     private HotUserAdapter adapter;
+    private RequestManager requestManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
@@ -45,11 +48,10 @@ public class HotUserFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-            	if(!mIsLoading){
-                	requestHotUser(true);
-            	}
+            	requestHotUser(true);
             }
         });
+        requestManager = RequestManager.getInstance(getActivity());
         requestHotUser(false);
         return view;
     }
@@ -64,7 +66,7 @@ public class HotUserFragment extends Fragment {
 
         mIsLoading = false;
     	mSwipeRefreshLayout.setRefreshing(false);
-    	//adapter.insertAtBack(data, currentPage != 1);
+    	adapter.update(data);
     }
 
     public void onFailure(String error){
@@ -82,6 +84,7 @@ public class HotUserFragment extends Fragment {
     	condition.SetPage(page);
     	request.SetSearchCondition(condition);
     	mIsLoading = true;
+    	requestManager.addRequest(request);
     }
     
     private class HotUserAdapter extends BaseAdapter{
@@ -113,7 +116,7 @@ public class HotUserFragment extends Fragment {
             if (convertView == null) {
             	view = mInflater.inflate(R.layout.hot_user_list_item,parent,false);
                 ViewHolder viewHolder = new ViewHolder();
-        		viewHolder.ivAvatar = (ImageView) view.findViewById(R.id.id_user_avatar);
+        		viewHolder.ivAvatar = (SimpleDraweeView) view.findViewById(R.id.id_user_avatar);
         		viewHolder.tvLogin = (TextView) view.findViewById(R.id.user_login);
         		viewHolder.tvRank = (TextView) view.findViewById(R.id.user_rank);
         		view.setTag(viewHolder);
@@ -127,16 +130,20 @@ public class HotUserFragment extends Fragment {
         private void bindView(View view, int position) {
             ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-    	    viewHolder.ivAvatar.setImageDrawable(mUsers.get(position).getAvatar_url());
+    	    viewHolder.ivAvatar.setImageURI(Uri.parse(mUsers.get(position).getAvatar_url()));
     		viewHolder.tvLogin.setText(mUsers.get(position).getLogin());
     		viewHolder.tvRank.setText("rank: " + String.valueOf(position + 1));
         }
         
+        public void update(ArrayList<User> data){
+        	mUsers= data;
+            notifyDataSetChanged();
+        }
     }
     
 	final static class ViewHolder {
 		TextView tvLogin;
 		TextView tvRank;
-		ImageView ivAvatar;
+		SimpleDraweeView ivAvatar;
 	}
 }

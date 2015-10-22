@@ -29,6 +29,7 @@ public class StatusActivity extends AppCompatActivity {
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getSupportActionBar().hide();
 		if(!fullScreenFlag && statusFlag){
 			mStatusBackground = new LinearLayout(this);
 			//mSplitBackground = new LinearLayout(this);

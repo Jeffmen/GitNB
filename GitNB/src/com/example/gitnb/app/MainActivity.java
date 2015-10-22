@@ -24,22 +24,25 @@ public class MainActivity extends StatusActivity {
 
 	private PagerSlidingTabStrip tabs;
     private ViewPager pager;
+    private TabPagerAdapter pagerAdapter;
 	private DisplayMetrics dm;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
 		dm = getResources().getDisplayMetrics();
 		pager = (ViewPager) findViewById(R.id.pager);
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-		pager.setAdapter(new TabPagerAdapter(getSupportFragmentManager()));
+		
+		pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
+		pagerAdapter.addFragment(new HotUserFragment(), "User");
+		pager.setAdapter(pagerAdapter);
 		tabs.setViewPager(pager);
 		//tabs.setOnPageChangeListener(new PageListener());
 		setTabsValue();
-		pager.setCurrentItem(1);
+		pager.setCurrentItem(0);
     }
     
 	private void setTabsValue() {
@@ -68,8 +71,8 @@ public class MainActivity extends StatusActivity {
 	
     public class TabPagerAdapter extends FragmentPagerAdapter {
 
-        private final List<Fragment> mFragments = new ArrayList<>();
-        private final List<String> mFragmentTitles = new ArrayList<>();
+        private final List<Fragment> mFragments = new ArrayList<Fragment>();
+        private final List<String> mFragmentTitles = new ArrayList<String>();
 
         public TabPagerAdapter(FragmentManager fm) {
             super(fm);

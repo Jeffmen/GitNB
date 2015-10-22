@@ -24,7 +24,7 @@ public class UserRequest implements WebRequest {
 //	https://api.github.com/search/users?q=language:C+followers:>500&page=1
 //  https://api.github.com/search/users?q=jake+language:java&sort=followers&order=desc&page=1
 		
-    private static final String BASE_URL = "https://api.github.com/search/users?";
+    private static final String BASE_URL = "https://api.github.com/search/";
     private HandlerInterface<ArrayList<User>> handler;
     private UserCondition searchCondition;
     private Context mContext;
@@ -79,20 +79,20 @@ public class UserRequest implements WebRequest {
     }	
     
     private String getUrl(){
-    	String query = "q=";
-		if(searchCondition.key != null && searchCondition.key.isEmpty())
+    	String query = "users?q=";
+		if(searchCondition.key != null && !searchCondition.key.isEmpty())
 		{
 			query += searchCondition.key;
 		}
-		if(searchCondition.location != null && searchCondition.location.isEmpty())
+		if(searchCondition.location != null && !searchCondition.location.isEmpty())
 		{
 			query += "+language:" + searchCondition.location;
 		}
-		if(searchCondition.language != null && searchCondition.language.isEmpty())
+		if(searchCondition.language != null && !searchCondition.language.isEmpty())
 		{
 			query += "+language:" + searchCondition.language;
 		}
-		if(searchCondition.sort != null && searchCondition.sort.isEmpty())
+		if(searchCondition.sort != null && !searchCondition.sort.isEmpty())
 		{
 			query += "&sort=" + searchCondition.sort;
 		}
@@ -104,7 +104,8 @@ public class UserRequest implements WebRequest {
 		{
 			query += "&page=" + searchCondition.page;
 		}
-		return BASE_URL + query;
+		Log.i("user_request", "query="+query);
+		return query;
     }
     
     
@@ -118,7 +119,7 @@ public class UserRequest implements WebRequest {
             }
         }
 		try {
-			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(getUrl(), null,  
+			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(BASE_URL + getUrl(), null,  
 			        new Response.Listener<JSONObject>() {  
 			            @Override  
 			            public void onResponse(JSONObject response) {  

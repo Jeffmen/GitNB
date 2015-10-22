@@ -28,17 +28,23 @@ public class RequestManager {
 					manager = new RequestManager(context);
 				}
 			}
-         
 		}
 		return manager;
 	}
-	
-	public void addRequest(WebRequest request){
-		mQueue.add(request.getJsonObjectRequest());
+	 
+	public static void initialize(Context context) {
+		getInstance(context);
 	}
 	
-	public void getHotUsers(Context context, UserCondition searchCondition){
-		UserRequest request = new UserRequest(context);
+	public void addRequest(WebRequest request){
+		JsonObjectRequest jsonObjectRequest = request.getJsonObjectRequest();
+		if(jsonObjectRequest != null){
+			mQueue.add(jsonObjectRequest);
+		}
+	}
+	
+	public void getHotUsers(UserCondition searchCondition){
+		UserRequest request = new UserRequest(mContext);
 		request.SetSearchCondition(searchCondition);
 	}
 }
