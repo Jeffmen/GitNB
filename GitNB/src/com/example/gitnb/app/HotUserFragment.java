@@ -3,6 +3,7 @@ package com.example.gitnb.app;
 import java.util.ArrayList;
 
 import com.example.gitnb.R;
+import com.example.gitnb.api.HandlerInterface;
 import com.example.gitnb.api.RequestManager;
 import com.example.gitnb.api.UserRequest;
 import com.example.gitnb.api.UserRequest.UserCondition;
@@ -23,7 +24,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class HotUserFragment extends Fragment {
+public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<User>>{
 	
 	private int page = 1;
     private ListView listView;
@@ -55,13 +56,15 @@ public class HotUserFragment extends Fragment {
         requestHotUser(false);
         return view;
     }
-    
+
+	@Override
     public void onSuccess(ArrayList<User> data){
 
         mIsLoading = false;
     	mSwipeRefreshLayout.setRefreshing(false);
     }
 
+	@Override
     public void onSuccess(ArrayList<User> data, int totalPages, int currentPage){
 
         mIsLoading = false;
@@ -69,6 +72,7 @@ public class HotUserFragment extends Fragment {
     	adapter.update(data);
     }
 
+	@Override
     public void onFailure(String error){
     	mSwipeRefreshLayout.setRefreshing(false);
         mIsLoading = false;
@@ -82,6 +86,7 @@ public class HotUserFragment extends Fragment {
     	condition.SetLocation("china");
     	condition.SetRefresh(refresh);
     	condition.SetPage(page);
+    	request.SetHandler(this);
     	request.SetSearchCondition(condition);
     	mIsLoading = true;
     	requestManager.addRequest(request);
