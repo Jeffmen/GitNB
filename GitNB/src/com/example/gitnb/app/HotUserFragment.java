@@ -16,34 +16,35 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<User>>{
 	private String TAG = "HotUserFragment";
 	private int page = 1;
-    private ListView listView;
-    private RecyclerView listView1;
+    private RecyclerView recyclerView;
+    //private ListView listView;
 	private boolean mIsLoading, isLoadingMore;
     private HotUserAdapter adapter;
     private RequestManager requestManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private int lastVisibleItem;
+    private LinearLayoutManager mLayoutManager;
 
-    @Override
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_data_fragment, container, false);
-        listView = (ListView) view.findViewById(R.id.listView);
+        recyclerView = (RecyclerView) view.findViewById(R.id.listView);
         adapter = new HotUserAdapter(getActivity());
-        listView.setAdapter(adapter);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(adapter);
+        /*
         listView.setOnScrollListener(new OnScrollListener() {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount){
@@ -63,6 +64,24 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
                 } 
 			}
 
+        });*/
+        recyclerView.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastVisibleItem = ((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition();
+                int totalItemCount = adapter.getItemCount();
+
+                if (lastVisibleItem >= totalItemCount - 4 && dy > 0) {
+                    if(isLoadingMore){
+                        Log.d(TAG,"ignore manually update!");
+                    } else{
+	                   	page++;
+	                   	requestHotUser(true);
+                        isLoadingMore = true;
+                    }
+                }
+            }
         });
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(
@@ -84,10 +103,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 
 	@Override
     public void onSuccess(ArrayList<User> data){
-
-        mIsLoading = false;
-    	mSwipeRefreshLayout.setRefreshing(false);
-    	adapter.update(data);
+		onSuccess(data, 0, 1);
     }
 
 	@Override
@@ -101,6 +117,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     	}
     	else{
         	adapter.insertAtBack(data);
+            isLoadingMore = false;
     	}
     }
 
@@ -124,7 +141,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     	requestManager.addRequest(request);
     }
     
-    private class HotUserAdapter extends BaseAdapter{
+    private class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 
     	private Context mContext;
         protected final LayoutInflater mInflater;
@@ -133,10 +150,6 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
         public HotUserAdapter(Context context) {
         	mContext = context;
         	mInflater = LayoutInflater.from(mContext);
-		}
-        
-		public int getCount() {
-			return mUsers == null ? 0 : mUsers.size();
 		}
 
 		public Object getItem(int position) {
@@ -147,30 +160,6 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 		public long getItemId(int position) {
 			return position;
 		}
-
-		public View getView(int position, View convertView, ViewGroup parent) {
-            View view;
-            if (convertView == null) {
-            	view = mInflater.inflate(R.layout.hot_user_list_item,parent,false);
-                ViewHolder viewHolder = new ViewHolder();
-        		viewHolder.ivAvatar = (SimpleDraweeView) view.findViewById(R.id.id_user_avatar);
-        		viewHolder.tvLogin = (TextView) view.findViewById(R.id.user_login);
-        		viewHolder.tvRank = (TextView) view.findViewById(R.id.user_rank);
-        		view.setTag(viewHolder);
-            } else {
-            	view = convertView;
-            }
-            bindView(view, position);
-            return view;
-        }
-
-        private void bindView(View view, int position) {
-            ViewHolder viewHolder = (ViewHolder) view.getTag();
-
-    	    viewHolder.ivAvatar.setImageURI(Uri.parse(mUsers.get(position).getAvatar_url()));
-    		viewHolder.tvLogin.setText(mUsers.get(position).getLogin());
-    		viewHolder.tvRank.setText("rank: " + String.valueOf(position + 1));
-        }
         
         public void update(ArrayList<User> data){
         	mUsers= data;
@@ -181,9 +170,33 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
         	mUsers.addAll(data);
             notifyDataSetChanged();
         }
+
+		@Override
+		public int getItemCount() {
+			return mUsers == null ? 0 : mUsers.size();
+		}
+
+		@Override
+		public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    	    viewHolder.ivAvatar.setImageURI(Uri.parse(mUsers.get(position).getAvatar_url()));
+    		viewHolder.tvLogin.setText(mUsers.get(position).getLogin());
+    		viewHolder.tvRank.setText("rank: " + String.valueOf(position + 1));
+		}
+
+		@Override
+		public ViewHolder onCreateViewHolder(ViewGroup viewgroup, int position) {
+			View v = mInflater.inflate(R.layout.hot_user_list_item,viewgroup,false);
+			return new ViewHolder(v);
+		}
     }
     
-	final static class ViewHolder {
+	final static class ViewHolder extends RecyclerView.ViewHolder {
+		public ViewHolder(View view) {
+			super(view);
+			ivAvatar = (SimpleDraweeView) view.findViewById(R.id.id_user_avatar);
+            tvLogin = (TextView) view.findViewById(R.id.user_login);
+            tvRank = (TextView) view.findViewById(R.id.user_rank);
+		}
 		TextView tvLogin;
 		TextView tvRank;
 		SimpleDraweeView ivAvatar;
