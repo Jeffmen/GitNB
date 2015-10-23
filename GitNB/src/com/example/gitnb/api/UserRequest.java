@@ -126,14 +126,13 @@ public class UserRequest implements WebRequest {
 			            	ArrayList<User> data = null;
 							try {
 								data = (ArrayList<User>) JSON.parseArray(response.getString("items"), User.class);
-							} catch (JSONException e) {
+							} catch (Exception e) {
 								DefaulHandlerImp.onFailure(handler, e.getMessage());
 							}
 					        PersistenceHelper.saveModelList(mContext, data, getUrl());
 			            	DefaulHandlerImp.onSuccess(handler, data);
 			            }  
-			        }, new Response.ErrorListener() {  
-
+			        }, new Response.ErrorListener() {
 						@Override
 						public void onErrorResponse(VolleyError error) {
 							Log.i("zy", "startParseXml:thought an Exception");

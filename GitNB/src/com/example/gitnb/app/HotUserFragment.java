@@ -17,22 +17,26 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<User>>{
-	
+	private String TAG = "HotUserFragment";
 	private int page = 1;
     private ListView listView;
     private RecyclerView listView1;
-	private boolean mIsLoading;
+	private boolean mIsLoading, isLoadingMore;
     private HotUserAdapter adapter;
     private RequestManager requestManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private int lastVisibleItem;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,6 +44,26 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
         listView = (ListView) view.findViewById(R.id.listView);
         adapter = new HotUserAdapter(getActivity());
         listView.setAdapter(adapter);
+        listView.setOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount){
+                lastVisibleItem  = firstVisibleItem + visibleItemCount - 1 ;
+            }
+
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (lastVisibleItem >= adapter.getCount() - 4 && scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
+                    if(isLoadingMore){
+                         Log.d(TAG,"ignore manually update!");
+                    } else{
+                    	page++;
+                    	requestHotUser(true);
+                         isLoadingMore = true;
+                    }
+                } 
+			}
+
+        });
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(
         		android.R.color.holo_blue_bright,
@@ -49,6 +73,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+            	page = 1;
             	requestHotUser(true);
             }
         });
@@ -62,14 +87,21 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 
         mIsLoading = false;
     	mSwipeRefreshLayout.setRefreshing(false);
+    	adapter.update(data);
     }
 
 	@Override
     public void onSuccess(ArrayList<User> data, int totalPages, int currentPage){
 
+        if (data.size() == 0) return;
         mIsLoading = false;
     	mSwipeRefreshLayout.setRefreshing(false);
-    	adapter.update(data);
+    	if(page == 1){
+        	adapter.update(data);
+    	}
+    	else{
+        	adapter.insertAtBack(data);
+    	}
     }
 
 	@Override
@@ -142,6 +174,11 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
         
         public void update(ArrayList<User> data){
         	mUsers= data;
+            notifyDataSetChanged();
+        }
+        
+        public void insertAtBack(ArrayList<User> data){
+        	mUsers.addAll(data);
             notifyDataSetChanged();
         }
     }
