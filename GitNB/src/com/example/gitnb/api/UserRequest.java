@@ -1,9 +1,7 @@
 package com.example.gitnb.api;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;

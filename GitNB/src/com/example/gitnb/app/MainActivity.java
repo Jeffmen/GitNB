@@ -5,33 +5,36 @@ import java.util.List;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.example.gitnb.R;
-import com.example.gitnb.StatusActivity;
-
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Window;
 
 
-public class MainActivity extends StatusActivity {
+public class MainActivity extends AppCompatActivity {
 
 	private PagerSlidingTabStrip tabs;
     private ViewPager pager;
     private TabPagerAdapter pagerAdapter;
 	private DisplayMetrics dm;
+	private Toolbar toolbar;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("GitNB");
+        setSupportActionBar(toolbar);
 		dm = getResources().getDisplayMetrics();
 		pager = (ViewPager) findViewById(R.id.pager);
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
@@ -46,26 +49,18 @@ public class MainActivity extends StatusActivity {
     }
     
 	private void setTabsValue() {
-		// 设置Tab是自动填充满屏幕的
 		tabs.setShouldExpand(true);
-		// 设置Tab的分割线是透明的
-		tabs.setDividerColor(getResources().getColor(R.color.contacts_theme_color));
-		// 设置Tab底部线的高度
+		tabs.setDividerColor(ContextCompat.getColor(this,R.color.contacts_theme_color));
 		tabs.setUnderlineHeight((int) TypedValue.applyDimension(
 				TypedValue.COMPLEX_UNIT_DIP, 1, dm));
-		// 设置Tab Indicator的高度
 		tabs.setIndicatorHeight((int) TypedValue.applyDimension(
 				TypedValue.COMPLEX_UNIT_DIP, 2, dm));
-		// 设置Tab标题文字的大小
 		tabs.setTextSize((int) TypedValue.applyDimension(
 				TypedValue.COMPLEX_UNIT_SP, 16, dm));
-		// 设置Tab Indicator的颜色
 		tabs.setIndicatorColor(Color.WHITE);
-		// 设置选中Tab文字的颜色 (这是我自定义的一个方法)
 		tabs.setSelectedTextColor(Color.WHITE);
-		tabs.setBackgroundColor(getResources().getColor(R.color.contacts_theme_color));
-		tabs.setTextColor(getResources().getColor(R.color.contacts_theme_text_color));
-		// 取消点击Tab时的背景色
+		tabs.setBackgroundColor(ContextCompat.getColor(this,R.color.contacts_theme_color));
+		tabs.setTextColor(ContextCompat.getColor(this,R.color.contacts_theme_text_color));
 		tabs.setTabBackground(0);
 	}
 	

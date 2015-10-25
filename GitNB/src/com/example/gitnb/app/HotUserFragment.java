@@ -9,10 +9,7 @@ import com.example.gitnb.api.UserRequest;
 import com.example.gitnb.api.UserRequest.UserCondition;
 import com.example.gitnb.model.User;
 import com.example.gitnb.utils.MessageUtils;
-import com.facebook.drawee.view.SimpleDraweeView;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,14 +20,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Toast;
 
 public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<User>>{
 	private String TAG = "HotUserFragment";
 	private int page = 1;
     private RecyclerView recyclerView;
-    //private ListView listView;
-	private boolean mIsLoading, isLoadingMore;
+	private boolean isLoadingMore;
     private HotUserAdapter adapter;
     private RequestManager requestManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -41,30 +37,16 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
         View view = inflater.inflate(R.layout.list_data_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.listView);
         adapter = new HotUserAdapter(getActivity());
+        adapter.SetOnItemClickListener(new HotUserAdapter.OnItemClickListener() {
+			
+			@Override
+			public void onItemClick(View view, int position) {
+				Toast.makeText(getActivity(), "item:"+position, Toast.LENGTH_SHORT).show();
+			}
+		});
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
-        /*
-        listView.setOnScrollListener(new OnScrollListener() {
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount){
-                lastVisibleItem  = firstVisibleItem + visibleItemCount - 1 ;
-            }
-
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (lastVisibleItem >= adapter.getCount() - 4 && scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
-                    if(isLoadingMore){
-                         Log.d(TAG,"ignore manually update!");
-                    } else{
-                    	page++;
-                    	requestHotUser(true);
-                         isLoadingMore = true;
-                    }
-                } 
-			}
-
-        });*/
         recyclerView.addOnScrollListener(new OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -110,7 +92,6 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     public void onSuccess(ArrayList<User> data, int totalPages, int currentPage){
 
         if (data.size() == 0) return;
-        mIsLoading = false;
     	mSwipeRefreshLayout.setRefreshing(false);
     	if(page == 1){
         	adapter.update(data);
@@ -124,7 +105,6 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 	@Override
     public void onFailure(String error){
     	mSwipeRefreshLayout.setRefreshing(false);
-        mIsLoading = false;
         MessageUtils.showErrorMessage(getActivity(), error);
     }
     
@@ -137,68 +117,6 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     	condition.SetPage(page);
     	request.SetHandler(this);
     	request.SetSearchCondition(condition);
-    	mIsLoading = true;
     	requestManager.addRequest(request);
     }
-    
-    private class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
-
-    	private Context mContext;
-        protected final LayoutInflater mInflater;
-        private ArrayList<User> mUsers;
-        
-        public HotUserAdapter(Context context) {
-        	mContext = context;
-        	mInflater = LayoutInflater.from(mContext);
-		}
-
-		public Object getItem(int position) {
-			return mUsers == null ? null : mUsers.get(position);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-        
-        public void update(ArrayList<User> data){
-        	mUsers= data;
-            notifyDataSetChanged();
-        }
-        
-        public void insertAtBack(ArrayList<User> data){
-        	mUsers.addAll(data);
-            notifyDataSetChanged();
-        }
-
-		@Override
-		public int getItemCount() {
-			return mUsers == null ? 0 : mUsers.size();
-		}
-
-		@Override
-		public void onBindViewHolder(ViewHolder viewHolder, int position) {
-    	    viewHolder.ivAvatar.setImageURI(Uri.parse(mUsers.get(position).getAvatar_url()));
-    		viewHolder.tvLogin.setText(mUsers.get(position).getLogin());
-    		viewHolder.tvRank.setText("rank: " + String.valueOf(position + 1));
-		}
-
-		@Override
-		public ViewHolder onCreateViewHolder(ViewGroup viewgroup, int position) {
-			View v = mInflater.inflate(R.layout.hot_user_list_item,viewgroup,false);
-			return new ViewHolder(v);
-		}
-    }
-    
-	final static class ViewHolder extends RecyclerView.ViewHolder {
-		public ViewHolder(View view) {
-			super(view);
-			ivAvatar = (SimpleDraweeView) view.findViewById(R.id.id_user_avatar);
-            tvLogin = (TextView) view.findViewById(R.id.user_login);
-            tvRank = (TextView) view.findViewById(R.id.user_rank);
-		}
-		TextView tvLogin;
-		TextView tvRank;
-		SimpleDraweeView ivAvatar;
-	}
 }

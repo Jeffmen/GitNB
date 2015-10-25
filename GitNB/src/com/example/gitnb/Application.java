@@ -1,5 +1,6 @@
 package com.example.gitnb;
 
+import com.example.gitnb.api.FakeX509TrustManager;
 import com.example.gitnb.api.RequestManager;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
@@ -13,6 +14,7 @@ public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
         mContext = this;
+        FakeX509TrustManager.allowAllSSL();
         Fresco.initialize(mContext);
         RequestManager.initialize(mContext);
     }

@@ -1,24 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/item"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="15dp"
-    android:paddingTop="15dp"
-    card_view:cardCornerRadius="10dp"
-	card_view:cardBackgroundColor="#ffffff" 
-	card_view:cardElevation="3dp"
-	card_view:cardMaxElevation="2dp"
-	card_view:cardUseCompatPadding="true"
-	card_view:cardPreventCornerOverlap="true">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp">
-
+    android:orientation="vertical" >
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -26,7 +11,7 @@
             android:gravity="center">
 
             <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/id_user_avatar"
+                android:id="@+id/loading_gif"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@android:color/transparent"
@@ -47,22 +32,13 @@
             android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/user_login"
-                    android:layout_width="0dp"
+                    android:id="@+id/loading_txt"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
                     android:singleLine="true"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/user_rank"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:singleLine="true" />
-
         </LinearLayout>
-    </LinearLayout>
 
-</android.support.v7.widget.CardView>
+</LinearLayout>
