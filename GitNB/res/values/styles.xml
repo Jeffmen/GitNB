@@ -18,11 +18,15 @@
         <item name="android:windowBackground">@android:color/white</item>  
         <!-- 底部导航栏颜色 -->  
         <item name="android:navigationBarColor">#4876FF</item> 
+        <item name="toolbarStyle">@style/ClubToolbar</item>
     </style> 
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-
+    
+	<style name="ClubToolbar" parent="Widget.AppCompat.Toolbar">  
+	        <item name="contentInsetStart">0dp</item><!-- 设置该属性解决空白部分-->  
+	</style>
 </resources>

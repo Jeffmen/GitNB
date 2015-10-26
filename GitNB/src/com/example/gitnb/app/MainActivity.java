@@ -18,6 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
+import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -28,17 +30,29 @@ public class MainActivity extends AppCompatActivity {
 	private DisplayMetrics dm;
 	private Toolbar toolbar;
 	
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("GitNB");
+        TextView title = (TextView) toolbar.findViewById(R.id.title);
+        title.setText("GitNB");
         setSupportActionBar(toolbar);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_launcher);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				finish();
+			}
+		});
 		dm = getResources().getDisplayMetrics();
 		pager = (ViewPager) findViewById(R.id.pager);
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-		
+
+        //title.setText("GitNB.....");
 		pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
 		pagerAdapter.addFragment(new HotUserFragment(), "User");
 		pager.setAdapter(pagerAdapter);
