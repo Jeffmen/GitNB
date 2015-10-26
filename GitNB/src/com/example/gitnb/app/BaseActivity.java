@@ -1,4 +1,10 @@
-package com.example.gitnb;
+package com.example.gitnb.app;
+
+import com.example.gitnb.R;
+import com.example.gitnb.R.attr;
+import com.example.gitnb.R.dimen;
+import com.example.gitnb.R.id;
+import com.example.gitnb.R.layout;
 
 import android.content.res.TypedArray;
 import android.os.Bundle;

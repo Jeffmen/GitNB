@@ -1,6 +1,6 @@
 package com.example.gitnb.utils;
 
-import com.example.gitnb.Application;
+import com.example.gitnb.app.Application;
 
 import android.app.Activity;
 import android.content.Context;

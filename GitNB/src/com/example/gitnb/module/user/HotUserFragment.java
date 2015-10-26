@@ -1,4 +1,4 @@
-package com.example.gitnb.app;
+package com.example.gitnb.module.user;
 
 import java.util.ArrayList;
 

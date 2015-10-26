@@ -1,4 +1,4 @@
-package com.example.gitnb.app;
+package com.example.gitnb.module.user;
 
 import android.support.v7.widget.Toolbar;
 

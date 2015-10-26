@@ -1,4 +1,4 @@
-package com.example.gitnb;
+package com.example.gitnb.app;
 
 import com.example.gitnb.api.FakeX509TrustManager;
 import com.example.gitnb.api.RequestManager;

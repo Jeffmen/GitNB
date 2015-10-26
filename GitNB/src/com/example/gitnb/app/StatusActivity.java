@@ -1,4 +1,4 @@
-package com.example.gitnb;
+package com.example.gitnb.app;
 
 import android.app.Activity;
 import android.content.Context;

@@ -1,10 +1,11 @@
-package com.example.gitnb.app;
+package com.example.gitnb.module;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.example.gitnb.R;
+import com.example.gitnb.module.user.HotUserFragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
