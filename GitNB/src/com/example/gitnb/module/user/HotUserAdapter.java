@@ -11,14 +11,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.gitnb.R;
-import com.example.gitnb.model.User;
+import com.example.gitnb.model.HotUser;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 public class HotUserAdapter extends RecyclerView.Adapter<HotUserAdapter.HotUserViewHolder>{
 
 	private Context mContext;
     protected final LayoutInflater mInflater;
-    private ArrayList<User> mUsers;
+    private ArrayList<HotUser> mUsers;
     private OnItemClickListener mItemClickListener;
 
     public interface OnItemClickListener {
@@ -43,12 +43,12 @@ public class HotUserAdapter extends RecyclerView.Adapter<HotUserAdapter.HotUserV
 		return position;
 	}
     
-    public void update(ArrayList<User> data){
+    public void update(ArrayList<HotUser> data){
     	mUsers= data;
         notifyDataSetChanged();
     }
     
-    public void insertAtBack(ArrayList<User> data){
+    public void insertAtBack(ArrayList<HotUser> data){
     	mUsers.addAll(data);
         notifyDataSetChanged();
     }

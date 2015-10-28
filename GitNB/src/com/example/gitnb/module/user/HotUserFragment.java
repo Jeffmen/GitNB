@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import com.example.gitnb.R;
 import com.example.gitnb.api.HandlerInterface;
 import com.example.gitnb.api.RequestManager;
-import com.example.gitnb.api.UserRequest;
-import com.example.gitnb.api.UserRequest.UserCondition;
-import com.example.gitnb.model.User;
+import com.example.gitnb.api.UserSearchRequest;
+import com.example.gitnb.api.UserSearchRequest.UserCondition;
+import com.example.gitnb.model.HotUser;
 import com.example.gitnb.utils.MessageUtils;
 
 import android.os.Bundle;
@@ -22,7 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<User>>{
+public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<HotUser>>{
 	private String TAG = "HotUserFragment";
 	private int page = 1;
     private RecyclerView recyclerView;
@@ -35,7 +35,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_data_fragment, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.listView);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recylerView);
         adapter = new HotUserAdapter(getActivity());
         adapter.SetOnItemClickListener(new HotUserAdapter.OnItemClickListener() {
 			
@@ -84,12 +84,12 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     }
 
 	@Override
-    public void onSuccess(ArrayList<User> data){
+    public void onSuccess(ArrayList<HotUser> data){
 		onSuccess(data, 0, 1);
     }
 
 	@Override
-    public void onSuccess(ArrayList<User> data, int totalPages, int currentPage){
+    public void onSuccess(ArrayList<HotUser> data, int totalPages, int currentPage){
 
         if (data.size() == 0) return;
     	mSwipeRefreshLayout.setRefreshing(false);
@@ -109,7 +109,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     }
     
     private void requestHotUser(boolean refresh){
-    	UserRequest request = new UserRequest(getActivity());
+    	UserSearchRequest request = new UserSearchRequest(getActivity());
     	UserCondition condition = request.new UserCondition();
     	condition.SetLanguage("java");
     	condition.SetLocation("china");

@@ -15,22 +15,47 @@ import com.example.gitnb.model.PersistenceHelper;
 import com.example.gitnb.model.HotUser;
 import com.alibaba.fastjson.JSON;
 
-public class UserRequest implements WebRequest {
+public class UserSearchRequest implements WebRequest {
 
 //	https://api.github.com/search/users?q=location:china&page=1
 //	https://api.github.com/search/users?q=language:Java+followers:>500&page=1
 //	https://api.github.com/search/users?q=language:C+followers:>500&page=1
 //  https://api.github.com/search/users?q=jake+language:java&sort=followers&order=desc&page=1
 		
-    private static final String BASE_URL = "https://api.github.com/users/";
+    private static final String BASE_URL = "https://api.github.com/search/";
     private HandlerInterface<ArrayList<HotUser>> handler;
     private UserCondition searchCondition;
     private Context mContext;
     
     public class UserCondition{
-        private String login;  
-        public void SetLogin(String value){
-        	login = value;
+        private String key;  
+        public void SetKey(String value){
+        	key = value;
+        }
+
+        private String location;
+        public void SetLocation(String value){
+        	location = value;
+        }
+
+        private String language;
+        public void SetLanguage(String value){
+        	language = value;
+        }
+
+        private int page = 1;  
+        public void SetPage(int value){
+        	page = value;
+        }
+
+        private String sort = "followers";
+        public void SetSort(String value){
+        	sort = value;
+        }
+
+        private String order = "desc";
+        public void SetOrder(String value){
+        	order = value;
         }
 
         private boolean refresh = false;
@@ -39,7 +64,7 @@ public class UserRequest implements WebRequest {
         }
     }
     
-    public UserRequest(Context context){
+    public UserSearchRequest(Context context){
        mContext = context;
     }
     
@@ -52,7 +77,33 @@ public class UserRequest implements WebRequest {
     }	
     
     private String getUrl(){
-		return searchCondition.login;
+    	String query = "users?q=";
+		if(searchCondition.key != null && !searchCondition.key.isEmpty())
+		{
+			query += searchCondition.key;
+		}
+		if(searchCondition.location != null && !searchCondition.location.isEmpty())
+		{
+			query += "+language:" + searchCondition.location;
+		}
+		if(searchCondition.language != null && !searchCondition.language.isEmpty())
+		{
+			query += "+language:" + searchCondition.language;
+		}
+		if(searchCondition.sort != null && !searchCondition.sort.isEmpty())
+		{
+			query += "&sort=" + searchCondition.sort;
+		}
+		if(searchCondition.order != null && searchCondition.order.isEmpty())
+		{
+			query += "&order=" + searchCondition.order;
+		}
+		if(searchCondition.page > 0)
+		{
+			query += "&page=" + searchCondition.page;
+		}
+		Log.i("user_request", "query="+query);
+		return query;
     }
     
     

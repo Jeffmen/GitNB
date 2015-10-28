@@ -13,7 +13,7 @@ public class Repository extends TModel implements Parcelable {
 	private int id;
     private String name;
     private String full_name;
-    private User owner;
+    private HotUser owner;
     private boolean _private;
     private String html_url;
     private String description;
@@ -83,7 +83,7 @@ public class Repository extends TModel implements Parcelable {
         id = in.readInt();
         name = in.readString();
         full_name = in.readString();
-        owner = in.readParcelable(User.class.getClassLoader());
+        owner = in.readParcelable(HotUser.class.getClassLoader());
         _private = in.readByte() != 0;
         html_url = in.readString();
         description = in.readString();
@@ -263,11 +263,11 @@ public class Repository extends TModel implements Parcelable {
         this.full_name = full_name;
     }
 
-    public User getOwner() {
+    public HotUser getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(HotUser owner) {
         this.owner = owner;
     }
 

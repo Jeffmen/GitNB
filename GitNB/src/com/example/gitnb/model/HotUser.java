@@ -6,19 +6,19 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class User extends TModel implements Parcelable{
+public class HotUser extends TModel implements Parcelable{
 
 	private static final long serialVersionUID = 1L;
 	
-	public static final Creator<User> CREATOR = new Creator<User>() {
+	public static final Creator<HotUser> CREATOR = new Creator<HotUser>() {
         @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
+        public HotUser createFromParcel(Parcel in) {
+            return new HotUser(in);
         }
 
         @Override
-        public User[] newArray(int size) {
-            return new User[size];
+        public HotUser[] newArray(int size) {
+            return new HotUser[size];
         }
     };
     private String login;
@@ -40,9 +40,9 @@ public class User extends TModel implements Parcelable{
     private Boolean site_admin;
     private int score;
     
-    public User() {}
+    public HotUser() {}
     
-    protected User(Parcel in) {
+    protected HotUser(Parcel in) {
         login = in.readString();
         id = in.readInt();
         avatar_url = in.readString();

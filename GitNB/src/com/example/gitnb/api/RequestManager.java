@@ -5,7 +5,7 @@ import android.content.Context;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.gitnb.api.UserRequest.UserCondition;
+import com.example.gitnb.api.UserSearchRequest.UserCondition;
 
 public class RequestManager {	
 	private Context mContext;
@@ -44,7 +44,7 @@ public class RequestManager {
 	}
 	
 	public void getHotUsers(UserCondition searchCondition){
-		UserRequest request = new UserRequest(mContext);
+		UserSearchRequest request = new UserSearchRequest(mContext);
 		request.SetSearchCondition(searchCondition);
 	}
 }
