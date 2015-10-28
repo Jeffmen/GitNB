@@ -41,9 +41,8 @@ public class MainActivity extends AppCompatActivity {
         title.setText("GitNB");
         setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_launcher);
+        toolbar.setNavigationIcon(R.drawable.ic_github_white_70);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-			
 			@Override
 			public void onClick(View arg0) {
 				finish();
@@ -52,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
 		dm = getResources().getDisplayMetrics();
 		pager = (ViewPager) findViewById(R.id.pager);
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-
-        //title.setText("GitNB.....");
 		pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
 		pagerAdapter.addFragment(new HotUserFragment(), "User");
 		pager.setAdapter(pagerAdapter);
@@ -69,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
 		tabs.setUnderlineHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, dm));
 		tabs.setIndicatorHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, dm));
 		tabs.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16, dm));
-		tabs.setIndicatorColor(Color.WHITE);
-		tabs.setSelectedTextColor(Color.WHITE);
-		tabs.setBackgroundColor(ContextCompat.getColor(this,R.color.contacts_theme_color));
-		tabs.setTextColor(ContextCompat.getColor(this,R.color.contacts_theme_text_color));
+		tabs.setIndicatorColor(Color.parseColor("#4876FF"));
+		tabs.setSelectedTextColor(Color.parseColor("#4876FF"));
+		//tabs.setBackgroundColor(ContextCompat.getColor(this,R.color.contacts_theme_color));
+		tabs.setTextColor(Color.BLACK);
 		tabs.setTabBackground(0);
 	}
 	

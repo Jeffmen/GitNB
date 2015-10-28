@@ -17,11 +17,6 @@ import com.alibaba.fastjson.JSON;
 
 public class UserRequest implements WebRequest {
 
-//	https://api.github.com/search/users?q=location:china&page=1
-//	https://api.github.com/search/users?q=language:Java+followers:>500&page=1
-//	https://api.github.com/search/users?q=language:C+followers:>500&page=1
-//  https://api.github.com/search/users?q=jake+language:java&sort=followers&order=desc&page=1
-		
     private static final String BASE_URL = "https://api.github.com/users/";
     private HandlerInterface<ArrayList<HotUser>> handler;
     private UserCondition searchCondition;
@@ -72,7 +67,7 @@ public class UserRequest implements WebRequest {
 			            public void onResponse(JSONObject response) {  
 			            	ArrayList<HotUser> data = null;
 							try {
-								data = (ArrayList<HotUser>) JSON.parseArray(response.getString("items"), HotUser.class);
+								data = (ArrayList<HotUser>) JSON.parseArray(response.toString(), HotUser.class);
 							} catch (Exception e) {
 								DefaulHandlerImp.onFailure(handler, e.getMessage());
 							}
