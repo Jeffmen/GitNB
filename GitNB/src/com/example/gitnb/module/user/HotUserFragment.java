@@ -44,27 +44,40 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 				Toast.makeText(getActivity(), "item:"+position, Toast.LENGTH_SHORT).show();
 			}
 		});
+        adapter.SetOnLoadMoreClickListener(new HotUserAdapter.OnItemClickListener() {
+			
+			@Override
+			public void onItemClick(View view, int position) {
+                if(isLoadingMore){
+	                Log.d(TAG,"ignore manually update!");
+	            } else{
+	             	page++;
+	             	requestHotUser(true);
+	                isLoadingMore = true;
+	            }
+			}
+		});
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int lastVisibleItem = ((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition();
-                int totalItemCount = adapter.getItemCount();
-
-                if (lastVisibleItem >= totalItemCount - 4 && dy > 0) {
-                    if(isLoadingMore){
-                        Log.d(TAG,"ignore manually update!");
-                    } else{
-	                   	page++;
-	                   	requestHotUser(true);
-                        isLoadingMore = true;
-                    }
-                }
-            }
-        });
+//        recyclerView.addOnScrollListener(new OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                int lastVisibleItem = ((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition();
+//                int totalItemCount = adapter.getItemCount();
+//
+//                if (lastVisibleItem >= totalItemCount - 4 && dy > 0) {
+//                    if(isLoadingMore){
+//                        Log.d(TAG,"ignore manually update!");
+//                    } else{
+//	                   	page++;
+//	                   	requestHotUser(true);
+//                        isLoadingMore = true;
+//                    }
+//                }
+//            }
+//        });
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(
         		android.R.color.holo_blue_bright,

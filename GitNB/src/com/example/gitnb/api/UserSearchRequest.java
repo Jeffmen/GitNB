@@ -84,7 +84,7 @@ public class UserSearchRequest implements WebRequest {
 		}
 		if(searchCondition.location != null && !searchCondition.location.isEmpty())
 		{
-			query += "+language:" + searchCondition.location;
+			query += "+location:" + searchCondition.location;
 		}
 		if(searchCondition.language != null && !searchCondition.language.isEmpty())
 		{
@@ -109,12 +109,13 @@ public class UserSearchRequest implements WebRequest {
     
 	@Override
 	public JsonObjectRequest getJsonObjectRequest() {
-        if (!searchCondition.refresh) {
+		
+        if (!searchCondition.refresh || !RequestManager.isNetworkAvailable(mContext)) {
             ArrayList<HotUser> topics = PersistenceHelper.loadModelList(mContext, getUrl());            
             if (topics != null && topics.size() > 0) {
             	DefaulHandlerImp.onSuccess(handler, topics);
-                return null;
             }
+            return null;
         }
 		try {
 			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(BASE_URL + getUrl(), null,  

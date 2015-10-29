@@ -344,7 +344,6 @@ public class UserInfo extends TModel implements Parcelable{
 
 	@Override
 	public void parse(JSONObject jsonObject) throws JSONException {
-		// TODO Auto-generated method stub
 		
 	}
 }

@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     
 	private void setTabsValue() {
 		tabs.setShouldExpand(true);
-		tabs.setDividerColor(ContextCompat.getColor(this,R.color.contacts_theme_color));
+		//tabs.setDividerColor(ContextCompat.getColor(this,R.color.contacts_theme_color));
 		tabs.setUnderlineHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, dm));
 		tabs.setIndicatorHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, dm));
 		tabs.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16, dm));
