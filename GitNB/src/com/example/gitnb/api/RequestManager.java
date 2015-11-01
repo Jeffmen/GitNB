@@ -16,6 +16,7 @@ public class RequestManager {
 	
 	public interface WebRequest {
 		public JsonObjectRequest getJsonObjectRequest();
+		public void cancelRequest();
 	}
 	
 	private RequestManager(Context context) {

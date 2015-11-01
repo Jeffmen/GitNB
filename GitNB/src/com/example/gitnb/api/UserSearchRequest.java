@@ -25,6 +25,7 @@ public class UserSearchRequest implements WebRequest {
     private static final String BASE_URL = "https://api.github.com/search/";
     private HandlerInterface<ArrayList<HotUser>> handler;
     private UserCondition searchCondition;
+    private JsonObjectRequest request;
     private Context mContext;
     
     public class UserCondition{
@@ -144,5 +145,11 @@ public class UserSearchRequest implements WebRequest {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public void cancelRequest() {
+		if(request != null)
+	    request.cancel();
 	}
 }

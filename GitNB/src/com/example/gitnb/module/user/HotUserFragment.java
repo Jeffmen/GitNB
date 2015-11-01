@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.example.gitnb.R;
 import com.example.gitnb.api.HandlerInterface;
 import com.example.gitnb.api.RequestManager;
+import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.api.UserSearchRequest;
 import com.example.gitnb.api.UserSearchRequest.UserCondition;
 import com.example.gitnb.model.HotUser;
@@ -16,13 +17,15 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<HotUser>>{
+public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<HotUser>>, TextWatcher{
 	private String TAG = "HotUserFragment";
 	private int page = 1;
     private RecyclerView recyclerView;
@@ -31,12 +34,14 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     private RequestManager requestManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLayoutManager;
+    private WebRequest currentRequest;
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_data_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recylerView);
         adapter = new HotUserAdapter(getActivity());
+        //adapter.SetSearchTextWatcher(this);
         adapter.SetOnItemClickListener(new HotUserAdapter.OnItemClickListener() {
 			
 			@Override
@@ -52,9 +57,18 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 	                Log.d(TAG,"ignore manually update!");
 	            } else{
 	             	page++;
-	             	requestHotUser(true);
+	             	requestHotUser(true, null);
 	                isLoadingMore = true;
 	            }
+			}
+		});        
+        adapter.SetOnSearchClickListener(new HotUserAdapter.OnItemClickListener() {
+			
+			@Override
+			public void onItemClick(View view, int position) {
+	        	page = 1;
+	        	mSwipeRefreshLayout.setRefreshing(true);
+	        	requestHotUser(adapter.getSearchText().isEmpty() ? false : true, adapter.getSearchText());
 			}
 		});
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -88,14 +102,33 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
             @Override
             public void onRefresh() {
             	page = 1;
-            	requestHotUser(true);
+            	requestHotUser(true, null);
             }
         });
         requestManager = RequestManager.getInstance(getActivity());
-        requestHotUser(false);
+        requestHotUser(false, null);
         return view;
     }
+	
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count,
+			int after) {
+		
+	}
 
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count){
+		if(s.length() > 0){
+        	page = 1;
+        	requestHotUser(true, s.toString());
+		}
+	}
+
+	@Override
+	public void afterTextChanged(Editable s) {
+		
+	}
+	
 	@Override
     public void onSuccess(ArrayList<HotUser> data){
 		onSuccess(data, 0, 1);
@@ -118,18 +151,22 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 	@Override
     public void onFailure(String error){
     	mSwipeRefreshLayout.setRefreshing(false);
+    	adapter.reset();
         MessageUtils.showErrorMessage(getActivity(), error);
     }
     
-    private void requestHotUser(boolean refresh){
+    private void requestHotUser(boolean refresh, String key){
+    	if(currentRequest != null) currentRequest.cancelRequest();
     	UserSearchRequest request = new UserSearchRequest(getActivity());
     	UserCondition condition = request.new UserCondition();
     	condition.SetLanguage("java");
     	condition.SetLocation("china");
     	condition.SetRefresh(refresh);
     	condition.SetPage(page);
+        condition.SetKey(key);
     	request.SetHandler(this);
     	request.SetSearchCondition(condition);
     	requestManager.addRequest(request);
+    	currentRequest = request;
     }
 }
