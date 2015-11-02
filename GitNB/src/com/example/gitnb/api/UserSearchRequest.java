@@ -113,9 +113,9 @@ public class UserSearchRequest implements WebRequest {
 		
         if (!searchCondition.refresh || !RequestManager.isNetworkAvailable(mContext)) {
             ArrayList<HotUser> topics = PersistenceHelper.loadModelList(mContext, getUrl());            
-            if (topics != null && topics.size() > 0) {
+            //if (topics != null && topics.size() > 0) {
             	DefaulHandlerImp.onSuccess(handler, topics);
-            }
+            //}
             return null;
         }
 		try {

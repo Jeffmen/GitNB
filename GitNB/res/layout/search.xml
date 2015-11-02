@@ -16,6 +16,7 @@
 		    android:layout_width="match_parent"
 		    android:layout_height="32dp"
 		    android:orientation="horizontal" 
+		    android:layout_gravity="center"
             android:background="@drawable/searchview_corner">
 	        <ImageView
 		        android:id="@+id/search_icon"
@@ -37,7 +38,8 @@
 		        android:layout_marginLeft="3dp" 
 		        android:singleLine="true"
 		        android:background="@null"
-                android:textSize="15sp">
+                android:textSize="15sp"
+                android:inputType="textNoSuggestions">
 		    </EditText>   
 		</LinearLayout>   
         <ImageView

@@ -74,24 +74,25 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
-//        recyclerView.addOnScrollListener(new OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                int lastVisibleItem = ((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition();
-//                int totalItemCount = adapter.getItemCount();
-//
-//                if (lastVisibleItem >= totalItemCount - 4 && dy > 0) {
-//                    if(isLoadingMore){
-//                        Log.d(TAG,"ignore manually update!");
-//                    } else{
-//	                   	page++;
-//	                   	requestHotUser(true);
-//                        isLoadingMore = true;
-//                    }
-//                }
-//            }
-//        });
+        /*
+        recyclerView.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastVisibleItem = ((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition();
+                int totalItemCount = adapter.getItemCount();
+
+                if (lastVisibleItem >= totalItemCount - 4 && dy > 0) {
+                    if(isLoadingMore){
+                        Log.d(TAG,"ignore manually update!");
+                    } else{
+	                   	page++;
+	                   	requestHotUser(true);
+                        isLoadingMore = true;
+                    }
+                }
+            }
+        });*/
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(
         		android.R.color.holo_blue_bright,
@@ -136,8 +137,6 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 
 	@Override
     public void onSuccess(ArrayList<HotUser> data, int totalPages, int currentPage){
-
-        if (data.size() == 0) return;
     	mSwipeRefreshLayout.setRefreshing(false);
     	if(page == 1){
         	adapter.update(data);

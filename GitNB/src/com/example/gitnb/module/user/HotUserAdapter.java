@@ -9,8 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -36,7 +38,6 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
     private OnItemClickListener mSearchClickListener;
     private boolean isShowLoadMore = true;
     private boolean isLoadingMore = false;
-    private boolean isSearching = false;
     private String searchText = "";
 
     public interface OnItemClickListener {
@@ -68,7 +69,7 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 		if(position == 0){
 			return null;
 		}
-		if(position == getItemCount()-1){
+		if(isShowLoadMore && position == getItemCount()-1){
 			return null;
 		}
 		return mUsers == null ? null : mUsers.get(position-1);
@@ -80,24 +81,33 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 	}
     
     public void update(ArrayList<HotUser> data){
-    	if(data.size()<PAGE_COUNT){
+    	if(data == null || data.size()<PAGE_COUNT){
     		isShowLoadMore = false;
+    	}   
+    	else{
+    		isShowLoadMore = true;
     	}
-    	mUsers= data;
+//    	if (data != null && data.size() > 0){
+        	mUsers= data;
+//    	}
     	reset();
     }
     
     public void insertAtBack(ArrayList<HotUser> data){
-    	if(data.size()<PAGE_COUNT){
+    	if(data == null || data.size()<PAGE_COUNT){
     		isShowLoadMore = false;
     	}
-    	mUsers.addAll(data);
+    	else{
+    		isShowLoadMore = true;
+    	}
+        if (data != null && data.size() > 0){
+        	mUsers.addAll(data);
+        }
     	reset();
     }
 
     public void reset(){
     	this.isLoadingMore = false;
-    	isSearching = false;
         notifyDataSetChanged();
     }
     
@@ -159,9 +169,12 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 			SearchViewHolder searchHolder = (SearchViewHolder) vh;
 			if(searchText != null && !searchText.isEmpty()){
 				searchHolder.search_text.setText(searchText.toCharArray(), 0, searchText.length());
+				searchHolder.clear_button.setVisibility(View.VISIBLE);
 			}
-			searchHolder.search_text.setEnabled(!isSearching);
-			searchHolder.clear_button.setVisibility(isSearching ? View.VISIBLE : View.INVISIBLE);
+			else{
+				searchHolder.clear_button.setVisibility(View.INVISIBLE);
+			}
+			//searchHolder.search_text.setEnabled(!isSearching);
 			break;
 		}
 	}
@@ -224,7 +237,6 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 			
 			search_icon.setOnClickListener( new View.OnClickListener(){
 	            public void onClick(View v) {
-	    			isSearching = true;
 	    	        if (mSearchClickListener != null) {
 	    	        	mSearchClickListener.onItemClick(v, getLayoutPosition());
 	    	        }
@@ -233,12 +245,27 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 			clear_button.setOnClickListener( new View.OnClickListener(){
 	            public void onClick(View v) {
 	            	search_text.setText("");
+	            	searchText = "";
 	            	clear_button.setVisibility(View.GONE);
 	    	        if (mSearchClickListener != null) {
 	    	        	mSearchClickListener.onItemClick(v, getLayoutPosition());
 	    	        }
 	            }           
 	        });
+			search_text.setOnKeyListener(new OnKeyListener(){
+
+				@Override
+				public boolean onKey(View v, int keyCode, KeyEvent event) {
+					if(keyCode == KeyEvent.KEYCODE_ENTER){
+		    	        if (mSearchClickListener != null) {
+		    	        	mSearchClickListener.onItemClick(v, getLayoutPosition());
+		    	        }
+		    	        return true;
+					}
+					return false;
+				}
+				
+			});
 			search_text.addTextChangedListener(new TextWatcher(){
 
 				@Override
