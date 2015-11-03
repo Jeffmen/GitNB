@@ -41,6 +41,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
         View view = inflater.inflate(R.layout.list_data_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recylerView);
         adapter = new HotUserAdapter(getActivity());
+        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).build());
         //adapter.SetSearchTextWatcher(this);
         adapter.SetOnItemClickListener(new HotUserAdapter.OnItemClickListener() {
 			
@@ -57,8 +58,8 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 	                Log.d(TAG,"ignore manually update!");
 	            } else{
 	             	page++;
-	             	requestHotUser(true, null);
 	                isLoadingMore = true;
+	             	requestHotUser(true, null);
 	            }
 			}
 		});        
@@ -142,8 +143,8 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
         	adapter.update(data);
     	}
     	else{
-        	adapter.insertAtBack(data);
             isLoadingMore = false;
+        	adapter.insertAtBack(data);
     	}
     }
 

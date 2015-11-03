@@ -8,7 +8,7 @@
     android:paddingBottom="15dp"
     android:paddingTop="15dp"
 	card_view:cardBackgroundColor="#ffffff" 
-	card_view:cardElevation="1dp"
+	card_view:cardElevation="0dp"
 	card_view:cardUseCompatPadding="true"
 	card_view:cardPreventCornerOverlap="true">
 
