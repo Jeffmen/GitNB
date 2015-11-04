@@ -7,7 +7,7 @@ import android.net.NetworkInfo;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.gitnb.api.UserSearchRequest.UserCondition;
+import com.example.gitnb.api.UserSearchRequest.Condition;
 
 public class RequestManager {	
 	private Context mContext;
@@ -44,11 +44,6 @@ public class RequestManager {
 		if(jsonObjectRequest != null){
 			mQueue.add(jsonObjectRequest);
 		}
-	}
-	
-	public void getHotUsers(UserCondition searchCondition){
-		UserSearchRequest request = new UserSearchRequest(mContext);
-		request.SetSearchCondition(searchCondition);
 	}
 	
 	public static boolean isNetworkAvailable(Context context)

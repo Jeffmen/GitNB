@@ -4,62 +4,82 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    <ScrollView 
+    
+	<include layout="@layout/toolbar" />
+	
+	<android.support.v4.widget.SwipeRefreshLayout
+	    android:id="@+id/swipeRefreshLayout"
 	    android:layout_width="match_parent"
-	    android:layout_height="match_parent">
-        
-	    <FrameLayout
-	        android:layout_width="match_parent"
-	        android:layout_height="45dp">
-	        <ImageView 
-	            android:id="@+id/user_avatar"
-			    android:layout_width="match_parent"
-			    android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:singleLine="true"
-    			fresco:actualImageScaleType="focusCrop"
-                fresco:placeholderImage="@drawable/ic_panorama_grey600_36dp"/>
-	        <LinearLayout 
-			    android:layout_width="match_parent"
-			    android:layout_height="match_parent">
-	            <LinearLayout 
-				    android:layout_width="match_parent"
-				    android:layout_height="match_parent">
-	            
-		        </LinearLayout>
-		        <TextView 
-		            android:id="@+id/user_name"
-				    android:layout_width="match_parent"
-				    android:layout_height="20dp"/>
+	    android:layout_height="match_parent"
+	    android:orientation="vertical">
+	    <ScrollView 
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent">
+	        
+		    <FrameLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="45dp">
+	            <com.facebook.drawee.view.SimpleDraweeView
+		            android:id="@+id/user_avatar"
+	                android:layout_width="50dp"
+	                android:layout_height="50dp"
+	                android:background="@android:color/transparent"
+	                android:gravity="center"
+	                android:singleLine="true"
+	    			fresco:actualImageScaleType="focusCrop"
+	                fresco:placeholderImage="@drawable/ic_panorama_grey600_36dp"/>
 		        <LinearLayout 
 				    android:layout_width="match_parent"
 				    android:layout_height="match_parent"
-				    android:orientation="vertical">
-	                
-			        <TextView 
-			            android:id="@+id/user_company"
+					android:orientation="vertical">
+		            <LinearLayout 
 					    android:layout_width="match_parent"
-					    android:layout_height="20dp"/>
-			        
+					    android:layout_height="match_parent"
+					    android:orientation="vertical">
+		            
+			        </LinearLayout>
 			        <TextView 
-			            android:id="@+id/user_location"
+			            android:id="@+id/user_name"
 					    android:layout_width="match_parent"
-					    android:layout_height="20dp"/>
-			        
-			        <TextView 
-			            android:id="@+id/user_blog"
+					    android:layout_height="20dp"
+					    android:gravity="center"/>
+			        <LinearLayout 
 					    android:layout_width="match_parent"
-					    android:layout_height="20dp"/>
-			        
-			        <TextView 
-			            android:id="@+id/user_created_date"
-					    android:layout_width="match_parent"
-					    android:layout_height="20dp"/>
+					    android:layout_height="match_parent"
+					    android:orientation="vertical">
+		                
+				        <TextView 
+				            android:id="@+id/user_company"
+						    android:layout_width="match_parent"
+						    android:layout_height="20dp"
+					        android:gravity="center"/>
+				        
+				        <TextView 
+				            android:id="@+id/user_location"
+						    android:layout_width="match_parent"
+						    android:layout_height="20dp"
+					    	android:gravity="center"/>
+				        
+				        <TextView 
+				            android:id="@+id/user_blog"
+						    android:layout_width="match_parent"
+						    android:layout_height="20dp"
+					    	android:gravity="center"/>
+				        
+				        <TextView 
+				            android:id="@+id/user_created_date"
+						    android:layout_width="match_parent"
+						    android:layout_height="20dp"
+					    	android:gravity="center"/>
+			        </LinearLayout>
 		        </LinearLayout>
-	        </LinearLayout>
-	    </FrameLayout>
-    
-    </ScrollView>
+		    </FrameLayout>
+	        <android.support.v7.widget.RecyclerView
+	         android:id="@+id/recylerView"
+	         android:layout_width="match_parent"
+	         android:layout_height="match_parent"
+	         android:footerDividersEnabled="false" />
+	    </ScrollView>
+	</android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

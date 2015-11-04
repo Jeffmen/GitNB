@@ -24,11 +24,11 @@ public class UserSearchRequest implements WebRequest {
 		
     private static final String BASE_URL = "https://api.github.com/search/";
     private HandlerInterface<ArrayList<HotUser>> handler;
-    private UserCondition searchCondition;
+    private Condition searchCondition;
     private JsonObjectRequest request;
     private Context mContext;
     
-    public class UserCondition{
+    public class Condition{
         private String key;  
         public void SetKey(String value){
         	key = value;
@@ -73,7 +73,7 @@ public class UserSearchRequest implements WebRequest {
     	handler = value;
     }
     
-    public void SetSearchCondition(UserCondition value){
+    public void SetSearchCondition(Condition value){
     	searchCondition = value;
     }	
     

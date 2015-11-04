@@ -12,21 +12,38 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.model.PersistenceHelper;
-import com.example.gitnb.model.UserInfo;
+import com.example.gitnb.model.Repository;
 import com.alibaba.fastjson.JSON;
 
-public class UserRequest implements WebRequest {
+public class UserReposRequest implements WebRequest {
 
+//	https://api.github.com/users/peachananr/repos?visibility=public&sort=updated
+		
     private static final String BASE_URL = "https://api.github.com/users/";
-    private HandlerInterface<ArrayList<UserInfo>> handler;
-    private UserCondition searchCondition;
+    private HandlerInterface<ArrayList<Repository>> handler;
+    private Condition searchCondition;
     private JsonObjectRequest request;
     private Context mContext;
     
-    public class UserCondition{
+    public class Condition{
         private String login;  
         public void SetLogin(String value){
         	login = value;
+        }
+
+        private String visibility = "public";
+        public void SetVisibility(String value){
+        	visibility = value;
+        }
+
+        private String sort = "updated";
+        public void SetSort(String value){
+        	sort = value;
+        }
+
+        private String order = "asc";
+        public void SetOrder(String value){
+        	order = value;
         }
 
         private boolean refresh = false;
@@ -35,40 +52,59 @@ public class UserRequest implements WebRequest {
         }
     }
     
-    public UserRequest(Context context){
+    public UserReposRequest(Context context){
        mContext = context;
     }
     
-    public void SetHandler(HandlerInterface<ArrayList<UserInfo>> value){
+    public void SetHandler(HandlerInterface<ArrayList<Repository>> value){
     	handler = value;
     }
     
-    public void SetSearchCondition(UserCondition value){
+    public void SetSearchCondition(Condition value){
     	searchCondition = value;
     }	
     
     private String getUrl(){
-		return searchCondition.login;
+    	String query = searchCondition.login + "/repos?";
+		if(searchCondition.visibility != null && !searchCondition.visibility.isEmpty())
+		{
+			query += "visibility:" + searchCondition.visibility;
+		}
+		if(searchCondition.sort != null && !searchCondition.sort.isEmpty())
+		{
+			query += "&sort=" + searchCondition.sort;
+		}
+		
+		if(searchCondition.order != null && searchCondition.order.isEmpty())
+		{
+			query += "&order=" + searchCondition.order;
+		}
+		Log.i("user_request", "query="+query);
+		return query;
     }
     
     
 	@Override
 	public JsonObjectRequest getJsonObjectRequest() {
-        if (!searchCondition.refresh) {
-            ArrayList<UserInfo> topics = PersistenceHelper.loadModelList(mContext, getUrl());            
-            if (topics != null && topics.size() > 0) {
+		if(searchCondition.login == null || searchCondition.login.isEmpty())
+		{
+			return null;
+		}
+        if (!searchCondition.refresh || !RequestManager.isNetworkAvailable(mContext)) {
+            ArrayList<Repository> topics = PersistenceHelper.loadModelList(mContext, getUrl());            
+            //if (topics != null && topics.size() > 0) {
             	DefaulHandlerImp.onSuccess(handler, topics);
-                return null;
-            }
+            //}
+            return null;
         }
 		try {
 			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(BASE_URL + getUrl(), null,  
 			        new Response.Listener<JSONObject>() {  
 			            @Override  
 			            public void onResponse(JSONObject response) {  
-			            	ArrayList<UserInfo> data = null;
+			            	ArrayList<Repository> data = null;
 							try {
-								data = (ArrayList<UserInfo>) JSON.parseArray(response.toString(), UserInfo.class);
+								data = (ArrayList<Repository>) JSON.parseArray(response.toString(), Repository.class);
 							} catch (Exception e) {
 								DefaulHandlerImp.onFailure(handler, e.getMessage());
 							}
@@ -93,6 +129,6 @@ public class UserRequest implements WebRequest {
 	@Override
 	public void cancelRequest() {
 		if(request != null)
-		request.cancel();
+	    request.cancel();
 	}
 }

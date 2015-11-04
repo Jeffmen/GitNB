@@ -7,7 +7,7 @@ import com.example.gitnb.api.HandlerInterface;
 import com.example.gitnb.api.RequestManager;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.api.UserSearchRequest;
-import com.example.gitnb.api.UserSearchRequest.UserCondition;
+import com.example.gitnb.api.UserSearchRequest.Condition;
 import com.example.gitnb.model.HotUser;
 import com.example.gitnb.utils.MessageUtils;
 
@@ -27,11 +27,11 @@ import android.widget.Toast;
 
 public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<HotUser>>, TextWatcher{
 	private String TAG = "HotUserFragment";
+	public static String USER_KEY = "user_key";
 	private int page = 1;
     private RecyclerView recyclerView;
 	private boolean isLoadingMore;
     private HotUserAdapter adapter;
-    private RequestManager requestManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLayoutManager;
     private WebRequest currentRequest;
@@ -107,7 +107,6 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
             	requestHotUser(true, null);
             }
         });
-        requestManager = RequestManager.getInstance(getActivity());
         requestHotUser(false, null);
         return view;
     }
@@ -158,7 +157,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     private void requestHotUser(boolean refresh, String key){
     	if(currentRequest != null) currentRequest.cancelRequest();
     	UserSearchRequest request = new UserSearchRequest(getActivity());
-    	UserCondition condition = request.new UserCondition();
+    	Condition condition = request.new Condition();
     	condition.SetLanguage("java");
     	condition.SetLocation("china");
     	condition.SetRefresh(refresh);
@@ -166,7 +165,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
         condition.SetKey(key);
     	request.SetHandler(this);
     	request.SetSearchCondition(condition);
-    	requestManager.addRequest(request);
+    	RequestManager.getInstance(getActivity()).addRequest(request);
     	currentRequest = request;
     }
 }
