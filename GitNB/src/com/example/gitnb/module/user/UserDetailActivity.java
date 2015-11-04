@@ -5,17 +5,22 @@ import java.util.ArrayList;
 import com.example.gitnb.R;
 import com.example.gitnb.api.HandlerInterface;
 import com.example.gitnb.api.RequestManager;
+import com.example.gitnb.api.UserInfoRequest;
 import com.example.gitnb.api.UserReposRequest;
 import com.example.gitnb.api.UserReposRequest.Condition;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.model.HotUser;
 import com.example.gitnb.model.Repository;
+import com.example.gitnb.model.UserInfo;
 import com.example.gitnb.utils.MessageUtils;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -27,6 +32,7 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
 
 	private String TAG = "UserDetailActivity";
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private LinearLayoutManager mLayoutManager;
     private RecyclerView recyclerView;
     private WebRequest currentRequest;
     private UserReposAdapter adapter;
@@ -47,13 +53,18 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
             title.setText(user.getLogin());
         }else{
             title.setText("NULL");
-        }
+        }        
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				finish();
+			}
+		});
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         recyclerView = (RecyclerView) findViewById(R.id.recylerView);        
         adapter = new UserReposAdapter(this);
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
-        //adapter.SetSearchTextWatcher(this);
         adapter.SetOnItemClickListener(new UserReposAdapter.OnItemClickListener() {
 			
 			@Override
@@ -70,10 +81,14 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
 	            } else{
 	             	page++;
 	                isLoadingMore = true;
-	             	requestRepository(true, null);
+	             	requestRepository(true);
 	            }
 			}
 		}); 
+        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
+        mLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(adapter);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(
         		android.R.color.holo_blue_bright,
@@ -84,11 +99,27 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
             @Override
             public void onRefresh() {
             	page = 1;
-            	requestRepository(true, null);
+            	requestRepository(true);
             }
         });
-        requestRepository(true, null);
+        SimpleDraweeView user_avatar = (SimpleDraweeView)findViewById(R.id.user_avatar);
+        user_avatar.setImageURI(Uri.parse(user.getAvatar_url()));
+        requestUserInfo(true);
+        requestRepository(true);
     }	
+    
+    private void updateUserInfo(UserInfo info){
+        TextView user_name = (TextView)findViewById(R.id.user_name);
+        user_name.setText(info.getName());
+        TextView user_company = (TextView)findViewById(R.id.user_company);
+        user_company.setText(info.getCompany());
+        TextView user_location = (TextView)findViewById(R.id.user_location);
+        user_location.setText(info.getLocation());
+        TextView user_created_date = (TextView)findViewById(R.id.user_created_date);
+        user_created_date.setText(info.getCreated_at());
+        TextView user_blog = (TextView)findViewById(R.id.user_blog);
+        user_blog.setText(info.getBlog());
+    }
     
 	@Override
     public void onSuccess(ArrayList<Repository> data){
@@ -113,8 +144,38 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
     	adapter.reset();
         MessageUtils.showErrorMessage(this, error);
     }
+	
+    private void requestUserInfo(boolean refresh){
+    	if(currentRequest != null) currentRequest.cancelRequest();
+    	UserInfoRequest request = new UserInfoRequest(this);
+    	UserInfoRequest.Condition condition = request.new Condition();
+    	condition.SetLogin(user.getLogin());
+    	condition.SetRefresh(refresh);
+    	request.SetHandler(new HandlerInterface<UserInfo>(){
+
+			@Override
+			public void onSuccess(UserInfo data) {
+				updateUserInfo(data);
+			}
+
+			@Override
+			public void onSuccess(UserInfo data, int totalPages, int currentPage) {
+				
+			}
+
+			@Override
+			public void onFailure(String error) {
+		        MessageUtils.showErrorMessage(UserDetailActivity.this, error);
+			}
+    		
+    	});
+    	request.SetSearchCondition(condition);
+    	RequestManager.getInstance(this).addRequest(request);
+    	currentRequest = request;
+    }
     
-    private void requestRepository(boolean refresh, String key){
+    private void requestRepository(boolean refresh){
+    	mSwipeRefreshLayout.setRefreshing(false);
     	if(currentRequest != null) currentRequest.cancelRequest();
     	UserReposRequest request = new UserReposRequest(this);
     	Condition condition = request.new Condition();

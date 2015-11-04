@@ -2,18 +2,18 @@ package com.example.gitnb.api;
 
 import java.util.ArrayList;
 
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.model.PersistenceHelper;
 import com.example.gitnb.model.Repository;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
 
 public class UserReposRequest implements WebRequest {
 
@@ -22,7 +22,7 @@ public class UserReposRequest implements WebRequest {
     private static final String BASE_URL = "https://api.github.com/users/";
     private HandlerInterface<ArrayList<Repository>> handler;
     private Condition searchCondition;
-    private JsonObjectRequest request;
+    private StringRequest request;
     private Context mContext;
     
     public class Condition{
@@ -85,7 +85,7 @@ public class UserReposRequest implements WebRequest {
     
     
 	@Override
-	public JsonObjectRequest getJsonObjectRequest() {
+	public StringRequest getJsonObjectRequest() {
 		if(searchCondition.login == null || searchCondition.login.isEmpty())
 		{
 			return null;
@@ -98,28 +98,30 @@ public class UserReposRequest implements WebRequest {
             return null;
         }
 		try {
-			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(BASE_URL + getUrl(), null,  
-			        new Response.Listener<JSONObject>() {  
-			            @Override  
-			            public void onResponse(JSONObject response) {  
-			            	ArrayList<Repository> data = null;
-							try {
-								data = (ArrayList<Repository>) JSON.parseArray(response.toString(), Repository.class);
-							} catch (Exception e) {
-								DefaulHandlerImp.onFailure(handler, e.getMessage());
-							}
-					        PersistenceHelper.saveModelList(mContext, data, getUrl());
-			            	DefaulHandlerImp.onSuccess(handler, data);
-			            }  
-			        }, new Response.ErrorListener() {
-						@Override
-						public void onErrorResponse(VolleyError error) {
-							Log.i("zy", "startParseXml:thought an Exception");
-							DefaulHandlerImp.onFailure(handler, error.getMessage());
-						}  
-			        });
-
-			return jsonObjectRequest;
+	        StringRequest stringRequest = new StringRequest(Request.Method.GET, BASE_URL + getUrl(), new Response.Listener<String>() {  
+	           @Override  
+	           public void onResponse(String response) {  
+	               try {  
+		            	ArrayList<Repository> data = null;
+						try {
+							data = (ArrayList<Repository>) JSON.parseArray(response, Repository.class);
+						} catch (Exception e) {
+							DefaulHandlerImp.onFailure(handler, e.getMessage());
+						}
+				        PersistenceHelper.saveModelList(mContext, data, getUrl());
+		            	DefaulHandlerImp.onSuccess(handler, data);
+	               } catch (JSONException e) {  
+	                   e.printStackTrace();  
+	               }  
+	           }  
+	        }, new Response.ErrorListener() {  
+	           @Override  
+	           public void onErrorResponse(VolleyError error) {  
+					DefaulHandlerImp.onFailure(handler, error.getMessage());
+	           }  
+	        } 
+	        );  
+			return stringRequest;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

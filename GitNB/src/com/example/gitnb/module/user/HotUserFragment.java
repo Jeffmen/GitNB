@@ -11,6 +11,7 @@ import com.example.gitnb.api.UserSearchRequest.Condition;
 import com.example.gitnb.model.HotUser;
 import com.example.gitnb.utils.MessageUtils;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -47,7 +48,12 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 			
 			@Override
 			public void onItemClick(View view, int position) {
-				Toast.makeText(getActivity(), "item:"+position, Toast.LENGTH_SHORT).show();
+				//Toast.makeText(getActivity(), "item:"+position, Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(getActivity(), UserDetailActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable(USER_KEY, adapter.getItem(position));
+				intent.putExtras(bundle);
+				startActivity(intent);
 			}
 		});
         adapter.SetOnLoadMoreClickListener(new HotUserAdapter.OnItemClickListener() {

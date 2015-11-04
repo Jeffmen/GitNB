@@ -79,6 +79,8 @@ public class Repository extends TModel implements Parcelable {
     private String default_branch;
     private int score;
 
+    public Repository() {}
+    
     protected Repository(Parcel in) {
         id = in.readInt();
         name = in.readString();

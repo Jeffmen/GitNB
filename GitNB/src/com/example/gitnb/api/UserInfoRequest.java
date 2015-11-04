@@ -1,7 +1,5 @@
 package com.example.gitnb.api;
 
-import java.util.ArrayList;
-
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -15,15 +13,15 @@ import com.example.gitnb.model.PersistenceHelper;
 import com.example.gitnb.model.UserInfo;
 import com.alibaba.fastjson.JSON;
 
-public class UserRequest implements WebRequest {
+public class UserInfoRequest implements WebRequest {
 
     private static final String BASE_URL = "https://api.github.com/users/";
-    private HandlerInterface<ArrayList<UserInfo>> handler;
-    private UserCondition searchCondition;
+    private HandlerInterface<UserInfo> handler;
+    private Condition searchCondition;
     private JsonObjectRequest request;
     private Context mContext;
     
-    public class UserCondition{
+    public class Condition{
         private String login;  
         public void SetLogin(String value){
         	login = value;
@@ -35,15 +33,15 @@ public class UserRequest implements WebRequest {
         }
     }
     
-    public UserRequest(Context context){
+    public UserInfoRequest(Context context){
        mContext = context;
     }
     
-    public void SetHandler(HandlerInterface<ArrayList<UserInfo>> value){
+    public void SetHandler(HandlerInterface<UserInfo> value){
     	handler = value;
     }
     
-    public void SetSearchCondition(UserCondition value){
+    public void SetSearchCondition(Condition value){
     	searchCondition = value;
     }	
     
@@ -55,8 +53,8 @@ public class UserRequest implements WebRequest {
 	@Override
 	public JsonObjectRequest getJsonObjectRequest() {
         if (!searchCondition.refresh) {
-            ArrayList<UserInfo> topics = PersistenceHelper.loadModelList(mContext, getUrl());            
-            if (topics != null && topics.size() > 0) {
+            UserInfo topics = PersistenceHelper.loadModel(mContext, getUrl());            
+            if (topics != null) {
             	DefaulHandlerImp.onSuccess(handler, topics);
                 return null;
             }
@@ -66,13 +64,13 @@ public class UserRequest implements WebRequest {
 			        new Response.Listener<JSONObject>() {  
 			            @Override  
 			            public void onResponse(JSONObject response) {  
-			            	ArrayList<UserInfo> data = null;
+			            	UserInfo data = null;
 							try {
-								data = (ArrayList<UserInfo>) JSON.parseArray(response.toString(), UserInfo.class);
+								data = (UserInfo) JSON.parseObject(response.toString(), UserInfo.class);
 							} catch (Exception e) {
 								DefaulHandlerImp.onFailure(handler, e.getMessage());
 							}
-					        PersistenceHelper.saveModelList(mContext, data, getUrl());
+					        PersistenceHelper.saveModel(mContext, data, getUrl());
 			            	DefaulHandlerImp.onSuccess(handler, data);
 			            }  
 			        }, new Response.ErrorListener() {

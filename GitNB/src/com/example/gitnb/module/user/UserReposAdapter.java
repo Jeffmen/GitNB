@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.gitnb.R;
-import com.example.gitnb.model.HotUser;
 import com.example.gitnb.model.Repository;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -115,7 +114,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 			return new LoadMoreViewHolder(v);
 		}
 		else{
-			View v = mInflater.inflate(R.layout.hot_user_list_item,viewgroup,false);
+			View v = mInflater.inflate(R.layout.user_repos_list_item,viewgroup,false);
 			return new UserReposViewHolder(v);
 		}
 	}
@@ -139,7 +138,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 			if(item != null){
 				viewHolder.repos_name.setText(item.getName());
 				viewHolder.repos_star.setText("Star:"+item.getStargazers_count());
-				viewHolder.repos_fork.setText(item.getForks());
+				viewHolder.repos_fork.setText(""+item.getForks());
 				viewHolder.repos_language.setText(item.getLanguage());
 				viewHolder.repos_homepage.setText(item.getHomepage());
 				viewHolder.repos_discription.setText(item.getDescription());

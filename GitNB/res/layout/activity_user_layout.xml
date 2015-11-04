@@ -6,23 +6,13 @@
     android:orientation="vertical" >
     
 	<include layout="@layout/toolbar" />
-	
-	<android.support.v4.widget.SwipeRefreshLayout
-	    android:id="@+id/swipeRefreshLayout"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:orientation="vertical">
-	    <ScrollView 
-		    android:layout_width="match_parent"
-		    android:layout_height="match_parent">
-	        
-		    <FrameLayout
+			    <FrameLayout
 		        android:layout_width="match_parent"
-		        android:layout_height="45dp">
+		        android:layout_height="250dp">
 	            <com.facebook.drawee.view.SimpleDraweeView
 		            android:id="@+id/user_avatar"
-	                android:layout_width="50dp"
-	                android:layout_height="50dp"
+	                android:layout_width="match_parent"
+	                android:layout_height="match_parent"
 	                android:background="@android:color/transparent"
 	                android:gravity="center"
 	                android:singleLine="true"
@@ -35,6 +25,7 @@
 		            <LinearLayout 
 					    android:layout_width="match_parent"
 					    android:layout_height="match_parent"
+            			android:layout_weight="1"
 					    android:orientation="vertical">
 		            
 			        </LinearLayout>
@@ -42,10 +33,12 @@
 			            android:id="@+id/user_name"
 					    android:layout_width="match_parent"
 					    android:layout_height="20dp"
+            			android:layout_weight="1"
 					    android:gravity="center"/>
 			        <LinearLayout 
 					    android:layout_width="match_parent"
 					    android:layout_height="match_parent"
+            			android:layout_weight="1"
 					    android:orientation="vertical">
 		                
 				        <TextView 
@@ -74,12 +67,16 @@
 			        </LinearLayout>
 		        </LinearLayout>
 		    </FrameLayout>
+	<android.support.v4.widget.SwipeRefreshLayout
+	    android:id="@+id/swipeRefreshLayout"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical">
 	        <android.support.v7.widget.RecyclerView
 	         android:id="@+id/recylerView"
 	         android:layout_width="match_parent"
 	         android:layout_height="match_parent"
 	         android:footerDividersEnabled="false" />
-	    </ScrollView>
 	</android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

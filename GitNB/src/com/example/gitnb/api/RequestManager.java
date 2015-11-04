@@ -4,10 +4,9 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.gitnb.api.UserSearchRequest.Condition;
 
 public class RequestManager {	
 	private Context mContext;
@@ -15,7 +14,7 @@ public class RequestManager {
 	private RequestQueue mQueue;
 	
 	public interface WebRequest {
-		public JsonObjectRequest getJsonObjectRequest();
+		public Request<?> getJsonObjectRequest();
 		public void cancelRequest();
 	}
 	
@@ -40,7 +39,7 @@ public class RequestManager {
 	}
 	
 	public void addRequest(WebRequest request){
-		JsonObjectRequest jsonObjectRequest = request.getJsonObjectRequest();
+		Request<?> jsonObjectRequest = request.getJsonObjectRequest();
 		if(jsonObjectRequest != null){
 			mQueue.add(jsonObjectRequest);
 		}
