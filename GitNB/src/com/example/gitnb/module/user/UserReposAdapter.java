@@ -49,13 +49,13 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
     }
     
 	public Repository getItem(int position) {
-		if(position == 0){
-			return null;
-		}
+//		if(position == 0){
+//			return null;
+//		}
 		if(isShowLoadMore && position == getItemCount()-1){
 			return null;
 		}
-		return mUsers == null ? null : mUsers.get(position-1);
+		return mUsers == null ? null : mUsers.get(position);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
     
 	@Override
 	public int getItemCount() {
-		return (mUsers == null ? 0 : mUsers.size())+(isShowLoadMore ? 2 : 1);
+		return (mUsers == null ? 0 : mUsers.size())+(isShowLoadMore ? 1 : 0);
 	}
 	
     @Override
@@ -138,9 +138,9 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 			if(item != null){
 				viewHolder.repos_name.setText(item.getName());
 				viewHolder.repos_star.setText("Star:"+item.getStargazers_count());
-				viewHolder.repos_fork.setText(""+item.getForks());
+				viewHolder.repos_fork.setText(item.isFork()?"fork":"owner");
 				viewHolder.repos_language.setText(item.getLanguage());
-				viewHolder.repos_homepage.setText(item.getHomepage());
+				//viewHolder.repos_homepage.setText(item.getHomepage());
 				viewHolder.repos_discription.setText(item.getDescription());
 			}
 			viewHolder.repos_rank.setText(String.valueOf(position)+".");

@@ -4,30 +4,28 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="15dp"
-    android:paddingTop="15dp"
+    android:layout_height="wrap_content"
 	card_view:cardBackgroundColor="#ffffff" 
 	card_view:cardElevation="0dp"
-	card_view:cardUseCompatPadding="true"
 	card_view:cardPreventCornerOverlap="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+	    android:orientation="horizontal"
         android:padding="10dp">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:orientation="vertical"
             android:gravity="center">
 
                 <TextView
                     android:id="@+id/repos_rank"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
                     android:singleLine="true" />
 
         </LinearLayout>
@@ -35,12 +33,12 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight="4"
+            android:layout_weight="6"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 	        <LinearLayout
-	            android:layout_width="0dp"
-	            android:layout_height="fill_parent"
+	            android:layout_width="fill_parent"
+	            android:layout_height="0dp"
 	            android:layout_weight="3"
 	            android:gravity="center"
 	            android:orientation="horizontal">
@@ -49,24 +47,24 @@
                     android:id="@+id/repos_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
+                    android:layout_weight="2"
                     android:singleLine="true"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="16sp" />
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="14sp" />
 	
                 <TextView
                     android:id="@+id/repos_star"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
+                    android:layout_weight="1"
                     android:singleLine="true"
                     android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="16sp" />
+                    android:textSize="12sp" />
                 
 	        </LinearLayout>
 	        <LinearLayout
-	            android:layout_width="0dp"
-	            android:layout_height="fill_parent"
+	            android:layout_width="fill_parent"
+	            android:layout_height="0dp"
 	            android:layout_weight="3"
 	            android:gravity="center"
 	            android:orientation="horizontal">
@@ -75,34 +73,35 @@
 	                    android:id="@+id/repos_fork"
 	                    android:layout_width="0dp"
 	                    android:layout_height="wrap_content"
-	                    android:layout_weight="3"
+	                    android:layout_weight="1"
 	                    android:singleLine="true"
-	                    android:textColor="?android:attr/textColorPrimary"
-	                    android:textSize="16sp" />
+	                    android:textColor="#758a99"
+	                    android:textSize="12sp" />
 	
 	                <TextView
 	                    android:id="@+id/repos_language"
 	                    android:layout_width="0dp"
 	                    android:layout_height="wrap_content"
-	                    android:layout_weight="3"
+	                    android:layout_weight="1"
 	                    android:singleLine="true"
 	                    android:textColor="?android:attr/textColorPrimary"
-	                    android:textSize="16sp" />
+	                    android:textSize="12sp" />
 	
 	                <TextView
 	                    android:id="@+id/repos_homepage"
 	                    android:layout_width="0dp"
 	                    android:layout_height="wrap_content"
-	                    android:layout_weight="3"
+	                    android:layout_weight="2"
 	                    android:singleLine="true"
 	                    android:ellipsize="end" 
+	                    android:visibility="gone"
 	                    android:textColor="?android:attr/textColorPrimary"
-	                    android:textSize="16sp" />
+	                    android:textSize="12sp" />
 	        </LinearLayout>
 	        <LinearLayout
-	            android:layout_width="0dp"
-	            android:layout_height="fill_parent"
-	            android:layout_weight="4"
+	            android:layout_width="fill_parent"
+	            android:layout_height="0dp"
+	            android:layout_weight="5"
 	            android:gravity="center"
 	            android:orientation="horizontal">
 	
@@ -110,10 +109,9 @@
 	                    android:id="@+id/repos_description"
 	                    android:layout_width="match_parent"
 	                    android:layout_height="match_parent"
-	                    android:layout_weight="3"
-	                    android:singleLine="true"
+	                    android:maxLines="2"
 	                    android:textColor="?android:attr/textColorPrimary"
-	                    android:textSize="16sp" />
+	                    android:textSize="12sp" />
 	
 	        </LinearLayout>
         </LinearLayout>
