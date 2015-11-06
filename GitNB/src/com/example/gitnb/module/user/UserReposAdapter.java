@@ -113,7 +113,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
     	if(position == 0){
     		return TYPE_HEADER_VIEW;
     	}
-    	else if (isShowLoadMore && getItemCount() - 1 == position) { // footer
+    	else if (isShowLoadMore && getItemCount() - 1 == position) {
     		return TYPE_FOOTER_VIEW;
     	}
     	return TYPE_NOMAL_VIEW;
