@@ -13,10 +13,8 @@ import com.example.gitnb.model.HotUser;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.UserInfo;
 import com.example.gitnb.utils.MessageUtils;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -62,8 +60,10 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
 		});
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        recyclerView = (RecyclerView) findViewById(R.id.recylerView);        
-        adapter = new UserReposAdapter(this);
+        recyclerView = (RecyclerView) findViewById(R.id.recylerView);  
+        UserInfo userInfo = new UserInfo();
+        userInfo.setAvatar_url(user.getAvatar_url());
+        adapter = new UserReposAdapter(this, userInfo);
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
         adapter.SetOnItemClickListener(new UserReposAdapter.OnItemClickListener() {
 			
@@ -102,23 +102,8 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
             	requestRepository(true);
             }
         });
-        SimpleDraweeView user_avatar = (SimpleDraweeView)findViewById(R.id.user_avatar);
-        user_avatar.setImageURI(Uri.parse(user.getAvatar_url()));
         requestUserInfo(true);
         requestRepository(true);
-    }	
-    
-    private void updateUserInfo(UserInfo info){
-        TextView user_name = (TextView)findViewById(R.id.user_name);
-        user_name.setText(info.getName());
-        TextView user_company = (TextView)findViewById(R.id.user_company);
-        user_company.setText(info.getCompany());
-        TextView user_location = (TextView)findViewById(R.id.user_location);
-        user_location.setText(info.getLocation());
-        TextView user_created_date = (TextView)findViewById(R.id.user_created_date);
-        user_created_date.setText(info.getCreated_at());
-        TextView user_blog = (TextView)findViewById(R.id.user_blog);
-        user_blog.setText(info.getBlog());
     }
     
 	@Override
@@ -155,7 +140,7 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
 
 			@Override
 			public void onSuccess(UserInfo data) {
-				updateUserInfo(data);
+				adapter.UpdateUserInfo(data);
 			}
 
 			@Override
