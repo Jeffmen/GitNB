@@ -29,7 +29,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class UserDetailActivity extends AppCompatActivity implements HandlerInterface<ArrayList<Repository>>{
+public class ReposDetailActivity extends AppCompatActivity implements HandlerInterface<ArrayList<Repository>>{
 
 	private String TAG = "UserDetailActivity";
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -73,7 +73,7 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
 			
 			@Override
 			public void onItemClick(View view, int position) {
-				Toast.makeText(UserDetailActivity.this, "item:"+position, Toast.LENGTH_SHORT).show();
+				Toast.makeText(ReposDetailActivity.this, "item:"+position, Toast.LENGTH_SHORT).show();
 			}
 		});
         adapter.SetOnLoadMoreClickListener(new UserReposAdapter.OnItemClickListener() {
@@ -169,7 +169,7 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
 
 			@Override
 			public void onFailure(String error) {
-		        MessageUtils.showErrorMessage(UserDetailActivity.this, error);
+		        MessageUtils.showErrorMessage(ReposDetailActivity.this, error);
 			}
     		
     	});

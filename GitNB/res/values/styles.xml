@@ -11,13 +11,13 @@
             backward-compatibility can go here.
         -->
         <!-- toolbar（actionbar）颜色 -->  
-        <item name="colorPrimary">#4876FF</item>  
+        <item name="colorPrimary">@android:color/transparent</item>  
         <!-- 状态栏颜色 -->  
-        <item name="colorPrimaryDark">#3A5FCD</item>  
+        <item name="colorPrimaryDark">@android:color/transparent</item>  
         <!-- 窗口的背景颜色 -->  
         <item name="android:windowBackground">@android:color/white</item>  
         <!-- 底部导航栏颜色 -->  
-        <item name="android:navigationBarColor">#4876FF</item> 
+        <item name="android:navigationBarColor">@android:color/transparent</item> 
         <item name="toolbarStyle">@style/ClubToolbar</item>
     </style> 
 

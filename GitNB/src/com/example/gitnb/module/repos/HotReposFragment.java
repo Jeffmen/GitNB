@@ -1,14 +1,15 @@
-package com.example.gitnb.module.user;
+package com.example.gitnb.module.repos;
 
 import java.util.ArrayList;
 
 import com.example.gitnb.R;
 import com.example.gitnb.api.HandlerInterface;
+import com.example.gitnb.api.ReposSearchRequest;
+import com.example.gitnb.api.ReposSearchRequest.Condition;
 import com.example.gitnb.api.RequestManager;
 import com.example.gitnb.api.RequestManager.WebRequest;
-import com.example.gitnb.api.UserSearchRequest;
-import com.example.gitnb.api.UserSearchRequest.Condition;
-import com.example.gitnb.model.User;
+import com.example.gitnb.model.Repository;
+import com.example.gitnb.module.user.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
 import android.content.Intent;
@@ -17,7 +18,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -25,13 +25,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<User>>, TextWatcher{
-	private String TAG = "HotUserFragment";
-	public static String USER_KEY = "user_key";
+public class HotReposFragment extends Fragment implements HandlerInterface<ArrayList<Repository>>, TextWatcher{
+	private String TAG = "HotReposFragment";
+	public static String REPOS_KEY = "repos_key";
 	private int page = 1;
     private RecyclerView recyclerView;
 	private boolean isLoadingMore;
-    private HotUserAdapter adapter;
+    private HotReposAdapter adapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLayoutManager;
     private WebRequest currentRequest;
@@ -40,22 +40,21 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_data_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recylerView);
-        adapter = new HotUserAdapter(getActivity());
+        adapter = new HotReposAdapter(getActivity());
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).build());
-        //adapter.SetSearchTextWatcher(this);
-        adapter.SetOnItemClickListener(new HotUserAdapter.OnItemClickListener() {
+        adapter.SetOnItemClickListener(new HotReposAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
 				//Toast.makeText(getActivity(), "item:"+position, Toast.LENGTH_SHORT).show();
-				Intent intent = new Intent(getActivity(), UserDetailActivity.class);
+				Intent intent = new Intent(getActivity(), ReposDetailActivity.class);
 				Bundle bundle = new Bundle();
-				bundle.putParcelable(USER_KEY, adapter.getItem(position));
+				bundle.putParcelable(REPOS_KEY, adapter.getItem(position));
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}
 		});
-        adapter.SetOnLoadMoreClickListener(new HotUserAdapter.OnItemClickListener() {
+        adapter.SetOnLoadMoreClickListener(new HotReposAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
@@ -64,41 +63,22 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 	            } else{
 	             	page++;
 	                isLoadingMore = true;
-	             	requestHotUser(true, null);
+	                requestHotRepos(true, null);
 	            }
 			}
 		});        
-        adapter.SetOnSearchClickListener(new HotUserAdapter.OnItemClickListener() {
+        adapter.SetOnSearchClickListener(new HotReposAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
 	        	page = 1;
 	        	mSwipeRefreshLayout.setRefreshing(true);
-	        	requestHotUser(adapter.getSearchText().isEmpty() ? false : true, adapter.getSearchText());
+	        	requestHotRepos(adapter.getSearchText().isEmpty() ? false : true, adapter.getSearchText());
 			}
 		});
         mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
-        /*
-        recyclerView.addOnScrollListener(new OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int lastVisibleItem = ((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition();
-                int totalItemCount = adapter.getItemCount();
-
-                if (lastVisibleItem >= totalItemCount - 4 && dy > 0) {
-                    if(isLoadingMore){
-                        Log.d(TAG,"ignore manually update!");
-                    } else{
-	                   	page++;
-	                   	requestHotUser(true);
-                        isLoadingMore = true;
-                    }
-                }
-            }
-        });*/
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(
         		android.R.color.holo_blue_bright,
@@ -109,10 +89,10 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
             @Override
             public void onRefresh() {
             	page = 1;
-            	requestHotUser(true, null);
+            	requestHotRepos(true, null);
             }
         });
-        requestHotUser(false, null);
+        requestHotRepos(false, null);
         return view;
     }
 	
@@ -126,7 +106,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 	public void onTextChanged(CharSequence s, int start, int before, int count){
 		if(s.length() > 0){
         	page = 1;
-        	requestHotUser(true, s.toString());
+        	requestHotRepos(true, s.toString());
 		}
 	}
 
@@ -136,12 +116,12 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 	}
 	
 	@Override
-    public void onSuccess(ArrayList<User> data){
+    public void onSuccess(ArrayList<Repository> data){
 		onSuccess(data, 0, 1);
     }
 
 	@Override
-    public void onSuccess(ArrayList<User> data, int totalPages, int currentPage){
+    public void onSuccess(ArrayList<Repository> data, int totalPages, int currentPage){
     	mSwipeRefreshLayout.setRefreshing(false);
     	if(page == 1){
         	adapter.update(data);
@@ -159,12 +139,11 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
         MessageUtils.showErrorMessage(getActivity(), error);
     }
     
-    private void requestHotUser(boolean refresh, String key){
+    private void requestHotRepos(boolean refresh, String key){
     	if(currentRequest != null) currentRequest.cancelRequest();
-    	UserSearchRequest request = new UserSearchRequest(getActivity());
+    	ReposSearchRequest request = new ReposSearchRequest(getActivity());
     	Condition condition = request.new Condition();
     	condition.SetLanguage("java");
-    	condition.SetLocation("china");
     	condition.SetRefresh(refresh);
     	condition.SetPage(page);
         condition.SetKey(key);

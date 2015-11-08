@@ -14,7 +14,7 @@ public class RequestManager {
 	private RequestQueue mQueue;
 	
 	public interface WebRequest {
-		public Request<?> getJsonObjectRequest();
+		public Request<?> getRequest();
 		public void cancelRequest();
 	}
 	
@@ -39,7 +39,7 @@ public class RequestManager {
 	}
 	
 	public void addRequest(WebRequest request){
-		Request<?> jsonObjectRequest = request.getJsonObjectRequest();
+		Request<?> jsonObjectRequest = request.getRequest();
 		if(jsonObjectRequest != null){
 			mQueue.add(jsonObjectRequest);
 		}

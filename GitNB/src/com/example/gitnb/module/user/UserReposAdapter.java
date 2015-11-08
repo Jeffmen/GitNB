@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.example.gitnb.R;
 import com.example.gitnb.model.Repository;
-import com.example.gitnb.model.UserInfo;
+import com.example.gitnb.model.User;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -31,14 +31,14 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
     protected final LayoutInflater mInflater;
     private boolean isShowLoadMore = true;
     private boolean isLoadingMore = false;
-    private ArrayList<Repository> mUsers;
-    private UserInfo userInfo;
+    private ArrayList<Repository> mRepos;
+    private User userInfo;
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
     }
     
-    public UserReposAdapter(Context context, UserInfo userInfo) {
+    public UserReposAdapter(Context context, User userInfo) {
     	mContext = context;
     	this.userInfo = userInfo;
     	mInflater = LayoutInflater.from(mContext);
@@ -52,7 +52,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
         this.mLoadMoreClickListener = mLastItemClickListener;
     }
     
-    public void UpdateUserInfo(UserInfo value) {
+    public void UpdateUserInfo(User value) {
         this.userInfo = value;
         notifyDataSetChanged();
     }
@@ -64,7 +64,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 		if(isShowLoadMore && position == getItemCount()-1){
 			return null;
 		}
-		return mUsers == null ? null : mUsers.get(position-1);
+		return mRepos == null ? null : mRepos.get(position-1);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
     		isShowLoadMore = true;
     	}
 //    	if (data != null && data.size() > 0){
-        	mUsers= data;
+    	mRepos= data;
 //    	}
     	reset();
     }
@@ -93,7 +93,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
     		isShowLoadMore = true;
     	}
         if (data != null && data.size() > 0){
-        	mUsers.addAll(data);
+        	mRepos.addAll(data);
         }
     	reset();
     }
@@ -105,7 +105,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
     
 	@Override
 	public int getItemCount() {
-		return (mUsers == null ? 0 : mUsers.size())+(isShowLoadMore ? 2 : 1);
+		return (mRepos == null ? 0 : mRepos.size())+(isShowLoadMore ? 2 : 1);
 	}
 	
     @Override
@@ -126,11 +126,11 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 			return new LoadMoreViewHolder(v);
 		}
 		else if(viewType == TYPE_HEADER_VIEW){
-			View v = mInflater.inflate(R.layout.user_info_item,viewgroup,false);
-			return new UserInfoViewHolder(v);
+			View v = mInflater.inflate(R.layout.user_detail_item,viewgroup,false);
+			return new UserDetailViewHolder(v);
 		}
 		else{
-			View v = mInflater.inflate(R.layout.user_repos_list_item,viewgroup,false);
+			View v = mInflater.inflate(R.layout.repos_list_item,viewgroup,false);
 			return new UserReposViewHolder(v);
 		}
 	}
@@ -140,7 +140,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 		switch(getItemViewType(position)){
 		case TYPE_HEADER_VIEW:
 			if(userInfo!=null){
-				UserInfoViewHolder userInfoVeiwHolder = (UserInfoViewHolder) vh;
+				UserDetailViewHolder userInfoVeiwHolder = (UserDetailViewHolder) vh;
 				userInfoVeiwHolder.user_name.setText(userInfo.getName());
 				userInfoVeiwHolder.user_company.setText(userInfo.getCompany());
 				userInfoVeiwHolder.user_location.setText(userInfo.getLocation());
@@ -170,12 +170,13 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 				//viewHolder.repos_homepage.setText(item.getHomepage());
 				viewHolder.repos_discription.setText(item.getDescription());
 			}
+			viewHolder.user_avatar.setVisibility(View.GONE);
 			viewHolder.repos_rank.setText(String.valueOf(position)+".");
 			break;
 		}
 	}
 	
-	public class UserInfoViewHolder extends RecyclerView.ViewHolder{
+	public class UserDetailViewHolder extends RecyclerView.ViewHolder{
 		TextView user_name;
 		TextView user_company;
 		TextView user_location;
@@ -183,7 +184,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 		TextView user_blog;
         SimpleDraweeView user_avatar;
 		
-		public UserInfoViewHolder(View view) {
+		public UserDetailViewHolder(View view) {
 			super(view);
 			user_name = (TextView) view.findViewById(R.id.user_name);
 			user_company = (TextView) view.findViewById(R.id.user_company);
@@ -202,6 +203,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 		TextView repos_homepage;
 		TextView repos_discription;
 		TextView repos_rank;
+		SimpleDraweeView user_avatar;
 		
 		public UserReposViewHolder(View view) {
 			super(view);
@@ -212,6 +214,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 			repos_language = (TextView) view.findViewById(R.id.repos_language);
 			repos_homepage = (TextView) view.findViewById(R.id.repos_homepage);
 			repos_discription = (TextView) view.findViewById(R.id.repos_description);
+			user_avatar = (SimpleDraweeView) view.findViewById(R.id.user_avatar);
             view.setOnClickListener(this);
 		}
 	

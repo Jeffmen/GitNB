@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.example.gitnb.R;
+import com.example.gitnb.module.repos.HotReposFragment;
 import com.example.gitnb.module.user.HotUserFragment;
 
 import android.graphics.Color;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
 		pagerAdapter.addFragment(new HotUserFragment(), "User");
+		pagerAdapter.addFragment(new HotReposFragment(), "Repository");
 		pager.setAdapter(pagerAdapter);
 		tabs.setViewPager(pager);
 		//tabs.setOnPageChangeListener(new PageListener());

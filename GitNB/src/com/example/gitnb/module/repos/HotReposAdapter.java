@@ -1,4 +1,4 @@
-package com.example.gitnb.module.user;
+package com.example.gitnb.module.repos;
 
 import java.util.ArrayList;
 
@@ -19,12 +19,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.gitnb.R;
-import com.example.gitnb.model.User;
+import com.example.gitnb.model.Repository;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
-public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
+public class HotReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 
 	private Context mContext;
     private static final int TYPE_HEADER_VIEW = 2;
@@ -32,7 +32,7 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
     private static final int TYPE_NOMAL_VIEW = 0;
     private static final int PAGE_COUNT = 30;
     protected final LayoutInflater mInflater;
-    private ArrayList<User> mUsers;
+    private ArrayList<Repository> mRepos;
     private OnItemClickListener mItemClickListener;
     private OnItemClickListener mLoadMoreClickListener;
     private OnItemClickListener mSearchClickListener;
@@ -44,7 +44,7 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
         void onItemClick(View view, int position);
     }
     
-    public HotUserAdapter(Context context) {
+    public HotReposAdapter(Context context) {
     	mContext = context;
     	mInflater = LayoutInflater.from(mContext);
 	}
@@ -65,14 +65,14 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
     	return searchText;
     }
     
-	public User getItem(int position) {
+	public Repository getItem(int position) {
 		if(position == 0){
 			return null;
 		}
 		if(isShowLoadMore && position == getItemCount()-1){
 			return null;
 		}
-		return mUsers == null ? null : mUsers.get(position-1);
+		return mRepos == null ? null : mRepos.get(position-1);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 		return position;
 	}
     
-    public void update(ArrayList<User> data){
+    public void update(ArrayList<Repository> data){
     	if(data == null || data.size()<PAGE_COUNT){
     		isShowLoadMore = false;
     	}   
@@ -88,12 +88,12 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
     		isShowLoadMore = true;
     	}
 //    	if (data != null && data.size() > 0){
-        	mUsers= data;
+    	mRepos= data;
 //    	}
     	reset();
     }
     
-    public void insertAtBack(ArrayList<User> data){
+    public void insertAtBack(ArrayList<Repository> data){
     	if(data == null || data.size()<PAGE_COUNT){
     		isShowLoadMore = false;
     	}
@@ -101,7 +101,7 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
     		isShowLoadMore = true;
     	}
         if (data != null && data.size() > 0){
-        	mUsers.addAll(data);
+        	mRepos.addAll(data);
         }
     	reset();
     }
@@ -113,7 +113,7 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
     
 	@Override
 	public int getItemCount() {
-		return (mUsers == null ? 0 : mUsers.size())+(isShowLoadMore ? 2 : 1);
+		return (mRepos == null ? 0 : mRepos.size())+(isShowLoadMore ? 2 : 1);
 	}
 	
     @Override
@@ -138,8 +138,8 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 			return new SearchViewHolder(v);
 		}
 		else{
-			View v = mInflater.inflate(R.layout.user_list_item,viewgroup,false);
-			return new HotUserViewHolder(v);
+			View v = mInflater.inflate(R.layout.repos_list_item,viewgroup,false);
+			return new ReposViewHolder(v);
 		}
 	}
 	  
@@ -157,13 +157,21 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 			loadMoreViewHolder.loading_txt.setText("load more...");
 			break;
 		case TYPE_NOMAL_VIEW:
-			HotUserViewHolder viewHolder = (HotUserViewHolder) vh;
-			User user = getItem(position);
-			if(user != null){
-			    viewHolder.ivAvatar.setImageURI(Uri.parse(user.getAvatar_url()));
-				viewHolder.tvLogin.setText(user.getLogin());
+			ReposViewHolder viewHolder = (ReposViewHolder) vh;
+			Repository item = getItem(position);
+			if(item != null){
+				viewHolder.repos_name.setText(item.getName());
+				viewHolder.repos_star.setText("Star:"+item.getStargazers_count());
+				viewHolder.repos_fork.setText(item.isFork()?"fork":"owner");
+				viewHolder.repos_language.setText(item.getLanguage());
+				//viewHolder.repos_homepage.setText(item.getHomepage());
+				viewHolder.repos_discription.setText(item.getDescription());
 			}
-			viewHolder.tvRank.setText(String.valueOf(position)+".");
+			viewHolder.user_avatar.setVisibility(View.VISIBLE);
+			if(item.getOwner() != null){
+			    viewHolder.user_avatar.setImageURI(Uri.parse(item.getOwner().getAvatar_url()));
+			}
+			viewHolder.repos_rank.setText(String.valueOf(position)+".");
 			break;
 		case TYPE_HEADER_VIEW:
 			SearchViewHolder searchHolder = (SearchViewHolder) vh;
@@ -180,16 +188,26 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 	}
 	
 	
-	public class HotUserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-		TextView tvLogin;
-		TextView tvRank;
-		SimpleDraweeView ivAvatar;
-
-		public HotUserViewHolder(View view) {
+	public class ReposViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+		TextView repos_name;
+		TextView repos_star;
+		TextView repos_fork;
+		TextView repos_language;
+		TextView repos_homepage;
+		TextView repos_discription;
+		TextView repos_rank;
+		SimpleDraweeView user_avatar;
+		
+		public ReposViewHolder(View view) {
 			super(view);
-			ivAvatar = (SimpleDraweeView) view.findViewById(R.id.user_avatar);
-	        tvLogin = (TextView) view.findViewById(R.id.user_login);
-	        tvRank = (TextView) view.findViewById(R.id.user_rank);
+			repos_rank = (TextView) view.findViewById(R.id.repos_rank);
+			repos_name = (TextView) view.findViewById(R.id.repos_name);
+			repos_star = (TextView) view.findViewById(R.id.repos_star);
+			repos_fork = (TextView) view.findViewById(R.id.repos_fork);
+			repos_language = (TextView) view.findViewById(R.id.repos_language);
+			repos_homepage = (TextView) view.findViewById(R.id.repos_homepage);
+			repos_discription = (TextView) view.findViewById(R.id.repos_description);
+			user_avatar = (SimpleDraweeView) view.findViewById(R.id.user_avatar);
             view.setOnClickListener(this);
 		}
 	

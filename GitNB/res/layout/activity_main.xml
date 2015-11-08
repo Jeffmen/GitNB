@@ -5,17 +5,43 @@
     android:orientation="vertical"
     tools:context="com.example.gitnb.module.MainActivity" >
     
-	<include layout="@layout/toolbar" />
+    <FrameLayout
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content">
+		
+		<LinearLayout 
+		    android:orientation="vertical"  
+		    android:layout_width="match_parent"  
+		    android:layout_height="match_parent"> 
+		    <ImageView
+		        android:id="@+id/search_icon"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:layout_marginLeft="8dp"
+	            android:gravity="center" 
+	            android:layout_gravity="center"
+		        android:scaleType="centerInside"
+                android:tint="#4876FF"
+		        android:src="@drawable/ic_launcher">
+		    </ImageView>
+		</LinearLayout> 
+		    
+		<LinearLayout 
+		    android:orientation="vertical"  
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"> 
+			<include layout="@layout/toolbar" />
+		    <com.astuetz.PagerSlidingTabStrip
+		        android:id="@+id/tabs"
+		        android:layout_width="match_parent"
+		        android:layout_height="40dp" />
+		</LinearLayout> 
+    </FrameLayout>
 
 	<LinearLayout 
 	    android:orientation="vertical"  
 	    android:layout_width="fill_parent"  
 	    android:layout_height="fill_parent">  
-	
-	    <com.astuetz.PagerSlidingTabStrip
-	        android:id="@+id/tabs"
-	        android:layout_width="match_parent"
-	        android:layout_height="40dp" />
 	
 	    <android.support.v4.view.ViewPager
 	        android:id="@+id/pager"

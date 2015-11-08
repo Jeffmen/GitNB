@@ -10,13 +10,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.model.PersistenceHelper;
-import com.example.gitnb.model.UserInfo;
+import com.example.gitnb.model.User;
 import com.alibaba.fastjson.JSON;
 
 public class UserInfoRequest implements WebRequest {
 
     private static final String BASE_URL = "https://api.github.com/users/";
-    private HandlerInterface<UserInfo> handler;
+    private HandlerInterface<User> handler;
     private Condition searchCondition;
     private JsonObjectRequest request;
     private Context mContext;
@@ -37,7 +37,7 @@ public class UserInfoRequest implements WebRequest {
        mContext = context;
     }
     
-    public void SetHandler(HandlerInterface<UserInfo> value){
+    public void SetHandler(HandlerInterface<User> value){
     	handler = value;
     }
     
@@ -51,9 +51,9 @@ public class UserInfoRequest implements WebRequest {
     
     
 	@Override
-	public JsonObjectRequest getJsonObjectRequest() {
+	public JsonObjectRequest getRequest() {
         if (!searchCondition.refresh) {
-            UserInfo topics = PersistenceHelper.loadModel(mContext, getUrl());            
+            User topics = PersistenceHelper.loadModel(mContext, getUrl());            
             if (topics != null) {
             	DefaulHandlerImp.onSuccess(handler, topics);
                 return null;
@@ -64,9 +64,9 @@ public class UserInfoRequest implements WebRequest {
 			        new Response.Listener<JSONObject>() {  
 			            @Override  
 			            public void onResponse(JSONObject response) {  
-			            	UserInfo data = null;
+			            	User data = null;
 							try {
-								data = (UserInfo) JSON.parseObject(response.toString(), UserInfo.class);
+								data = (User) JSON.parseObject(response.toString(), User.class);
 							} catch (Exception e) {
 								DefaulHandlerImp.onFailure(handler, e.getMessage());
 							}

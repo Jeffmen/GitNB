@@ -12,18 +12,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.model.PersistenceHelper;
-import com.example.gitnb.model.User;
+import com.example.gitnb.model.Repository;
 import com.alibaba.fastjson.JSON;
 
-public class UserSearchRequest implements WebRequest {
+public class ReposSearchRequest implements WebRequest {
 
-//	https://api.github.com/search/users?q=location:china&page=1
-//	https://api.github.com/search/users?q=language:Java+followers:>500&page=1
-//	https://api.github.com/search/users?q=language:C+followers:>500&page=1
-//  https://api.github.com/search/users?q=jake+language:java&sort=followers&order=desc&page=1
+//	https://api.github.com/search/repositories?q=tetris+language:assembly&sort=stars&order=desc
 		
     private static final String BASE_URL = "https://api.github.com/search/";
-    private HandlerInterface<ArrayList<User>> handler;
+    private HandlerInterface<ArrayList<Repository>> handler;
     private Condition searchCondition;
     private JsonObjectRequest request;
     private Context mContext;
@@ -32,11 +29,6 @@ public class UserSearchRequest implements WebRequest {
         private String key;  
         public void SetKey(String value){
         	key = value;
-        }
-
-        private String location;
-        public void SetLocation(String value){
-        	location = value;
         }
 
         private String language;
@@ -49,8 +41,8 @@ public class UserSearchRequest implements WebRequest {
         	page = value;
         }
         
-        //The sort field. Can be followers, repositories, or joined. Default: results are sorted by best match.
-        private String sort = "followers";
+        //The sort field. One of stars, forks, or updated. Default: results are sorted by best match.
+        private String sort = "stars";
         public void SetSort(String value){
         	sort = value;
         }
@@ -66,11 +58,11 @@ public class UserSearchRequest implements WebRequest {
         }
     }
     
-    public UserSearchRequest(Context context){
+    public ReposSearchRequest(Context context){
        mContext = context;
     }
     
-    public void SetHandler(HandlerInterface<ArrayList<User>> value){
+    public void SetHandler(HandlerInterface<ArrayList<Repository>> value){
     	handler = value;
     }
     
@@ -79,14 +71,10 @@ public class UserSearchRequest implements WebRequest {
     }	
     
     private String getUrl(){
-    	String query = "users?q=";
+    	String query = "repositories?q=";
 		if(searchCondition.key != null && !searchCondition.key.isEmpty())
 		{
 			query += searchCondition.key;
-		}
-		if(searchCondition.location != null && !searchCondition.location.isEmpty())
-		{
-			query += "+location:" + searchCondition.location;
 		}
 		if(searchCondition.language != null && !searchCondition.language.isEmpty())
 		{
@@ -113,7 +101,7 @@ public class UserSearchRequest implements WebRequest {
 	public JsonObjectRequest getRequest() {
 		
         if (!searchCondition.refresh || !RequestManager.isNetworkAvailable(mContext)) {
-            ArrayList<User> topics = PersistenceHelper.loadModelList(mContext, getUrl());            
+            ArrayList<Repository> topics = PersistenceHelper.loadModelList(mContext, getUrl());            
             //if (topics != null && topics.size() > 0) {
             	DefaulHandlerImp.onSuccess(handler, topics);
             //}
@@ -124,9 +112,9 @@ public class UserSearchRequest implements WebRequest {
 			        new Response.Listener<JSONObject>() {  
 			            @Override  
 			            public void onResponse(JSONObject response) {  
-			            	ArrayList<User> data = null;
+			            	ArrayList<Repository> data = null;
 							try {
-								data = (ArrayList<User>) JSON.parseArray(response.getString("items"), User.class);
+								data = (ArrayList<Repository>) JSON.parseArray(response.getString("items"), Repository.class);
 							} catch (Exception e) {
 								DefaulHandlerImp.onFailure(handler, e.getMessage());
 							}

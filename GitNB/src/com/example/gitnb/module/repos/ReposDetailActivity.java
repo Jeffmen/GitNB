@@ -1,16 +1,16 @@
-package com.example.gitnb.module.user;
+package com.example.gitnb.module.repos;
 
 import java.util.ArrayList;
 
 import com.example.gitnb.R;
 import com.example.gitnb.api.HandlerInterface;
+import com.example.gitnb.api.ReposContributorsRequest;
+import com.example.gitnb.api.ReposContributorsRequest.Condition;
 import com.example.gitnb.api.RequestManager;
-import com.example.gitnb.api.UserInfoRequest;
-import com.example.gitnb.api.UserReposRequest;
-import com.example.gitnb.api.UserReposRequest.Condition;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.model.User;
 import com.example.gitnb.model.Repository;
+import com.example.gitnb.module.user.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
 import android.content.Intent;
@@ -29,17 +29,17 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class UserDetailActivity extends AppCompatActivity implements HandlerInterface<ArrayList<Repository>>{
+public class ReposDetailActivity extends AppCompatActivity implements HandlerInterface<ArrayList<User>>{
 
 	private String TAG = "UserDetailActivity";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLayoutManager;
     private RecyclerView recyclerView;
     private WebRequest currentRequest;
-    private UserReposAdapter adapter;
+    private ReposContributorAdapter adapter;
 	private boolean isLoadingMore;
 	private Toolbar toolbar;
-	private User user;
+	private Repository repos;
 	private int page = 1;
 
     @Override
@@ -47,7 +47,7 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
         super.onCreate(savedInstanceState);
         //setStatus();
         Intent intent = getIntent();
-        user = (User) intent.getParcelableExtra(HotUserFragment.USER_KEY);
+        repos = (Repository) intent.getParcelableExtra(HotReposFragment.REPOS_KEY);
         setContentView(R.layout.activity_user_layout);
         /*toolbar = (Toolbar) findViewById(R.id.toolbar);
         TextView title = (TextView) toolbar.findViewById(R.id.title);
@@ -65,18 +65,16 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
         //setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         recyclerView = (RecyclerView) findViewById(R.id.recylerView);  
-        User userInfo = new User();
-        userInfo.setAvatar_url(user.getAvatar_url());
-        adapter = new UserReposAdapter(this, userInfo);
+        adapter = new ReposContributorAdapter(this, repos);
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
-        adapter.SetOnItemClickListener(new UserReposAdapter.OnItemClickListener() {
+        adapter.SetOnItemClickListener(new ReposContributorAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
-				Toast.makeText(UserDetailActivity.this, "item:"+position, Toast.LENGTH_SHORT).show();
+				Toast.makeText(ReposDetailActivity.this, "item:"+position, Toast.LENGTH_SHORT).show();
 			}
 		});
-        adapter.SetOnLoadMoreClickListener(new UserReposAdapter.OnItemClickListener() {
+        adapter.SetOnLoadMoreClickListener(new ReposContributorAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
@@ -85,7 +83,7 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
 	            } else{
 	             	page++;
 	                isLoadingMore = true;
-	             	requestRepository(true);
+	                requestContributors(true);
 	            }
 			}
 		}); 
@@ -103,11 +101,10 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
             @Override
             public void onRefresh() {
             	page = 1;
-            	requestRepository(true);
+            	requestContributors(true);
             }
         });
-        requestUserInfo(true);
-        requestRepository(true);
+        requestContributors(true);
     }
     
     private void setStatus(){
@@ -126,12 +123,12 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
     }
     
 	@Override
-    public void onSuccess(ArrayList<Repository> data){
+    public void onSuccess(ArrayList<User> data){
 		onSuccess(data, 0, 1);
     }
 
 	@Override
-    public void onSuccess(ArrayList<Repository> data, int totalPages, int currentPage){
+    public void onSuccess(ArrayList<User> data, int totalPages, int currentPage){
     	mSwipeRefreshLayout.setRefreshing(false);
     	if(page == 1){
         	adapter.update(data);
@@ -149,41 +146,13 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
         MessageUtils.showErrorMessage(this, error);
     }
 	
-    private void requestUserInfo(boolean refresh){
-    	if(currentRequest != null) currentRequest.cancelRequest();
-    	UserInfoRequest request = new UserInfoRequest(this);
-    	UserInfoRequest.Condition condition = request.new Condition();
-    	condition.SetLogin(user.getLogin());
-    	condition.SetRefresh(refresh);
-    	request.SetHandler(new HandlerInterface<User>(){
-
-			@Override
-			public void onSuccess(User data) {
-				adapter.UpdateUserInfo(data);
-			}
-
-			@Override
-			public void onSuccess(User data, int totalPages, int currentPage) {
-				
-			}
-
-			@Override
-			public void onFailure(String error) {
-		        MessageUtils.showErrorMessage(UserDetailActivity.this, error);
-			}
-    		
-    	});
-    	request.SetSearchCondition(condition);
-    	RequestManager.getInstance(this).addRequest(request);
-    	currentRequest = request;
-    }
-    
-    private void requestRepository(boolean refresh){
+    private void requestContributors(boolean refresh){
     	mSwipeRefreshLayout.setRefreshing(false);
     	if(currentRequest != null) currentRequest.cancelRequest();
-    	UserReposRequest request = new UserReposRequest(this);
+    	ReposContributorsRequest request = new ReposContributorsRequest(this);
     	Condition condition = request.new Condition();
-    	condition.SetLogin(user.getLogin());
+    	condition.SetLogin(repos.getOwner().getLogin());
+    	condition.SetReposName(repos.getName());
     	condition.SetRefresh(refresh);
     	request.SetHandler(this);
     	request.SetSearchCondition(condition);

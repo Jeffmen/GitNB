@@ -3,26 +3,24 @@ package com.example.gitnb.api;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.gitnb.api.RequestManager.WebRequest;
+import com.example.gitnb.model.User;
 import com.example.gitnb.model.PersistenceHelper;
-import com.example.gitnb.model.Repository;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 
-public class UserReposRequest implements WebRequest {
-
-//	https://api.github.com/users/peachananr/repos?visibility=public&sort=updated
-		
-    private static final String BASE_URL = "https://api.github.com/users/";
-    private HandlerInterface<ArrayList<Repository>> handler;
+public class ReposContributorsRequest implements WebRequest {
+    //https://api.github.com/repos/Trinea/android-auto-scroll-view-pager/contributors
+    private static final String BASE_URL = "https://api.github.com/repos/";
+    private HandlerInterface<ArrayList<User>> handler;
     private Condition searchCondition;
-    private StringRequest request;
+    private JsonObjectRequest request;
     private Context mContext;
     
     public class Condition{
@@ -30,33 +28,23 @@ public class UserReposRequest implements WebRequest {
         public void SetLogin(String value){
         	login = value;
         }
-
-        private String visibility = "public";
-        public void SetVisibility(String value){
-        	visibility = value;
+        
+        private String reposName;  
+        public void SetReposName(String value){
+        	reposName = value;
         }
-
-        private String sort = "updated";
-        public void SetSort(String value){
-        	sort = value;
-        }
-
-        private String order = "asc";
-        public void SetOrder(String value){
-        	order = value;
-        }
-
+        
         private boolean refresh = false;
         public void SetRefresh(boolean value){
         	refresh = value;
         }
     }
     
-    public UserReposRequest(Context context){
+    public ReposContributorsRequest(Context context){
        mContext = context;
     }
     
-    public void SetHandler(HandlerInterface<ArrayList<Repository>> value){
+    public void SetHandler(HandlerInterface<ArrayList<User>> value){
     	handler = value;
     }
     
@@ -65,33 +53,19 @@ public class UserReposRequest implements WebRequest {
     }	
     
     private String getUrl(){
-    	String query = searchCondition.login + "/repos?";
-		if(searchCondition.visibility != null && !searchCondition.visibility.isEmpty())
-		{
-			query += "visibility:" + searchCondition.visibility;
-		}
-		if(searchCondition.sort != null && !searchCondition.sort.isEmpty())
-		{
-			query += "&sort=" + searchCondition.sort;
-		}
-		
-		if(searchCondition.order != null && searchCondition.order.isEmpty())
-		{
-			query += "&order=" + searchCondition.order;
-		}
-		Log.i("user_request", "query="+query);
-		return query;
+		return searchCondition.login+"/"+searchCondition.reposName+"/contributors";
     }
     
     
 	@Override
 	public StringRequest getRequest() {
-		if(searchCondition.login == null || searchCondition.login.isEmpty())
+		if(searchCondition.login == null || searchCondition.login.isEmpty()
+				|| searchCondition.reposName == null || searchCondition.reposName.isEmpty())
 		{
 			return null;
 		}
         if (!searchCondition.refresh || !RequestManager.isNetworkAvailable(mContext)) {
-            ArrayList<Repository> topics = PersistenceHelper.loadModelList(mContext, getUrl());            
+            ArrayList<User> topics = PersistenceHelper.loadModelList(mContext, getUrl());            
             //if (topics != null && topics.size() > 0) {
             	DefaulHandlerImp.onSuccess(handler, topics);
             //}
@@ -102,9 +76,9 @@ public class UserReposRequest implements WebRequest {
 	           @Override  
 	           public void onResponse(String response) {  
 	               try {  
-		            	ArrayList<Repository> data = null;
+		            	ArrayList<User> data = null;
 						try {
-							data = (ArrayList<Repository>) JSON.parseArray(response, Repository.class);
+							data = (ArrayList<User>) JSON.parseArray(response, User.class);
 						} catch (Exception e) {
 							DefaulHandlerImp.onFailure(handler, e.getMessage());
 						}
@@ -131,6 +105,6 @@ public class UserReposRequest implements WebRequest {
 	@Override
 	public void cancelRequest() {
 		if(request != null)
-	    request.cancel();
+		request.cancel();
 	}
 }

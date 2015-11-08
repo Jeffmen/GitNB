@@ -27,6 +27,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="65dp"
                     android:singleLine="true" />
+	            <com.facebook.drawee.view.SimpleDraweeView
+	                android:id="@+id/user_avatar"
+	                android:layout_width="30dp"
+	                android:layout_height="30dp"
+	                android:background="@android:color/transparent"
+	                android:gravity="center"
+	                android:singleLine="true"
+	    			fresco:actualImageScaleType="focusCrop"
+	                fresco:placeholderImage="@drawable/ic_panorama_grey600_36dp"
+	                fresco:roundedCornerRadius="10dp"
+				    fresco:roundingBorderWidth="1dp"/>
 
         </LinearLayout>
 
@@ -49,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:singleLine="true"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="14sp" />
 	
                 <TextView

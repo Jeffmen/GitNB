@@ -6,19 +6,19 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class HotUser extends TModel implements Parcelable{
+public class User extends TModel implements Parcelable{
 
 	private static final long serialVersionUID = 1L;
 	
-	public static final Creator<HotUser> CREATOR = new Creator<HotUser>() {
+	public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
-        public HotUser createFromParcel(Parcel in) {
-            return new HotUser(in);
+        public User createFromParcel(Parcel in) {
+            return new User(in);
         }
 
         @Override
-        public HotUser[] newArray(int size) {
-            return new HotUser[size];
+        public User[] newArray(int size) {
+            return new User[size];
         }
     };
     private String login;
@@ -28,9 +28,9 @@ public class HotUser extends TModel implements Parcelable{
     private String url;
     private String html_url;
     private String followers_url;
-    private String followering_url;
+    private String following_url;
     private String gists_url;
-    private String statted_url;
+    private String starred_url;
     private String subscriptions_url;
     private String organizations_url;
     private String repos_url;
@@ -38,11 +38,21 @@ public class HotUser extends TModel implements Parcelable{
     private String received_events_url;
     private String type;
     private Boolean site_admin;
-    private int score;
+    private String name;
+    private String company;
+    private String blog;
+    private String location;
+    private String email;
+    private int public_repos;
+    private int public_gists;
+    private int followers;
+    private int following;
+    private String created_at;
+    private String updated_at;
     
-    public HotUser() {}
+    public User() {}
     
-    protected HotUser(Parcel in) {
+    protected User(Parcel in) {
         login = in.readString();
         id = in.readInt();
         avatar_url = in.readString();
@@ -50,16 +60,27 @@ public class HotUser extends TModel implements Parcelable{
         url = in.readString();
         html_url = in.readString();
         followers_url = in.readString();
-        followering_url = in.readString();
+        following_url = in.readString();
         gists_url = in.readString();
-        statted_url = in.readString();
+        starred_url = in.readString();
         subscriptions_url = in.readString();
         organizations_url = in.readString();
         repos_url = in.readString();
         events_url = in.readString();
         received_events_url = in.readString();
         type = in.readString();
-        score = in.readInt();
+
+        name = in.readString();
+        company = in.readString();
+        blog = in.readString();
+        location = in.readString();
+        email = in.readString();
+        public_repos = in.readInt();
+        public_gists = in.readInt();
+        followers = in.readInt();
+        following = in.readInt();
+        created_at = in.readString();
+        updated_at = in.readString();
     }
 
     public String getLogin() {
@@ -118,12 +139,12 @@ public class HotUser extends TModel implements Parcelable{
         this.followers_url = followers_url;
     }
 
-    public String getFollowering_url() {
-        return followering_url;
+    public String getFollowing_url() {
+        return following_url;
     }
 
-    public void setFollowering_url(String followering_url) {
-        this.followering_url = followering_url;
+    public void setFollowing_url(String followering_url) {
+        this.following_url = followering_url;
     }
 
     public String getGists_url() {
@@ -134,12 +155,12 @@ public class HotUser extends TModel implements Parcelable{
         this.gists_url = gists_url;
     }
 
-    public String getStatted_url() {
-        return statted_url;
+    public String getStarred_url() {
+        return starred_url;
     }
 
-    public void setStatted_url(String statted_url) {
-        this.statted_url = statted_url;
+    public void setStarred_url(String statted_url) {
+        this.starred_url = statted_url;
     }
 
     public String getSubscriptions_url() {
@@ -198,12 +219,90 @@ public class HotUser extends TModel implements Parcelable{
         this.site_admin = site_admin;
     }
 
-    public int getScore() {
-        return score;
+    public String getName(){
+    	return name;
     }
-
-    public void setScore(int score) {
-        this.score = score;
+    
+    public void setName(String name){
+    	this.name = name;
+    }
+    
+    public String getCompany(){
+    	return company;
+    }
+    
+    public void setCompany(String company){
+    	this.company = company;
+    }
+    public String getBlog(){
+    	return blog;
+    }
+    
+    public void setBlog(String blog){
+    	this.blog = blog;
+    }    
+    
+    public String getLocation(){
+    	return location;
+    }
+    
+    public void setLocation(String location){
+    	this.location = location;
+    }    
+    
+    public String getEmail(){
+    	return email;
+    }
+    
+    public void setEmail(String email){
+    	this.email = email;
+    }    
+    
+    public int getPublic_repos(){
+    	return public_repos;
+    }
+    
+    public void setPublic_repos(int public_repos){
+    	this.public_repos = public_repos;
+    }
+    
+    public int getPublic_gists(){
+    	return public_gists;
+    }
+    
+    public void setPublic_gists(int public_gists){
+    	this.public_repos = public_gists;
+    }
+    
+    public int getFollowers(){
+    	return followers;
+    }
+    
+    public void setFollowers(int followers){
+    	this.followers = followers;
+    }
+    public int getFollowing(){
+    	return following;
+    }
+    
+    public void setFollowing(int following){
+    	this.following = following;
+    }
+    
+    public String getCreated_at(){
+    	return created_at;
+    }
+    
+    public void setCreated_at(String created_at){
+    	this.created_at = created_at;
+    }
+    
+    public String getUpdated_at(){
+    	return updated_at;
+    }
+    
+    public void setUpdated_at(String updated_at){
+    	this.updated_at = updated_at;
     }
 
     @Override
@@ -220,21 +319,31 @@ public class HotUser extends TModel implements Parcelable{
         dest.writeString(url);
         dest.writeString(html_url);
         dest.writeString(followers_url);
-        dest.writeString(followering_url);
+        dest.writeString(following_url);
         dest.writeString(gists_url);
-        dest.writeString(statted_url);
+        dest.writeString(starred_url);
         dest.writeString(subscriptions_url);
         dest.writeString(organizations_url);
         dest.writeString(repos_url);
         dest.writeString(events_url);
         dest.writeString(received_events_url);
         dest.writeString(type);
-        dest.writeInt(score);
+
+        dest.writeString(name);
+        dest.writeString(company);
+        dest.writeString(blog);
+        dest.writeString(location);
+        dest.writeString(email);
+        dest.writeInt(public_repos);
+        dest.writeInt(public_gists);
+        dest.writeInt(followers);
+        dest.writeInt(following);
+        dest.writeString(created_at);
+        dest.writeString(updated_at);
     }
 
 	@Override
 	public void parse(JSONObject jsonObject) throws JSONException {
-		// TODO Auto-generated method stub
 		
 	}
 }
