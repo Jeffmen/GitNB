@@ -7,30 +7,37 @@
     
     <FrameLayout
      android:layout_width="match_parent"
-     android:layout_height="wrap_content">
+     android:layout_height="120dp">
 		
 		<LinearLayout 
 		    android:orientation="vertical"  
 		    android:layout_width="match_parent"  
 		    android:layout_height="match_parent"> 
 		    <ImageView
-		        android:id="@+id/search_icon"
+		        android:id="@+id/title_bg"
 		        android:layout_width="match_parent"
 		        android:layout_height="match_parent"
-		        android:layout_marginLeft="8dp"
 	            android:gravity="center" 
 	            android:layout_gravity="center"
-		        android:scaleType="centerInside"
-                android:tint="#4876FF"
-		        android:src="@drawable/ic_launcher">
+		        android:scaleType="fitXY"
+		        android:src="@drawable/title">
 		    </ImageView>
 		</LinearLayout> 
 		    
 		<LinearLayout 
 		    android:orientation="vertical"  
 		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"> 
+		    android:layout_height="match_parent"
+		    android:background="@color/transparent_gray"> 
+		    
+			<LinearLayout 
+			    android:orientation="vertical"  
+			    android:layout_width="match_parent"  
+			    android:layout_height="25dp"> 
+			</LinearLayout> 
+			
 			<include layout="@layout/toolbar" />
+			
 		    <com.astuetz.PagerSlidingTabStrip
 		        android:id="@+id/tabs"
 		        android:layout_width="match_parent"

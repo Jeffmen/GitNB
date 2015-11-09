@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
+    <color name="transparent_gray">#48323232</color>
+    <color name="transparent_dark_gray">#68323232</color>
+    
     <color name="contacts_accent_color">#FFFFFF</color>
     <color name="contacts_theme_color">#FF5534</color>
     <color name="contacts_theme_text_color">#FF8A65</color>
