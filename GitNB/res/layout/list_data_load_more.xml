@@ -24,7 +24,7 @@
                 android:gravity="center"
                 android:singleLine="true"
     			fresco:actualImageScaleType="focusCrop"
-                fresco:placeholderImage="@drawable/ic_panorama_grey600_36dp"
+                fresco:placeholderImage="@drawable/ic_git_gray_240"
                 fresco:roundedCornerRadius="10dp"
 			    fresco:roundingBorderWidth="1dp"/>
 

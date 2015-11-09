@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         title.setText("GitNB");
         setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_github_white_70);
+        toolbar.setNavigationIcon(R.drawable.ic_git_white_50);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {

@@ -16,13 +16,13 @@
 	            android:layout_width="fill_parent"
 	            android:layout_height="0dp"
 	            android:layout_weight="3"
-	            android:gravity="center"
 	            android:orientation="horizontal">
 	
                 <TextView
                     android:id="@+id/repos_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
                     android:singleLine="true"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="14sp" />
@@ -55,6 +55,7 @@
 	                    android:layout_width="0dp"
 	                    android:layout_height="wrap_content"
 	                    android:layout_weight="1"
+                        android:layout_marginLeft="15dp"
 	                    android:singleLine="true"
 	                    android:textColor="#758a99"
 	                    android:textSize="12sp" />
@@ -81,6 +82,7 @@
 	                    android:id="@+id/repos_description"
 	                    android:layout_width="match_parent"
 	                    android:layout_height="match_parent"
+                        android:layout_marginLeft="15dp"
 	                    android:maxLines="2"
 	                    android:textColor="?android:attr/textColorPrimary"
 	                    android:textSize="12sp" />
@@ -92,17 +94,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_gravity="center">
+            android:layout_gravity="center_horizontal">
 
 	            <com.facebook.drawee.view.SimpleDraweeView
 	                android:id="@+id/user_avatar"
-	                android:layout_width="50dp"
-	                android:layout_height="50dp"
-	                android:background="@android:color/transparent"
-	                android:layout_gravity="center"
-	                android:singleLine="true"
+	                android:layout_width="40dp"
+	                android:layout_height="40dp"
+	                android:layout_marginTop="15dp"
 	    			fresco:actualImageScaleType="focusCrop"
-	                fresco:placeholderImage="@drawable/ic_panorama_grey600_36dp"
+	                fresco:placeholderImage="@drawable/ic_git_gray_240"
 	                fresco:roundedCornerRadius="10dp"
 				    fresco:roundingBorderWidth="1dp"/>
 

@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class UserDetailActivity extends AppCompatActivity implements HandlerInterface<ArrayList<Repository>>{
@@ -45,24 +46,26 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setStatus();
+        setStatus();
         Intent intent = getIntent();
         user = (User) intent.getParcelableExtra(HotUserFragment.USER_KEY);
         setContentView(R.layout.activity_user_layout);
-        /*toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         TextView title = (TextView) toolbar.findViewById(R.id.title);
         if(user != null && !user.getLogin().isEmpty()){
             title.setText(user.getLogin());
         }else{
             title.setText("NULL");
-        }        
+        }           
+        setSupportActionBar(toolbar);
+        //setNavigationOnClickListener must be at the back of setSupportActionBar and the function is valid
+        toolbar.setNavigationIcon(R.drawable.ic_back_white_60);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				finish();
 			}
-		});*/
-        //setSupportActionBar(toolbar);
+		});
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         recyclerView = (RecyclerView) findViewById(R.id.recylerView);  
         User userInfo = new User();
@@ -114,14 +117,14 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
         //getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         if(VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
-            //window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-            //        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            //window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            //                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            //                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            //window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-            //window.setNavigationBarColor(Color.TRANSPARENT);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.TRANSPARENT);
         }
     }
     

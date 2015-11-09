@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="45dip"
+    android:layout_height="43dip"
     android:orientation="vertical"
     android:gravity="center"
-    android:layout_marginTop="7dp"
-    android:layout_marginLeft="7dp"
-    android:layout_marginRight="7dp" >
+    android:background="@color/search_gray">
     <FrameLayout
         android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_weight="1.0">	
 		<LinearLayout 
 		    android:layout_width="match_parent"
@@ -26,7 +26,7 @@
 	            android:gravity="center" 
 	            android:layout_gravity="center"
 		        android:scaleType="centerInside"
-                android:tint="#4876FF"
+                android:tint="@color/search_gray"
 		        android:src="@drawable/ic_search_white_24dp">
 		    </ImageView>
 		    <EditText
