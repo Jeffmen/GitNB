@@ -167,7 +167,6 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 				viewHolder.repos_star.setText("Star:"+item.getStargazers_count());
 				viewHolder.repos_fork.setText(item.isFork()?"fork":"owner");
 				viewHolder.repos_language.setText(item.getLanguage());
-				//viewHolder.repos_homepage.setText(item.getHomepage());
 				viewHolder.repos_discription.setText(item.getDescription());
 			}
 			viewHolder.user_avatar.setVisibility(View.GONE);
