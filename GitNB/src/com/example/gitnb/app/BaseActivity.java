@@ -31,6 +31,7 @@ public abstract class BaseActivity  extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setTitle((TextView) toolbar.findViewById(R.id.title));         
         setSupportActionBar(toolbar);
+        
         //setNavigationOnClickListener must be at the back of setSupportActionBar and the function is valid
         toolbar.setNavigationIcon(getNavigationIcon());
         toolbar.setNavigationOnClickListener(getNavigationOnClickListener());
