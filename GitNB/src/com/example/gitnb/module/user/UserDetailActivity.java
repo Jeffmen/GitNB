@@ -11,6 +11,8 @@ import com.example.gitnb.api.UserReposRequest.Condition;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.model.User;
 import com.example.gitnb.model.Repository;
+import com.example.gitnb.module.repos.HotReposFragment;
+import com.example.gitnb.module.repos.ReposDetailActivity;
 import com.example.gitnb.utils.MessageUtils;
 
 import android.content.Intent;
@@ -76,7 +78,11 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
 			
 			@Override
 			public void onItemClick(View view, int position) {
-				Toast.makeText(UserDetailActivity.this, "item:"+position, Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(UserDetailActivity.this, ReposDetailActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable(HotReposFragment.REPOS_KEY, adapter.getItem(position));
+				intent.putExtras(bundle);
+				startActivity(intent);
 			}
 		});
         adapter.SetOnLoadMoreClickListener(new UserReposAdapter.OnItemClickListener() {

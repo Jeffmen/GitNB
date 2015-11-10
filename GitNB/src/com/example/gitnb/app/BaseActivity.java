@@ -1,96 +1,57 @@
 package com.example.gitnb.app;
 
 import com.example.gitnb.R;
-import com.example.gitnb.R.attr;
-import com.example.gitnb.R.dimen;
-import com.example.gitnb.R.id;
-import com.example.gitnb.R.layout;
+import com.example.gitnb.model.User;
+import com.example.gitnb.module.user.HotUserFragment;
 
-import android.content.res.TypedArray;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.TextView;
 
-public abstract class BaseActivity extends AppCompatActivity {
-    public Toolbar mToolBar;
-    private FrameLayout mContentView;
-    private View mUserView;
-    private LayoutInflater mInflater;
-    /*
-    * 两个属性
-    * 1、toolbar是否悬浮在窗口之上
-    * 2、toolbar的高度获取
-    * */
-    private static int[] ATTRS = {
-            R.attr.windowActionBarOverlay,
-            R.attr.actionBarSize
-    };
+public abstract class BaseActivity  extends AppCompatActivity {
+	private Toolbar toolbar;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mInflater = LayoutInflater.from(this);
-    }
-
-    @Override
-    public void setContentView(int layoutResId) {
-        initContentView();
-        initUserView(layoutResId);
-        initToolBar();
-        setContentView(getContentView());
-        setSupportActionBar(getToolBar());
-        onCreateCustomToolBar(getToolBar()) ;
-    }
-
-    private void initContentView() {
-        mContentView = new FrameLayout(this);
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-        		ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        mContentView.setLayoutParams(params);
-
-    }
-
-    private void initUserView(int id) {
-        mUserView = mInflater.inflate(id, null);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        TypedArray typedArray = this.getTheme().obtainStyledAttributes(ATTRS);
-        boolean overly = typedArray.getBoolean(0, false);
-        int toolBarSize = (int) typedArray.getDimension(1,(int) this.getResources().getDimension(R.dimen.abc_action_bar_default_height_material));
-        typedArray.recycle();
-        /*如果是悬浮状态，则不需要设置间距*/
-        params.topMargin = overly ? 0 : toolBarSize;
-        mContentView.addView(mUserView, params);
-
-    }
-
-    private void initToolBar() {
-        View toolbar = mInflater.inflate(R.layout.toolbar, mContentView);
-        mToolBar = (Toolbar) toolbar.findViewById(R.id.toolbar);
-    }
-
-    public FrameLayout getContentView() {
-        return mContentView;
-    }
-
-    public Toolbar getToolBar() {
-        return mToolBar;
+        setStatus();
     }
     
-    public void onCreateCustomToolBar(Toolbar toolbar){
-        toolbar.setContentInsetsRelative(0,0);
-    }
-
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home){
-            finish();
-            return true ;
+    public void setContentView(int layoutResId) {
+        setContentView(layoutResId);        
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setTitle((TextView) toolbar.findViewById(R.id.title));         
+        setSupportActionBar(toolbar);
+        //setNavigationOnClickListener must be at the back of setSupportActionBar and the function is valid
+        toolbar.setNavigationIcon(getNavigationIcon());
+        toolbar.setNavigationOnClickListener(getNavigationOnClickListener());
+    }
+    
+    abstract protected void setTitle(TextView view);
+    abstract protected int getNavigationIcon();
+    abstract protected View.OnClickListener getNavigationOnClickListener();
+    
+    private void setStatus(){
+        //getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        if(VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.TRANSPARENT);
         }
-        return super.onOptionsItemSelected(item);
     }
 }

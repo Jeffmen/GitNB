@@ -11,6 +11,8 @@ import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.model.User;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.module.user.HorizontalDividerItemDecoration;
+import com.example.gitnb.module.user.HotUserFragment;
+import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.utils.MessageUtils;
 
 import android.content.Intent;
@@ -27,6 +29,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ReposDetailActivity extends AppCompatActivity implements HandlerInterface<ArrayList<User>>{
@@ -45,33 +48,37 @@ public class ReposDetailActivity extends AppCompatActivity implements HandlerInt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setStatus();
+        setStatus();
         Intent intent = getIntent();
         repos = (Repository) intent.getParcelableExtra(HotReposFragment.REPOS_KEY);
         setContentView(R.layout.activity_user_layout);
-        /*toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         TextView title = (TextView) toolbar.findViewById(R.id.title);
-        if(user != null && !user.getLogin().isEmpty()){
-            title.setText(user.getLogin());
+        if(repos != null && !repos.getName().isEmpty()){
+            title.setText(repos.getName());
         }else{
             title.setText("NULL");
         }        
+        toolbar.setNavigationIcon(R.drawable.ic_back_white_60);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				finish();
 			}
-		});*/
-        //setSupportActionBar(toolbar);
+		});
+        setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         recyclerView = (RecyclerView) findViewById(R.id.recylerView);  
         adapter = new ReposContributorAdapter(this, repos);
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
         adapter.SetOnItemClickListener(new ReposContributorAdapter.OnItemClickListener() {
-			
 			@Override
 			public void onItemClick(View view, int position) {
-				Toast.makeText(ReposDetailActivity.this, "item:"+position, Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(ReposDetailActivity.this, UserDetailActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable(HotUserFragment.USER_KEY, adapter.getItem(position));
+				intent.putExtras(bundle);
+				startActivity(intent);
 			}
 		});
         adapter.SetOnLoadMoreClickListener(new ReposContributorAdapter.OnItemClickListener() {
@@ -111,14 +118,14 @@ public class ReposDetailActivity extends AppCompatActivity implements HandlerInt
         //getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         if(VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
-            //window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-            //        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            //window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            //                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            //                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            //window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-            //window.setNavigationBarColor(Color.TRANSPARENT);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.TRANSPARENT);
         }
     }
     

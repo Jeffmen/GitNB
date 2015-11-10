@@ -3,8 +3,10 @@ package com.example.gitnb.module.repos;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -15,6 +17,8 @@ import android.widget.TextView;
 import com.example.gitnb.R;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.User;
+import com.example.gitnb.module.user.HotUserFragment;
+import com.example.gitnb.module.user.UserDetailActivity;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -141,8 +145,12 @@ public class ReposContributorAdapter extends RecyclerView.Adapter<ViewHolder>{
 		case TYPE_HEADER_VIEW:
 			ReposDetailViewHolder reposDetailViewHolder = (ReposDetailViewHolder) vh;
 			if(this.reposInfo != null){
-				reposDetailViewHolder.repos_name.setText(reposInfo.getName());
-				reposDetailViewHolder.repos_created.setText(reposInfo.getCreated_at());
+				reposDetailViewHolder.repos_name.setText(reposInfo.getName());				
+				String date = reposInfo.getCreated_at();
+				if(date != null && !date.isEmpty()){
+					date = date.substring(0, date.indexOf('T'));
+				}
+				reposDetailViewHolder.repos_created.setText(date);
 				reposDetailViewHolder.repos_homepage.setText(reposInfo.getHomepage());
 				reposDetailViewHolder.repos_discription.setText(reposInfo.getDescription());
 			}
@@ -188,7 +196,16 @@ public class ReposContributorAdapter extends RecyclerView.Adapter<ViewHolder>{
 			repos_created = (TextView) view.findViewById(R.id.repos_created);
 			repos_homepage = (TextView) view.findViewById(R.id.repos_homepage);
 			repos_discription = (TextView) view.findViewById(R.id.repos_description);
-			user_avatar = (SimpleDraweeView) view.findViewById(R.id.user_avatar);
+			user_avatar = (SimpleDraweeView) view.findViewById(R.id.user_avatar);			
+			user_avatar.setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(mContext, UserDetailActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putParcelable(HotUserFragment.USER_KEY, reposInfo.getOwner());
+					intent.putExtras(bundle);
+					mContext.startActivity(intent);
+				}});
 		}
 	}
 	

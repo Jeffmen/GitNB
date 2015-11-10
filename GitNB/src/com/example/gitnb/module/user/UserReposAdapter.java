@@ -26,13 +26,13 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
     private static final int TYPE_FOOTER_VIEW = 1;
     private static final int TYPE_NOMAL_VIEW = 0;
     private static final int PAGE_COUNT = 30;
-    private OnItemClickListener mItemClickListener;
     private OnItemClickListener mLoadMoreClickListener;
+    private OnItemClickListener mItemClickListener;
     protected final LayoutInflater mInflater;
     private boolean isShowLoadMore = true;
     private boolean isLoadingMore = false;
     private ArrayList<Repository> mRepos;
-    private User userInfo;
+    private User userInfo; 
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -144,9 +144,14 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 				userInfoVeiwHolder.user_name.setText(userInfo.getName());
 				userInfoVeiwHolder.user_company.setText(userInfo.getCompany());
 				userInfoVeiwHolder.user_location.setText(userInfo.getLocation());
-				userInfoVeiwHolder.user_created_date.setText(userInfo.getCreated_at());
+				String date = userInfo.getCreated_at();
+				if(date != null && !date.isEmpty()){
+					date = date.substring(0, date.indexOf('T'));
+				}
+				userInfoVeiwHolder.user_created_date.setText(date);
 				userInfoVeiwHolder.user_blog.setText(userInfo.getBlog());
 				userInfoVeiwHolder.user_avatar.setImageURI(Uri.parse(userInfo.getAvatar_url()));
+				userInfoVeiwHolder.user_email.setText(userInfo.getEmail());
 			}
 			break;
 		case TYPE_FOOTER_VIEW:
@@ -181,6 +186,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 		TextView user_location;
 		TextView user_created_date;
 		TextView user_blog;
+		TextView user_email;
         SimpleDraweeView user_avatar;
 		
 		public UserDetailViewHolder(View view) {
@@ -190,6 +196,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 			user_location = (TextView) view.findViewById(R.id.user_location);
 			user_created_date = (TextView) view.findViewById(R.id.user_created_date);
 			user_blog = (TextView) view.findViewById(R.id.user_blog);
+			user_email = (TextView)view.findViewById(R.id.user_email);
 			user_avatar = (SimpleDraweeView)view.findViewById(R.id.user_avatar);
 		}
 	}

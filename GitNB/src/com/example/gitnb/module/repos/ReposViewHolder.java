@@ -19,8 +19,9 @@ public class ReposViewHolder extends RecyclerView.ViewHolder implements View.OnC
 	SimpleDraweeView user_avatar;
     private OnItemClickListener mItemClickListener;
 	
-	public ReposViewHolder(View view) {
+	public ReposViewHolder(View view, OnItemClickListener listener) {
 		super(view);
+		mItemClickListener = listener;
 		repos_rank = (TextView) view.findViewById(R.id.repos_rank);
 		repos_name = (TextView) view.findViewById(R.id.repos_name);
 		repos_star = (TextView) view.findViewById(R.id.repos_star);

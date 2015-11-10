@@ -5,11 +5,8 @@
     android:id="@+id/item"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="15dp"
-    android:paddingTop="15dp"
-	card_view:cardBackgroundColor="#ffffff" 
+	card_view:cardBackgroundColor="@color/miky_white" 
 	card_view:cardElevation="0dp"
-	card_view:cardUseCompatPadding="true"
 	card_view:cardPreventCornerOverlap="true">
 
     <LinearLayout
@@ -19,7 +16,7 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:layout_weight="2"
             android:gravity="center">
 

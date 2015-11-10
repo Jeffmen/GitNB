@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 		tabs.setIndicatorColor(Color.WHITE);
 		tabs.setSelectedTextColor(Color.WHITE);
 		//tabs.setBackgroundColor(ContextCompat.getColor(this,R.color.contacts_theme_color));
-		tabs.setTextColor(Color.BLACK);
+		tabs.setTextColor(getResources().getColor(R.color.transparent_dark_gray));
 		tabs.setTabBackground(0);
 	}
 	
