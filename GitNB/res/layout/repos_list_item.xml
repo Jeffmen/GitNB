@@ -76,35 +76,32 @@
 	            android:layout_width="fill_parent"
 	            android:layout_height="0dp"
 	            android:layout_weight="3"
-	            android:gravity="center"
 	            android:orientation="horizontal">
 	
 	                <TextView
 	                    android:id="@+id/repos_fork"
-	                    android:layout_width="0dp"
+	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
-	                    android:layout_weight="1"
 	                    android:singleLine="true"
 	                    android:textColor="#758a99"
 	                    android:textSize="12sp" />
 	
 	                <TextView
 	                    android:id="@+id/repos_language"
-	                    android:layout_width="0dp"
+	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
-	                    android:layout_weight="1"
+	                    android:layout_marginLeft="15dp"
 	                    android:singleLine="true"
 	                    android:textColor="?android:attr/textColorPrimary"
 	                    android:textSize="12sp" />
 	
 	                <TextView
 	                    android:id="@+id/repos_homepage"
-	                    android:layout_width="0dp"
+	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
-	                    android:layout_weight="2"
+	                    android:layout_marginLeft="15dp"
 	                    android:singleLine="true"
 	                    android:ellipsize="end" 
-	                    android:visibility="gone"
 	                    android:textColor="?android:attr/textColorPrimary"
 	                    android:textSize="12sp" />
 	        </LinearLayout>

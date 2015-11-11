@@ -8,12 +8,12 @@ import com.example.gitnb.R;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 public class ReposDetailViewHolder extends RecyclerView.ViewHolder{
-	TextView repos_name;
-	TextView repos_owner;
-	TextView repos_created;
-	TextView repos_homepage;
-	TextView repos_discription;
-	SimpleDraweeView user_avatar;
+	public TextView repos_name;
+	public TextView repos_owner;
+	public TextView repos_created;
+	public TextView repos_homepage;
+	public TextView repos_discription;
+	public SimpleDraweeView user_avatar;
 	
 	public ReposDetailViewHolder(View view) {
 		super(view);

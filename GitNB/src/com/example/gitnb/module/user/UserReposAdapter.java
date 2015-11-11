@@ -10,14 +10,15 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.gitnb.R;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.User;
+import com.example.gitnb.module.viewholder.LoadMoreViewHolder;
+import com.example.gitnb.module.viewholder.ReposViewHolder;
+import com.example.gitnb.module.viewholder.UserDetailViewHolder;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 
@@ -123,15 +124,15 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 	public ViewHolder onCreateViewHolder(ViewGroup viewgroup, int viewType) {
 		if(viewType == TYPE_FOOTER_VIEW){
 			View v = mInflater.inflate(R.layout.list_data_load_more,viewgroup,false);
-			return new LoadMoreViewHolder(v);
+			return new LoadMoreView(v);
 		}
 		else if(viewType == TYPE_HEADER_VIEW){
 			View v = mInflater.inflate(R.layout.user_detail_item,viewgroup,false);
-			return new UserDetailViewHolder(v);
+			return new UserDetailView(v);
 		}
 		else{
 			View v = mInflater.inflate(R.layout.repos_list_item,viewgroup,false);
-			return new UserReposViewHolder(v);
+			return new ReposView(v);
 		}
 	}
 	  
@@ -140,7 +141,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 		switch(getItemViewType(position)){
 		case TYPE_HEADER_VIEW:
 			if(userInfo!=null){
-				UserDetailViewHolder userInfoVeiwHolder = (UserDetailViewHolder) vh;
+				UserDetailView userInfoVeiwHolder = (UserDetailView) vh;
 				userInfoVeiwHolder.user_name.setText(userInfo.getName());
 				userInfoVeiwHolder.user_location.setText(userInfo.getLocation());
 				String date = userInfo.getCreated_at();
@@ -158,7 +159,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 			}
 			break;
 		case TYPE_FOOTER_VIEW:
-			LoadMoreViewHolder loadMoreViewHolder = (LoadMoreViewHolder) vh;
+			LoadMoreView loadMoreViewHolder = (LoadMoreView) vh;
 			Uri uri = (new Uri.Builder()).scheme("res").path(String.valueOf(R.drawable.loading)).build();
 			DraweeController  draweeController= Fresco.newDraweeControllerBuilder()
 					.setAutoPlayAnimations(isLoadingMore)
@@ -168,7 +169,7 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 			loadMoreViewHolder.loading_txt.setText("load more...");
 			break;
 		case TYPE_NOMAL_VIEW:
-			UserReposViewHolder viewHolder = (UserReposViewHolder) vh;
+			ReposView viewHolder = (ReposView) vh;
 			Repository item = getItem(position);
 			if(item != null){
 				viewHolder.repos_name.setText(item.getName());
@@ -183,47 +184,17 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 		}
 	}
 	
-	public class UserDetailViewHolder extends RecyclerView.ViewHolder{
-		TextView user_name;
-		TextView user_company;
-		TextView user_location;
-		TextView user_created_date;
-		TextView user_blog;
-		TextView user_email;
-        SimpleDraweeView user_avatar;
-		
-		public UserDetailViewHolder(View view) {
+	private class UserDetailView extends UserDetailViewHolder{
+
+		public UserDetailView(View view) {
 			super(view);
-			user_name = (TextView) view.findViewById(R.id.user_name);
-			user_company = (TextView) view.findViewById(R.id.user_company);
-			user_location = (TextView) view.findViewById(R.id.user_location);
-			user_created_date = (TextView) view.findViewById(R.id.user_created_date);
-			user_blog = (TextView) view.findViewById(R.id.user_blog);
-			user_email = (TextView)view.findViewById(R.id.user_email);
-			user_avatar = (SimpleDraweeView)view.findViewById(R.id.user_avatar);
 		}
 	}
 	
-	public class UserReposViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-		TextView repos_name;
-		TextView repos_star;
-		TextView repos_fork;
-		TextView repos_language;
-		TextView repos_homepage;
-		TextView repos_discription;
-		TextView repos_rank;
-		SimpleDraweeView user_avatar;
+	private class ReposView extends ReposViewHolder implements View.OnClickListener{
 		
-		public UserReposViewHolder(View view) {
+		public ReposView(View view) {
 			super(view);
-			repos_rank = (TextView) view.findViewById(R.id.repos_rank);
-			repos_name = (TextView) view.findViewById(R.id.repos_name);
-			repos_star = (TextView) view.findViewById(R.id.repos_star);
-			repos_fork = (TextView) view.findViewById(R.id.repos_fork);
-			repos_language = (TextView) view.findViewById(R.id.repos_language);
-			repos_homepage = (TextView) view.findViewById(R.id.repos_homepage);
-			repos_discription = (TextView) view.findViewById(R.id.repos_description);
-			user_avatar = (SimpleDraweeView) view.findViewById(R.id.user_avatar);
             view.setOnClickListener(this);
 		}
 	
@@ -235,14 +206,10 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 		}
 	}
 	
-	public class LoadMoreViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-		TextView loading_txt;
-		SimpleDraweeView loading_gif;
+	private class LoadMoreView extends LoadMoreViewHolder implements View.OnClickListener{
 		
-		public LoadMoreViewHolder(View view) {
+		public LoadMoreView(View view) {
 			super(view);
-			loading_gif = (SimpleDraweeView) view.findViewById(R.id.loading_gif);
-			loading_txt = (TextView) view.findViewById(R.id.loading_txt);
             view.setOnClickListener(this);
 		}
 	

@@ -8,12 +8,13 @@ import com.example.gitnb.R;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 public class UserDetailViewHolder extends RecyclerView.ViewHolder{
-	TextView user_name;
-	TextView user_company;
-	TextView user_location;
-	TextView user_created_date;
-	TextView user_blog;
-    SimpleDraweeView user_avatar;
+	public TextView user_name;
+	public TextView user_company;
+	public TextView user_location;
+	public TextView user_created_date;
+	public TextView user_blog;
+	public TextView user_email;
+	public SimpleDraweeView user_avatar;
 	
 	public UserDetailViewHolder(View view) {
 		super(view);
@@ -22,6 +23,7 @@ public class UserDetailViewHolder extends RecyclerView.ViewHolder{
 		user_location = (TextView) view.findViewById(R.id.user_location);
 		user_created_date = (TextView) view.findViewById(R.id.user_created_date);
 		user_blog = (TextView) view.findViewById(R.id.user_blog);
+		user_email = (TextView)view.findViewById(R.id.user_email);
 		user_avatar = (SimpleDraweeView)view.findViewById(R.id.user_avatar);
 	}
 }

@@ -14,15 +14,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.gitnb.R;
 import com.example.gitnb.model.User;
+import com.example.gitnb.module.viewholder.LoadMoreViewHolder;
+import com.example.gitnb.module.viewholder.SearchViewHolder;
+import com.example.gitnb.module.viewholder.UserViewHolder;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 
@@ -131,15 +130,15 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 	public ViewHolder onCreateViewHolder(ViewGroup viewgroup, int viewType) {
 		if(viewType == TYPE_FOOTER_VIEW){
 			View v = mInflater.inflate(R.layout.list_data_load_more,viewgroup,false);
-			return new LoadMoreViewHolder(v);
+			return new LoadMoreView(v);
 		}
 		else if(viewType == TYPE_HEADER_VIEW){
 			View v = mInflater.inflate(R.layout.search,viewgroup,false);
-			return new SearchViewHolder(v);
+			return new SearchView(v);
 		}
 		else{
 			View v = mInflater.inflate(R.layout.user_list_item,viewgroup,false);
-			return new HotUserViewHolder(v);
+			return new UserView(v);
 		}
 	}
 	  
@@ -147,7 +146,7 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 	public void onBindViewHolder(ViewHolder vh, int position) {		
 		switch(getItemViewType(position)){
 		case TYPE_FOOTER_VIEW:
-			LoadMoreViewHolder loadMoreViewHolder = (LoadMoreViewHolder) vh;
+			LoadMoreView loadMoreViewHolder = (LoadMoreView) vh;
 			Uri uri = (new Uri.Builder()).scheme("res").path(String.valueOf(R.drawable.loading)).build();
 			DraweeController  draweeController= Fresco.newDraweeControllerBuilder()
 					.setAutoPlayAnimations(isLoadingMore)
@@ -157,7 +156,7 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 			loadMoreViewHolder.loading_txt.setText("load more...");
 			break;
 		case TYPE_NOMAL_VIEW:
-			HotUserViewHolder viewHolder = (HotUserViewHolder) vh;
+			UserView viewHolder = (UserView) vh;
 			User user = getItem(position);
 			if(user != null){
 			    viewHolder.ivAvatar.setImageURI(Uri.parse(user.getAvatar_url()));
@@ -166,7 +165,7 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 			viewHolder.tvRank.setText(String.valueOf(position)+".");
 			break;
 		case TYPE_HEADER_VIEW:
-			SearchViewHolder searchHolder = (SearchViewHolder) vh;
+			SearchView searchHolder = (SearchView) vh;
 			if(searchText != null && !searchText.isEmpty()){
 				searchHolder.search_text.setText(searchText.toCharArray(), 0, searchText.length());
 				searchHolder.clear_button.setVisibility(View.VISIBLE);
@@ -180,16 +179,11 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 	}
 	
 	
-	public class HotUserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-		TextView tvLogin;
-		TextView tvRank;
-		SimpleDraweeView ivAvatar;
+	private class UserView extends UserViewHolder implements View.OnClickListener{
 
-		public HotUserViewHolder(View view) {
+
+		public UserView(View view) {
 			super(view);
-			ivAvatar = (SimpleDraweeView) view.findViewById(R.id.user_avatar);
-	        tvLogin = (TextView) view.findViewById(R.id.user_login);
-	        tvRank = (TextView) view.findViewById(R.id.user_rank);
             view.setOnClickListener(this);
 		}
 	
@@ -201,14 +195,10 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 		}
 	}
 	
-	public class LoadMoreViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-		TextView loading_txt;
-		SimpleDraweeView loading_gif;
+	private class LoadMoreView extends LoadMoreViewHolder implements View.OnClickListener{
 		
-		public LoadMoreViewHolder(View view) {
+		public LoadMoreView(View view) {
 			super(view);
-			loading_gif = (SimpleDraweeView) view.findViewById(R.id.loading_gif);
-			loading_txt = (TextView) view.findViewById(R.id.loading_txt);
             view.setOnClickListener(this);
 		}
 	
@@ -224,16 +214,10 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 		}
 	}
 	
-	public class SearchViewHolder extends RecyclerView.ViewHolder{
-		EditText search_text;
-		ImageView search_icon;
-		ImageView clear_button;
+	private class SearchView extends SearchViewHolder{
 		
-		public SearchViewHolder(View view) {
+		public SearchView(View view) {
 			super(view);
-			clear_button = (ImageView) view.findViewById(R.id.clear_button);
-			search_icon = (ImageView) view.findViewById(R.id.search_icon);
-			search_text = (EditText) view.findViewById(R.id.search_text);
 			
 			search_icon.setOnClickListener( new View.OnClickListener(){
 	            public void onClick(View v) {

@@ -8,9 +8,9 @@ import com.example.gitnb.R;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 public class UserViewHolder extends RecyclerView.ViewHolder{
-	TextView tvLogin;
-	TextView tvRank;
-	SimpleDraweeView ivAvatar;
+	public TextView tvLogin;
+	public TextView tvRank;
+	public SimpleDraweeView ivAvatar;
 
 	public UserViewHolder(View view) {
 		super(view);

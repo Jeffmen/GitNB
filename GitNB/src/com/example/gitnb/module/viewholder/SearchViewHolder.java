@@ -8,9 +8,9 @@ import android.widget.ImageView;
 import com.example.gitnb.R;
 
 public class SearchViewHolder extends RecyclerView.ViewHolder{
-	EditText search_text;
-	ImageView search_icon;
-	ImageView clear_button;
+	public EditText search_text;
+	public ImageView search_icon;
+	public ImageView clear_button;
 	
 	public SearchViewHolder(View view) {
 		super(view);

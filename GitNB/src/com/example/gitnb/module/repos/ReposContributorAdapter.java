@@ -12,16 +12,17 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.gitnb.R;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.User;
 import com.example.gitnb.module.user.HotUserFragment;
 import com.example.gitnb.module.user.UserDetailActivity;
+import com.example.gitnb.module.viewholder.LoadMoreViewHolder;
+import com.example.gitnb.module.viewholder.ReposDetailViewHolder;
+import com.example.gitnb.module.viewholder.UserViewHolder;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 public class ReposContributorAdapter extends RecyclerView.Adapter<ViewHolder>{
 
@@ -127,15 +128,15 @@ public class ReposContributorAdapter extends RecyclerView.Adapter<ViewHolder>{
 	public ViewHolder onCreateViewHolder(ViewGroup viewgroup, int viewType) {
 		if(viewType == TYPE_FOOTER_VIEW){
 			View v = mInflater.inflate(R.layout.list_data_load_more,viewgroup,false);
-			return new LoadMoreViewHolder(v);
+			return new LoadMoreView(v);
 		}
 		else if(viewType == TYPE_HEADER_VIEW){
 			View v = mInflater.inflate(R.layout.repos_detail_item,viewgroup,false);
-			return new ReposDetailViewHolder(v);
+			return new ReposDetailView(v);
 		}
 		else{
 			View v = mInflater.inflate(R.layout.user_list_item,viewgroup,false);
-			return new ReposContributorViewHolder(v);
+			return new ReposContributorView(v);
 		}
 	}
 	  
@@ -143,7 +144,7 @@ public class ReposContributorAdapter extends RecyclerView.Adapter<ViewHolder>{
 	public void onBindViewHolder(ViewHolder vh, int position) {		
 		switch(getItemViewType(position)){
 		case TYPE_HEADER_VIEW:
-			ReposDetailViewHolder reposDetailViewHolder = (ReposDetailViewHolder) vh;
+			ReposDetailView reposDetailViewHolder = (ReposDetailView) vh;
 			if(this.reposInfo != null){
 				reposDetailViewHolder.repos_name.setText(reposInfo.getName());				
 				String date = reposInfo.getCreated_at();
@@ -160,7 +161,7 @@ public class ReposContributorAdapter extends RecyclerView.Adapter<ViewHolder>{
 			}
 			break;
 		case TYPE_FOOTER_VIEW:
-			LoadMoreViewHolder loadMoreViewHolder = (LoadMoreViewHolder) vh;
+			LoadMoreView loadMoreViewHolder = (LoadMoreView) vh;
 			Uri uri = (new Uri.Builder()).scheme("res").path(String.valueOf(R.drawable.loading)).build();
 			DraweeController  draweeController= Fresco.newDraweeControllerBuilder()
 					.setAutoPlayAnimations(isLoadingMore)
@@ -170,7 +171,7 @@ public class ReposContributorAdapter extends RecyclerView.Adapter<ViewHolder>{
 			loadMoreViewHolder.loading_txt.setText("load more...");
 			break;
 		case TYPE_NOMAL_VIEW:
-			ReposContributorViewHolder viewHolder = (ReposContributorViewHolder) vh;
+			ReposContributorView viewHolder = (ReposContributorView) vh;
 			User user = getItem(position);
 			if(user != null){
 			    viewHolder.ivAvatar.setImageURI(Uri.parse(user.getAvatar_url()));
@@ -181,22 +182,10 @@ public class ReposContributorAdapter extends RecyclerView.Adapter<ViewHolder>{
 		}
 	}
 	
-	public class ReposDetailViewHolder extends RecyclerView.ViewHolder{
-		TextView repos_name;
-		TextView repos_owner;
-		TextView repos_created;
-		TextView repos_homepage;
-		TextView repos_discription;
-		SimpleDraweeView user_avatar;
+	private class ReposDetailView extends ReposDetailViewHolder{
 		
-		public ReposDetailViewHolder(View view) {
-			super(view);
-			repos_name = (TextView) view.findViewById(R.id.repos_name);
-			repos_owner = (TextView) view.findViewById(R.id.repos_owner);
-			repos_created = (TextView) view.findViewById(R.id.repos_created);
-			repos_homepage = (TextView) view.findViewById(R.id.repos_homepage);
-			repos_discription = (TextView) view.findViewById(R.id.repos_description);
-			user_avatar = (SimpleDraweeView) view.findViewById(R.id.user_avatar);			
+		public ReposDetailView(View view) {
+			super(view);		
 			user_avatar.setOnClickListener(new View.OnClickListener(){
 				@Override
 				public void onClick(View v) {
@@ -209,16 +198,10 @@ public class ReposContributorAdapter extends RecyclerView.Adapter<ViewHolder>{
 		}
 	}
 	
-	public class ReposContributorViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-			TextView tvLogin;
-			TextView tvRank;
-			SimpleDraweeView ivAvatar;
+	private class ReposContributorView extends UserViewHolder implements View.OnClickListener{
 
-			public ReposContributorViewHolder(View view) {
+			public ReposContributorView(View view) {
 				super(view);
-				ivAvatar = (SimpleDraweeView) view.findViewById(R.id.user_avatar);
-		        tvLogin = (TextView) view.findViewById(R.id.user_login);
-		        tvRank = (TextView) view.findViewById(R.id.user_rank);
 	            view.setOnClickListener(this);
 			}
 		
@@ -230,14 +213,10 @@ public class ReposContributorAdapter extends RecyclerView.Adapter<ViewHolder>{
 			}
 		}
 	
-	public class LoadMoreViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-		TextView loading_txt;
-		SimpleDraweeView loading_gif;
+	private class LoadMoreView extends LoadMoreViewHolder implements View.OnClickListener{
 		
-		public LoadMoreViewHolder(View view) {
+		public LoadMoreView(View view) {
 			super(view);
-			loading_gif = (SimpleDraweeView) view.findViewById(R.id.loading_gif);
-			loading_txt = (TextView) view.findViewById(R.id.loading_txt);
             view.setOnClickListener(this);
 		}
 	

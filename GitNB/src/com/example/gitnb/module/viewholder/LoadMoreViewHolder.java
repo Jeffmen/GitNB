@@ -8,8 +8,8 @@ import com.example.gitnb.R;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 public class LoadMoreViewHolder extends RecyclerView.ViewHolder{
-	TextView loading_txt;
-	SimpleDraweeView loading_gif;
+	public TextView loading_txt;
+	public SimpleDraweeView loading_gif;
 	
 	public LoadMoreViewHolder(View view) {
 		super(view);
