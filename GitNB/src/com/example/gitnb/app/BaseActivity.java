@@ -34,8 +34,19 @@ public abstract class BaseActivity  extends AppCompatActivity {
     }
     
     abstract protected void setTitle(TextView view);
-    abstract protected int getNavigationIcon();
-    abstract protected View.OnClickListener getNavigationOnClickListener();
+    
+    protected int getNavigationIcon(){
+    	return R.drawable.ic_back_white_60;
+    }
+    
+    protected View.OnClickListener getNavigationOnClickListener(){
+    	return new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				finish();
+			}
+		};
+    }
     
     private void setStatus(){
         //getWindow().requestFeature(Window.FEATURE_NO_TITLE);

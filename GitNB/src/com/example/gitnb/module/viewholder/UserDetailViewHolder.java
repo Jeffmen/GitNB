@@ -1,4 +1,4 @@
-package com.example.gitnb.module.user;
+package com.example.gitnb.module.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

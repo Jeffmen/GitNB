@@ -142,16 +142,19 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 			if(userInfo!=null){
 				UserDetailViewHolder userInfoVeiwHolder = (UserDetailViewHolder) vh;
 				userInfoVeiwHolder.user_name.setText(userInfo.getName());
-				userInfoVeiwHolder.user_company.setText(userInfo.getCompany());
 				userInfoVeiwHolder.user_location.setText(userInfo.getLocation());
 				String date = userInfo.getCreated_at();
 				if(date != null && !date.isEmpty()){
 					date = date.substring(0, date.indexOf('T'));
 				}
-				userInfoVeiwHolder.user_created_date.setText(date);
-				userInfoVeiwHolder.user_blog.setText(userInfo.getBlog());
 				userInfoVeiwHolder.user_avatar.setImageURI(Uri.parse(userInfo.getAvatar_url()));
 				userInfoVeiwHolder.user_email.setText(userInfo.getEmail());
+				userInfoVeiwHolder.user_created_date.setText(date);
+				userInfoVeiwHolder.user_blog.setText(userInfo.getBlog());
+				userInfoVeiwHolder.user_company.setText(userInfo.getCompany());
+				if(userInfo.getCompany() == null || userInfo.getCompany().isEmpty()){
+					userInfoVeiwHolder.user_company.setVisibility(View.VISIBLE);
+				}
 			}
 			break;
 		case TYPE_FOOTER_VIEW:

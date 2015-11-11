@@ -45,19 +45,6 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
         }
     }
     
-    protected int getNavigationIcon(){
-    	return R.drawable.ic_back_white_60;
-    }
-    
-    protected View.OnClickListener getNavigationOnClickListener(){
-    	return new View.OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				finish();
-			}
-		};
-    }
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

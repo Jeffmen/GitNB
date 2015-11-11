@@ -17,7 +17,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends BaseActivity {
@@ -30,20 +29,12 @@ public class MainActivity extends BaseActivity {
     protected void setTitle(TextView view){
     	view.setText("GitNB");
     }
-    
+
+    @Override
     protected int getNavigationIcon(){
     	return R.drawable.ic_git_white_50;
     }
-    
-    protected View.OnClickListener getNavigationOnClickListener(){
-    	return new View.OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				finish();
-			}
-		};
-    }
-	
+ 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

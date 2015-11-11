@@ -17,17 +17,12 @@ import com.example.gitnb.module.repos.ReposDetailActivity;
 import com.example.gitnb.utils.MessageUtils;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 public class UserDetailActivity extends BaseActivity implements HandlerInterface<ArrayList<Repository>>{
@@ -48,19 +43,6 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
         }else{
         	view.setText("NULL");
         }
-    }
-    
-    protected int getNavigationIcon(){
-    	return R.drawable.ic_back_white_60;
-    }
-    
-    protected View.OnClickListener getNavigationOnClickListener(){
-    	return new View.OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				finish();
-			}
-		};
     }
     
     @Override
