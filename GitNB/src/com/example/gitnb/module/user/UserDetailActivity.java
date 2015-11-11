@@ -75,7 +75,6 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
         adapter = new UserReposAdapter(this, userInfo);
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
         adapter.SetOnItemClickListener(new UserReposAdapter.OnItemClickListener() {
-			
 			@Override
 			public void onItemClick(View view, int position) {
 				Intent intent = new Intent(UserDetailActivity.this, ReposDetailActivity.class);
@@ -86,7 +85,6 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
 			}
 		});
         adapter.SetOnLoadMoreClickListener(new UserReposAdapter.OnItemClickListener() {
-			
 			@Override
 			public void onItemClick(View view, int position) {
                 if(isLoadingMore){
