@@ -9,6 +9,7 @@ import com.example.gitnb.api.UserInfoRequest;
 import com.example.gitnb.api.UserReposRequest;
 import com.example.gitnb.api.UserReposRequest.Condition;
 import com.example.gitnb.api.RequestManager.WebRequest;
+import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.User;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.module.repos.HotReposFragment;
@@ -21,18 +22,15 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class UserDetailActivity extends AppCompatActivity implements HandlerInterface<ArrayList<Repository>>{
+public class UserDetailActivity extends BaseActivity implements HandlerInterface<ArrayList<Repository>>{
 
 	private String TAG = "UserDetailActivity";
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -41,34 +39,36 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
     private WebRequest currentRequest;
     private UserReposAdapter adapter;
 	private boolean isLoadingMore;
-	private Toolbar toolbar;
 	private User user;
 	private int page = 1;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setStatus();
-        Intent intent = getIntent();
-        user = (User) intent.getParcelableExtra(HotUserFragment.USER_KEY);
-        setContentView(R.layout.activity_user_layout);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView title = (TextView) toolbar.findViewById(R.id.title);
+	
+    protected void setTitle(TextView view){
         if(user != null && !user.getLogin().isEmpty()){
-            title.setText(user.getLogin());
+        	view.setText(user.getLogin());
         }else{
-            title.setText("NULL");
-        }           
-        setSupportActionBar(toolbar);
-        //setNavigationOnClickListener must be at the back of setSupportActionBar and the function is valid
-        toolbar.setNavigationIcon(R.drawable.ic_back_white_60);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        	view.setText("NULL");
+        }
+    }
+    
+    protected int getNavigationIcon(){
+    	return R.drawable.ic_back_white_60;
+    }
+    
+    protected View.OnClickListener getNavigationOnClickListener(){
+    	return new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				finish();
 			}
-		});
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		};
+    }
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        user = (User) intent.getParcelableExtra(HotUserFragment.USER_KEY);
+        setContentView(R.layout.activity_user_layout);
         recyclerView = (RecyclerView) findViewById(R.id.recylerView);  
         User userInfo = new User();
         userInfo.setAvatar_url(user.getAvatar_url());
@@ -117,21 +117,6 @@ public class UserDetailActivity extends AppCompatActivity implements HandlerInte
         });
         requestUserInfo(true);
         requestRepository(true);
-    }
-    
-    private void setStatus(){
-        //getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        if(VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            //window.setStatusBarColor(Color.TRANSPARENT);
-            window.setNavigationBarColor(Color.TRANSPARENT);
-        }
     }
     
 	@Override

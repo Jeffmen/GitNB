@@ -1,10 +1,7 @@
 package com.example.gitnb.app;
 
 import com.example.gitnb.R;
-import com.example.gitnb.model.User;
-import com.example.gitnb.module.user.HotUserFragment;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Build.VERSION;
@@ -27,11 +24,10 @@ public abstract class BaseActivity  extends AppCompatActivity {
     
     @Override
     public void setContentView(int layoutResId) {
-        setContentView(layoutResId);        
+        super.setContentView(layoutResId);        
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setTitle((TextView) toolbar.findViewById(R.id.title));         
         setSupportActionBar(toolbar);
-        
         //setNavigationOnClickListener must be at the back of setSupportActionBar and the function is valid
         toolbar.setNavigationIcon(getNavigationIcon());
         toolbar.setNavigationOnClickListener(getNavigationOnClickListener());

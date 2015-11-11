@@ -5,55 +5,49 @@ import java.util.List;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.example.gitnb.R;
+import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.module.repos.HotReposFragment;
 import com.example.gitnb.module.user.HotUserFragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
 
+public class MainActivity extends BaseActivity {
 
-public class MainActivity extends AppCompatActivity {
-
-	private PagerSlidingTabStrip tabs;
-    private ViewPager pager;
     private TabPagerAdapter pagerAdapter;
+	private PagerSlidingTabStrip tabs;
 	private DisplayMetrics dm;
-	private Toolbar toolbar;
+    private ViewPager pager;
 	
-	
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setStatus();
-        setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView title = (TextView) toolbar.findViewById(R.id.title);
-        title.setText("GitNB");
-        setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_git_white_50);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+    protected void setTitle(TextView view){
+    	view.setText("GitNB");
+    }
+    
+    protected int getNavigationIcon(){
+    	return R.drawable.ic_git_white_50;
+    }
+    
+    protected View.OnClickListener getNavigationOnClickListener(){
+    	return new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				finish();
 			}
-		});
+		};
+    }
+	
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 		dm = getResources().getDisplayMetrics();
 		pager = (ViewPager) findViewById(R.id.pager);
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
@@ -79,21 +73,6 @@ public class MainActivity extends AppCompatActivity {
 		tabs.setTextColor(getResources().getColor(R.color.transparent_dark_gray));
 		tabs.setTabBackground(0);
 	}
-	
-    private void setStatus(){
-        //getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        if(VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            //window.setStatusBarColor(Color.TRANSPARENT);
-            window.setNavigationBarColor(Color.TRANSPARENT);
-        }
-    }
     
     public class TabPagerAdapter extends FragmentPagerAdapter {
 
