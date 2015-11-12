@@ -18,9 +18,8 @@
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/loading_gif"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@android:color/transparent"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:gravity="center"
                 android:singleLine="true"
     			fresco:actualImageScaleType="focusCrop"

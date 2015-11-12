@@ -147,7 +147,7 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 		switch(getItemViewType(position)){
 		case TYPE_FOOTER_VIEW:
 			LoadMoreView loadMoreViewHolder = (LoadMoreView) vh;
-			Uri uri = (new Uri.Builder()).scheme("res").path(String.valueOf(R.drawable.loading)).build();
+			Uri uri = (new Uri.Builder()).scheme("res").path(String.valueOf(R.drawable.github_loading)).build();
 			DraweeController  draweeController= Fresco.newDraweeControllerBuilder()
 					.setAutoPlayAnimations(isLoadingMore)
 	                .setUri(uri)
