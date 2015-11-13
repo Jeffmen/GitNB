@@ -1,4 +1,4 @@
-package com.example.gitnb.module.user;
+package com.example.gitnb.module.viewholder;
 
 import android.content.Context;
 import android.content.res.Resources;

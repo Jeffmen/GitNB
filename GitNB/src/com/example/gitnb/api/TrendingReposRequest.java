@@ -8,6 +8,7 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.model.PersistenceHelper;
@@ -15,44 +16,35 @@ import com.example.gitnb.model.Repository;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 
-public class UserReposRequest implements WebRequest {
+public class TrendingReposRequest implements WebRequest {
 
-//	https://api.github.com/users/peachananr/repos?visibility=public&sort=updated
+	//http://trending.codehub-app.com/v2/trending?language=c&since=weekly
 		
-    private static final String BASE_URL = "https://api.github.com/users/";
+    private static final String BASE_URL = "http://trending.codehub-app.com/v2/";
     private HandlerInterface<ArrayList<Repository>> handler;
     private Condition searchCondition;
-    private StringRequest request;
+    private JsonObjectRequest request;
     private Context mContext;
     
     public class Condition{
-        private String login;  
-        public void SetLogin(String value){
-        	login = value;
+    	//daily,weekly,monthly
+        private String since = "weekly";  
+        public void SetSince(String value){
+        	since = value;
         }
 
-        private String visibility = "public";
-        public void SetVisibility(String value){
-        	visibility = value;
+        private String language;
+        public void SetLanguage(String value){
+        	language = value;
         }
-
-        private String sort = "updated";
-        public void SetSort(String value){
-        	sort = value;
-        }
-
-        private String order = "asc";
-        public void SetOrder(String value){
-        	order = value;
-        }
-
+        
         private boolean refresh = false;
         public void SetRefresh(boolean value){
         	refresh = value;
         }
     }
     
-    public UserReposRequest(Context context){
+    public TrendingReposRequest(Context context){
        mContext = context;
     }
     
@@ -65,28 +57,23 @@ public class UserReposRequest implements WebRequest {
     }	
     
     private String getUrl(){
-    	String query = searchCondition.login + "/repos?";
-		if(searchCondition.visibility != null && !searchCondition.visibility.isEmpty())
+    	String query = "trending?";
+		if(searchCondition.language != null && !searchCondition.language.isEmpty())
 		{
-			query += "visibility:" + searchCondition.visibility;
+			query += "language=" + searchCondition.language;
 		}
-		if(searchCondition.sort != null && !searchCondition.sort.isEmpty())
+		if(searchCondition.since != null && !searchCondition.since.isEmpty())
 		{
-			query += "&sort=" + searchCondition.sort;
-		}
-		
-		if(searchCondition.order != null && searchCondition.order.isEmpty())
-		{
-			query += "&order=" + searchCondition.order;
+			query += "&since=" + searchCondition.since;
 		}
 		Log.i("user_request", "query="+query);
 		return query;
     }
     
     
-	@Override
+    @Override
 	public StringRequest getRequest() {
-		if(searchCondition.login == null || searchCondition.login.isEmpty())
+		if(searchCondition.since == null || searchCondition.since.isEmpty())
 		{
 			return null;
 		}

@@ -101,7 +101,7 @@ public class ReposSearchRequest implements WebRequest {
 	public JsonObjectRequest getRequest() {
 		
         if (!searchCondition.refresh || !RequestManager.isNetworkAvailable(mContext)) {
-            ArrayList<Repository> topics = PersistenceHelper.loadModelList(mContext, getUrl());            
+            ArrayList<Repository> topics = PersistenceHelper.loadModelList(mContext, getUrl().replace("/", "."));            
             //if (topics != null && topics.size() > 0) {
             	DefaulHandlerImp.onSuccess(handler, topics);
             //}
@@ -118,7 +118,7 @@ public class ReposSearchRequest implements WebRequest {
 							} catch (Exception e) {
 								DefaulHandlerImp.onFailure(handler, e.getMessage());
 							}
-					        PersistenceHelper.saveModelList(mContext, data, getUrl());
+					        PersistenceHelper.saveModelList(mContext, data, getUrl().replace("/", "."));
 			            	DefaulHandlerImp.onSuccess(handler, data);
 			            }  
 			        }, new Response.ErrorListener() {

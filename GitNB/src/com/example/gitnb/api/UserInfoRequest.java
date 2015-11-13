@@ -53,7 +53,7 @@ public class UserInfoRequest implements WebRequest {
 	@Override
 	public JsonObjectRequest getRequest() {
         if (!searchCondition.refresh) {
-            User topics = PersistenceHelper.loadModel(mContext, getUrl());            
+            User topics = PersistenceHelper.loadModel(mContext, getUrl().replace("/", "."));            
             if (topics != null) {
             	DefaulHandlerImp.onSuccess(handler, topics);
                 return null;
@@ -70,7 +70,7 @@ public class UserInfoRequest implements WebRequest {
 							} catch (Exception e) {
 								DefaulHandlerImp.onFailure(handler, e.getMessage());
 							}
-					        PersistenceHelper.saveModel(mContext, data, getUrl());
+					        PersistenceHelper.saveModel(mContext, data, getUrl().replace("/", "."));
 			            	DefaulHandlerImp.onSuccess(handler, data);
 			            }  
 			        }, new Response.ErrorListener() {

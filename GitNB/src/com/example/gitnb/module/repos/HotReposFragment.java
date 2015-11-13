@@ -9,7 +9,7 @@ import com.example.gitnb.api.ReposSearchRequest.Condition;
 import com.example.gitnb.api.RequestManager;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.model.Repository;
-import com.example.gitnb.module.user.HorizontalDividerItemDecoration;
+import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
 import android.content.Intent;

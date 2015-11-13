@@ -7,6 +7,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.example.gitnb.R;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.module.repos.HotReposFragment;
+import com.example.gitnb.module.trending.TrendingReposFragment;
 import com.example.gitnb.module.user.HotUserFragment;
 
 import android.graphics.Color;
@@ -44,12 +45,13 @@ public class MainActivity extends BaseActivity {
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
 		pagerAdapter.addFragment(new HotUserFragment(), "User");
+		pagerAdapter.addFragment(new TrendingReposFragment(), "Trending");
 		pagerAdapter.addFragment(new HotReposFragment(), "Repository");
 		pager.setAdapter(pagerAdapter);
 		tabs.setViewPager(pager);
 		//tabs.setOnPageChangeListener(new PageListener());
 		setTabsValue();
-		pager.setCurrentItem(0);
+		pager.setCurrentItem(1);
     }
     
 	private void setTabsValue() {
@@ -58,6 +60,7 @@ public class MainActivity extends BaseActivity {
 		tabs.setUnderlineHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, dm));
 		tabs.setIndicatorHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, dm));
 		tabs.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16, dm));
+		tabs.setTabPaddingLeftRight(0);
 		tabs.setIndicatorColor(Color.WHITE);
 		tabs.setSelectedTextColor(Color.WHITE);
 		//tabs.setBackgroundColor(ContextCompat.getColor(this,R.color.contacts_theme_color));

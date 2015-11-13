@@ -65,7 +65,7 @@ public class ReposContributorsRequest implements WebRequest {
 			return null;
 		}
         if (!searchCondition.refresh || !RequestManager.isNetworkAvailable(mContext)) {
-            ArrayList<User> topics = PersistenceHelper.loadModelList(mContext, getUrl());            
+            ArrayList<User> topics = PersistenceHelper.loadModelList(mContext, getUrl().replace("/", "."));            
             //if (topics != null && topics.size() > 0) {
             	DefaulHandlerImp.onSuccess(handler, topics);
             //}
@@ -82,7 +82,7 @@ public class ReposContributorsRequest implements WebRequest {
 						} catch (Exception e) {
 							DefaulHandlerImp.onFailure(handler, e.getMessage());
 						}
-				        PersistenceHelper.saveModelList(mContext, data, getUrl());
+				        PersistenceHelper.saveModelList(mContext, data, getUrl().replace("/", "."));
 		            	DefaulHandlerImp.onSuccess(handler, data);
 	               } catch (JSONException e) {  
 	                   e.printStackTrace();  

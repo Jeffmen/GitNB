@@ -11,9 +11,9 @@ import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.User;
 import com.example.gitnb.model.Repository;
-import com.example.gitnb.module.user.HorizontalDividerItemDecoration;
 import com.example.gitnb.module.user.HotUserFragment;
 import com.example.gitnb.module.user.UserDetailActivity;
+import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
 import android.content.Intent;

@@ -120,7 +120,7 @@ public class UserSearchRequest implements WebRequest {
             return null;
         }
 		try {
-			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(BASE_URL + getUrl(), null,  
+			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(BASE_URL + getUrl().replace("/", "."), null,  
 			        new Response.Listener<JSONObject>() {  
 			            @Override  
 			            public void onResponse(JSONObject response) {  
@@ -130,7 +130,7 @@ public class UserSearchRequest implements WebRequest {
 							} catch (Exception e) {
 								DefaulHandlerImp.onFailure(handler, e.getMessage());
 							}
-					        PersistenceHelper.saveModelList(mContext, data, getUrl());
+					        PersistenceHelper.saveModelList(mContext, data, getUrl().replace("/", "."));
 			            	DefaulHandlerImp.onSuccess(handler, data);
 			            }  
 			        }, new Response.ErrorListener() {
