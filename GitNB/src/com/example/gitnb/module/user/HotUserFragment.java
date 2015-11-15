@@ -29,18 +29,19 @@ import android.view.ViewGroup;
 public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<User>>, TextWatcher{
 	private String TAG = "HotUserFragment";
 	public static String USER_KEY = "user_key";
-	private int page = 1;
-    private RecyclerView recyclerView;
-	private boolean isLoadingMore;
-    private HotUserAdapter adapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLayoutManager;
     private WebRequest currentRequest;
+    private RecyclerView recyclerView;
+    private HotUserAdapter adapter;
+	private boolean isLoadingMore;
+	private int page;
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_data_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recylerView);
+        page = 1;
         adapter = new HotUserAdapter(getActivity());
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).build());
         //adapter.SetSearchTextWatcher(this);

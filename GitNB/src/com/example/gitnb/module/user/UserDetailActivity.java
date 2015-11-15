@@ -29,6 +29,7 @@ import android.widget.TextView;
 public class UserDetailActivity extends BaseActivity implements HandlerInterface<ArrayList<Repository>>{
 
 	private String TAG = "UserDetailActivity";
+	public static String AVATAR_URL = "avatar_url";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLayoutManager;
     private RecyclerView recyclerView;
@@ -58,6 +59,7 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
         adapter = new UserReposAdapter(this, userInfo);
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
         adapter.SetOnItemClickListener(new UserReposAdapter.OnItemClickListener() {
+        	
 			@Override
 			public void onItemClick(View view, int position) {
 				Intent intent = new Intent(UserDetailActivity.this, ReposDetailActivity.class);
@@ -66,8 +68,10 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}
+			
 		});
         adapter.SetOnLoadMoreClickListener(new UserReposAdapter.OnItemClickListener() {
+        	
 			@Override
 			public void onItemClick(View view, int position) {
                 if(isLoadingMore){
@@ -78,6 +82,7 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
 	             	requestRepository(true);
 	            }
 			}
+			
 		}); 
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
         mLayoutManager = new LinearLayoutManager(this);
@@ -90,11 +95,13 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        	
             @Override
             public void onRefresh() {
             	page = 1;
             	requestRepository(true);
             }
+            
         });
         requestUserInfo(true);
         requestRepository(true);

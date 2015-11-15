@@ -3,13 +3,16 @@ package com.example.gitnb.module.user;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 
 import com.example.gitnb.R;
 import com.example.gitnb.model.Repository;
@@ -160,13 +163,12 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 			break;
 		case TYPE_FOOTER_VIEW:
 			LoadMoreView loadMoreViewHolder = (LoadMoreView) vh;
-			Uri uri = (new Uri.Builder()).scheme("res").path(String.valueOf(R.drawable.loading)).build();
+			Uri uri = (new Uri.Builder()).scheme("res").path(String.valueOf(R.drawable.github_loading)).build();
 			DraweeController  draweeController= Fresco.newDraweeControllerBuilder()
 					.setAutoPlayAnimations(isLoadingMore)
 	                .setUri(uri)
 	                .build();
 			loadMoreViewHolder.loading_gif.setController(draweeController);
-			loadMoreViewHolder.loading_txt.setText("load more...");
 			break;
 		case TYPE_NOMAL_VIEW:
 			ReposView viewHolder = (ReposView) vh;
@@ -188,6 +190,16 @@ public class UserReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 
 		public UserDetailView(View view) {
 			super(view);
+			user_avatar.setOnClickListener(new OnClickListener(){
+
+				@Override
+				public void onClick(View arg0) {
+					Intent intent = new Intent(mContext, ImageShowerActivity.class);
+					intent.putExtra(UserDetailActivity.AVATAR_URL, userInfo.getAvatar_url());
+					mContext.startActivity(intent);
+				}
+	        	
+	        });
 		}
 	}
 	

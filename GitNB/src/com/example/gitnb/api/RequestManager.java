@@ -9,6 +9,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
 public class RequestManager {	
+	public static String OAUTH_TOKEN = "8e8b316209579af22f74fea7bf2e7369068bd518";
 	private Context mContext;
 	private static RequestManager manager;
 	private RequestQueue mQueue;

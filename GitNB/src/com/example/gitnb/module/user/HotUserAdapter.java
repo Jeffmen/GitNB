@@ -153,7 +153,6 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 	                .setUri(uri)
 	                .build();
 			loadMoreViewHolder.loading_gif.setController(draweeController);
-			loadMoreViewHolder.loading_txt.setText("load more...");
 			break;
 		case TYPE_NOMAL_VIEW:
 			UserView viewHolder = (UserView) vh;

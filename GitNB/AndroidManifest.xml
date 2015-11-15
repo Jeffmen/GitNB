@@ -34,6 +34,11 @@
             android:name="com.example.gitnb.module.repos.ReposDetailActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity 
+            android:name="com.example.gitnb.module.user.ImageShowerActivity"
+            android:screenOrientation="portrait"
+        android:theme="@style/ImageScale">
+        </activity>
     </application>
 
 </manifest>

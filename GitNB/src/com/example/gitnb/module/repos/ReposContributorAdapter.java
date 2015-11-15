@@ -162,13 +162,12 @@ public class ReposContributorAdapter extends RecyclerView.Adapter<ViewHolder>{
 			break;
 		case TYPE_FOOTER_VIEW:
 			LoadMoreView loadMoreViewHolder = (LoadMoreView) vh;
-			Uri uri = (new Uri.Builder()).scheme("res").path(String.valueOf(R.drawable.loading)).build();
+			Uri uri = (new Uri.Builder()).scheme("res").path(String.valueOf(R.drawable.github_loading)).build();
 			DraweeController  draweeController= Fresco.newDraweeControllerBuilder()
 					.setAutoPlayAnimations(isLoadingMore)
 	                .setUri(uri)
 	                .build();
 			loadMoreViewHolder.loading_gif.setController(draweeController);
-			loadMoreViewHolder.loading_txt.setText("load more...");
 			break;
 		case TYPE_NOMAL_VIEW:
 			ReposContributorView viewHolder = (ReposContributorView) vh;

@@ -4,5 +4,6 @@
     <string name="app_name">GitNB</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="loading_more">Loading more...</string>
 
 </resources>
