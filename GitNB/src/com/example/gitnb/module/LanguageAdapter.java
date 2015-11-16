@@ -52,7 +52,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<ViewHolder>{
 		LanguageViewHolder viewHolder = (LanguageViewHolder) vh;
 		LetterTileDrawable titleIcon = new LetterTileDrawable(mContext.getResources(), iconSize);
 		titleIcon.setIsCircular(true);
-		titleIcon.setContactDetails(getItem(position), getItem(position));
+		titleIcon.setContactDetails(getItem(position), position);
 	    viewHolder.language.setImageDrawable(titleIcon);
 	}
 

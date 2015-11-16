@@ -42,7 +42,7 @@ public class LanguageActivity  extends Activity {
 			}
 		});
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(COLUM_NUM, ITEM_SPACE, false));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(COLUM_NUM, ITEM_SPACE, true));
         recyclerView.setLayoutManager(new MyGridLayoutManager(this,COLUM_NUM));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         adapter.updateData(getResources().getTextArray(R.array.all_language_key));
@@ -97,11 +97,13 @@ public class LanguageActivity  extends Activity {
             if (includeEdge) {
                 outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
                 outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
-
-                if (position < spanCount) { // top edge
-                    outRect.top = spacing;
+//                if (position < spanCount) { // top edge
+//                    outRect.top = spacing;
+//                }
+//                outRect.bottom = spacing; // item bottom
+                if (position >= spanCount) {
+                    outRect.top = spacing; // item top
                 }
-                outRect.bottom = spacing; // item bottom
             } else {
                 outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
                 outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)

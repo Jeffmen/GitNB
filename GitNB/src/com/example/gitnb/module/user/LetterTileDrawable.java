@@ -55,10 +55,10 @@ public class LetterTileDrawable extends Drawable {
     private static final char[] sFirstChar = new char[1];
 
     private String mDisplayName;
-    private String mIdentifier;
     private float mScale = 1.0f;
     private float mOffset = 0.0f;
     private boolean mIsCircle = false;
+    private int position = 0;
 
     public LetterTileDrawable(final Resources res, int size) {
     	this(res);
@@ -93,7 +93,7 @@ public class LetterTileDrawable extends Drawable {
 
     private void drawLetterTile(final Canvas canvas) {
         // Draw background color.
-        sPaint.setColor(pickColor(mIdentifier));
+        sPaint.setColor(sColors.getColor(position%sColors.length(), sDefaultColor));
 
         sPaint.setAlpha(mPaint.getAlpha());
         final Rect bounds = getBounds();
@@ -119,7 +119,7 @@ public class LetterTileDrawable extends Drawable {
     }
 
     public int getColor() {
-        return pickColor(mIdentifier);
+        return pickColor(mDisplayName);
     }
 
     /**
@@ -178,9 +178,9 @@ public class LetterTileDrawable extends Drawable {
         mOffset = offset;
     }
 
-    public void setContactDetails(final String displayName, final String identifier) {
+    public void setContactDetails(final String displayName, final int pos) {
         mDisplayName = displayName;
-        mIdentifier = identifier;
+        position = pos;
     }
 
     public void setIsCircular(boolean isCircle) {
