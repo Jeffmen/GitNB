@@ -39,6 +39,11 @@
             android:screenOrientation="portrait"
         android:theme="@style/ImageScale">
         </activity>
+        <activity 
+            android:name="com.example.gitnb.module.LanguageActivity"
+            android:screenOrientation="portrait"
+        android:theme="@style/ImageScale">
+        </activity>
     </application>
 
 </manifest>

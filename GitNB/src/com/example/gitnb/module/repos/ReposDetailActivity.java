@@ -15,6 +15,7 @@ import com.example.gitnb.module.user.HotUserFragment;
 import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
+import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,11 +25,13 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ReposDetailActivity extends BaseActivity implements HandlerInterface<ArrayList<User>>{
 
 	private String TAG = "UserDetailActivity";
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private MaterialAnimatedSwitch swithBt;
     private LinearLayoutManager mLayoutManager;
     private ReposContributorAdapter adapter;
     private RecyclerView recyclerView;
@@ -94,6 +97,17 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
             	requestContributors(true);
             }
         });
+        swithBt = (MaterialAnimatedSwitch) findViewById(R.id.switch_bt);  
+        swithBt.setVisibility(View.VISIBLE);
+        swithBt.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
+        
+              @Override 
+              public void onCheckedChanged(boolean isChecked) {
+                Toast.makeText(ReposDetailActivity.this, swithBt.isChecked() + "",
+                    Toast.LENGTH_SHORT).show();
+              }
+        
+        });
         requestContributors(true);
     }
     
@@ -105,6 +119,7 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
 	@Override
     public void onSuccess(ArrayList<User> data, int totalPages, int currentPage){
     	mSwipeRefreshLayout.setRefreshing(false);
+        swithBt.toggle();
     	if(page == 1){
         	adapter.update(data);
     	}

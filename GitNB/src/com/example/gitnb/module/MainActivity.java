@@ -12,18 +12,25 @@ import com.example.gitnb.module.user.HotUserFragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends BaseActivity {
 
     private TabPagerAdapter pagerAdapter;
 	private PagerSlidingTabStrip tabs;
+	private FloatingActionButton faButton;
+    private CoordinatorLayout layout;
 	private DisplayMetrics dm;
     private ViewPager pager;
 	
@@ -53,6 +60,20 @@ public class MainActivity extends BaseActivity {
 		setTabsValue();
 		pager.setCurrentItem(1);
 		pager.setOffscreenPageLimit(2);
+		layout = (CoordinatorLayout) findViewById(R.id.layout);
+		faButton = (FloatingActionButton) findViewById(R.id.faButton);
+		faButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Snackbar.make(layout, "connection error", Snackbar.LENGTH_LONG).setAction("retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(MainActivity.this, "aleady click snackbar", Toast.LENGTH_SHORT).show();
+                    }
+                }).show();
+			}
+		});
     }
     
 	private void setTabsValue() {

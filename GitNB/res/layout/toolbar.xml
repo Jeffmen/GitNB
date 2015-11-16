@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>  
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"  
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"  
     android:layout_width="match_parent"  
     android:layout_height="55dp"
@@ -8,17 +9,38 @@
 		<LinearLayout 
 		    android:layout_width="match_parent"
 			android:layout_height="match_parent"
+			android:gravity="center_vertical"
 	        android:orientation="horizontal">
 	        <TextView
 		        android:id="@+id/title"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:paddingLeft="5dp"
-				android:layout_gravity="center"
 				android:textColor="@android:color/white"
 				android:textSize="20sp"
 				android:textStyle="bold" />
 		    <!-- <include layout="@layout/search"/> -->
+		    
+			<RelativeLayout 
+			    android:layout_width="0dp"
+			    android:layout_height="wrap_content"
+        		android:layout_weight="1"
+				android:gravity="center_vertical"
+		        android:orientation="horizontal">
+		        <com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch
+			        android:id="@+id/switch_bt"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+					android:layout_alignParentRight="true"
+					android:visibility="gone"
+			        app:base_release_color="@color/md_deep_orange_900"
+			        app:base_press_color="@color/md_deep_orange_50"
+			        app:ball_release_color="@color/md_deep_orange_500"
+			        app:ball_press_color="@color/md_white_1000"
+			        app:icon_release="@drawable/ic_play_arrow_white_36dp"
+			        app:icon_press="@drawable/ic_stop_deep_orange_500_36dp"
+			        />
+		    </RelativeLayout>
 	    </LinearLayout>
 	    
 </android.support.v7.widget.Toolbar>
