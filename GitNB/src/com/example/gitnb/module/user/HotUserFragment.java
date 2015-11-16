@@ -34,6 +34,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     private WebRequest currentRequest;
     private RecyclerView recyclerView;
     private HotUserAdapter adapter;
+    private String language;
 	private boolean isLoadingMore;
 	private int page;
 
@@ -42,6 +43,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
         View view = inflater.inflate(R.layout.list_data_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recylerView);
         page = 1;
+        language = "java";
         adapter = new HotUserAdapter(getActivity());
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).build());
         //adapter.SetSearchTextWatcher(this);
@@ -160,12 +162,16 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     	adapter.reset();
         MessageUtils.showErrorMessage(getActivity(), error);
     }
+	
+	public void selectLanguage(String language){
+		
+	}
     
     private void requestHotUser(boolean refresh, String key){
     	if(currentRequest != null) currentRequest.cancelRequest();
     	UserSearchRequest request = new UserSearchRequest(getActivity());
     	Condition condition = request.new Condition();
-    	condition.SetLanguage("java");
+    	condition.SetLanguage(language);
     	condition.SetLocation("china");
     	condition.SetRefresh(refresh);
     	condition.SetPage(page);

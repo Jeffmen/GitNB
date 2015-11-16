@@ -10,6 +10,7 @@ import com.example.gitnb.module.repos.HotReposFragment;
 import com.example.gitnb.module.trending.TrendingReposFragment;
 import com.example.gitnb.module.user.HotUserFragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -26,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends BaseActivity {
-
+    private static int FOR_LANGUAGE = 200;
     private TabPagerAdapter pagerAdapter;
 	private PagerSlidingTabStrip tabs;
 	private FloatingActionButton faButton;
@@ -66,14 +67,28 @@ public class MainActivity extends BaseActivity {
 			
 			@Override
 			public void onClick(View v) {
-				Snackbar.make(layout, "connection error", Snackbar.LENGTH_LONG).setAction("retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(MainActivity.this, "aleady click snackbar", Toast.LENGTH_SHORT).show();
-                    }
-                }).show();
+				Intent intent = new Intent(MainActivity.this, LanguageActivity.class);
+				startActivityForResult(intent, FOR_LANGUAGE);
 			}
 		});
+    }
+
+    @Override  
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) { 
+
+        if (requestCode == FOR_LANGUAGE && resultCode == RESULT_OK) { 
+        	String language = data.getStringExtra(LanguageActivity.LANGUAGE_KEY);
+        	if(language != null && !language.isEmpty()){
+				Snackbar.make(layout, "connection error", Snackbar.LENGTH_LONG).setAction("retry", new View.OnClickListener() {
+		              
+					@Override
+		              public void onClick(View v) {
+		                  Toast.makeText(MainActivity.this, "aleady click snackbar", Toast.LENGTH_SHORT).show();
+		              }
+					
+		         }).show();
+        	}
+        }
     }
     
 	private void setTabsValue() {

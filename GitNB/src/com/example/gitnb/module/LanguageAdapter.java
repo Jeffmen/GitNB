@@ -26,25 +26,33 @@ public class LanguageAdapter extends RecyclerView.Adapter<ViewHolder>{
     public LanguageAdapter(Context context) {
     	mContext = context;
     	mInflater = LayoutInflater.from(mContext);
-        languageKey = mContext.getResources().getTextArray(R.array.all_language_key);
-		iconSize = Utils.dpToPx(context, 100);
+		iconSize = Utils.dpToPx(context, 60);
 	}
     
     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mItemClickListener = mItemClickListener;
     }
+    
+    public void updateData(CharSequence[] data){
+    	languageKey = data;
+    	this.notifyItemRangeChanged(0, data.length);
+    }
 
 	@Override
 	public int getItemCount() {
-		return languageKey.length;
+		return languageKey == null ? 0 : languageKey.length;
 	}
 
+	public String getItem(int position){
+		return languageKey == null ? null : languageKey[position].toString();
+	}
+	
 	@Override
 	public void onBindViewHolder(ViewHolder vh, int position) {	
 		LanguageViewHolder viewHolder = (LanguageViewHolder) vh;
 		LetterTileDrawable titleIcon = new LetterTileDrawable(mContext.getResources(), iconSize);
 		titleIcon.setIsCircular(true);
-		titleIcon.setContactDetails(languageKey[position].toString(), languageKey[position].toString());
+		titleIcon.setContactDetails(getItem(position), getItem(position));
 	    viewHolder.language.setImageDrawable(titleIcon);
 	}
 
