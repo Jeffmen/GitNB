@@ -9,6 +9,7 @@ import com.example.gitnb.api.TrendingReposRequest.Condition;
 import com.example.gitnb.api.RequestManager;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.model.Repository;
+import com.example.gitnb.module.MainActivity.UpdateLanguageListener;
 import com.example.gitnb.module.repos.ReposDetailActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
@@ -23,7 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class TrendingReposFragment extends Fragment implements HandlerInterface<ArrayList<Repository>>{
+public class TrendingReposFragment extends Fragment implements HandlerInterface<ArrayList<Repository>>, UpdateLanguageListener{
 	private String TAG = "TrendingReposFragment";
 	public static String REPOS_KEY = "repos_key";
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -31,6 +32,7 @@ public class TrendingReposFragment extends Fragment implements HandlerInterface<
     private TrendingReposAdapter adapter;
     private RecyclerView recyclerView;
     private WebRequest currentRequest;
+    private String language;
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,10 +63,10 @@ public class TrendingReposFragment extends Fragment implements HandlerInterface<
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-            	requestTrendingRepos(true, null);
+            	requestTrendingRepos(true);
             }
         });
-        requestTrendingRepos(false, null);
+        requestTrendingRepos(false);
         return view;
     }
 	
@@ -86,16 +88,24 @@ public class TrendingReposFragment extends Fragment implements HandlerInterface<
         MessageUtils.showErrorMessage(getActivity(), error);
     }
     
-    private void requestTrendingRepos(boolean refresh, String key){
+    private void requestTrendingRepos(boolean refresh){
     	if(currentRequest != null) currentRequest.cancelRequest();
     	TrendingReposRequest request = new TrendingReposRequest(getActivity());
     	Condition condition = request.new Condition();
     	condition.SetSince("daily");
-    	//condition.SetLanguage("java");
+    	condition.SetLanguage(language);
     	condition.SetRefresh(refresh);
     	request.SetHandler(this);
     	request.SetSearchCondition(condition);
     	RequestManager.getInstance(getActivity()).addRequest(request);
     	currentRequest = request;
     }
+
+	@Override
+	public Void updateLanguage(String language) {
+		this.language = language;
+    	mSwipeRefreshLayout.setRefreshing(true);
+		requestTrendingRepos(true);
+		return null;
+	}
 }

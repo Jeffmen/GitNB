@@ -9,6 +9,7 @@ import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.api.UserSearchRequest;
 import com.example.gitnb.api.UserSearchRequest.Condition;
 import com.example.gitnb.model.User;
+import com.example.gitnb.module.MainActivity.UpdateLanguageListener;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
@@ -26,7 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<User>>, TextWatcher{
+public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<User>>, UpdateLanguageListener, TextWatcher{
 	private String TAG = "HotUserFragment";
 	public static String USER_KEY = "user_key";
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -34,8 +35,8 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     private WebRequest currentRequest;
     private RecyclerView recyclerView;
     private HotUserAdapter adapter;
-    private String language;
 	private boolean isLoadingMore;
+    private String language;
 	private int page;
 
 	@Override
@@ -181,4 +182,12 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     	RequestManager.getInstance(getActivity()).addRequest(request);
     	currentRequest = request;
     }
+
+	@Override
+	public Void updateLanguage(String language) {
+		this.language = language;
+    	mSwipeRefreshLayout.setRefreshing(true);
+    	requestHotUser(true, null);
+		return null;
+	}
 }

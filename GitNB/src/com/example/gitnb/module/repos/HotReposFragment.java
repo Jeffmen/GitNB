@@ -9,6 +9,7 @@ import com.example.gitnb.api.ReposSearchRequest.Condition;
 import com.example.gitnb.api.RequestManager;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.model.Repository;
+import com.example.gitnb.module.MainActivity.UpdateLanguageListener;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
@@ -25,7 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class HotReposFragment extends Fragment implements HandlerInterface<ArrayList<Repository>>, TextWatcher{
+public class HotReposFragment extends Fragment implements HandlerInterface<ArrayList<Repository>>, UpdateLanguageListener, TextWatcher{
 	private String TAG = "HotReposFragment";
 	public static String REPOS_KEY = "repos_key";
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -34,6 +35,7 @@ public class HotReposFragment extends Fragment implements HandlerInterface<Array
     private RecyclerView recyclerView;
     private HotReposAdapter adapter;
 	private boolean isLoadingMore;
+    private String language;
 	private int page;
 
 	@Override
@@ -41,6 +43,7 @@ public class HotReposFragment extends Fragment implements HandlerInterface<Array
         View view = inflater.inflate(R.layout.list_data_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recylerView);
         page = 1;
+        language = "java";
         adapter = new HotReposAdapter(getActivity());
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).build());
         adapter.SetOnItemClickListener(new HotReposAdapter.OnItemClickListener() {
@@ -144,7 +147,7 @@ public class HotReposFragment extends Fragment implements HandlerInterface<Array
     	if(currentRequest != null) currentRequest.cancelRequest();
     	ReposSearchRequest request = new ReposSearchRequest(getActivity());
     	Condition condition = request.new Condition();
-    	condition.SetLanguage("java");
+    	condition.SetLanguage(language);
     	condition.SetRefresh(refresh);
     	condition.SetPage(page);
         condition.SetKey(key);
@@ -153,4 +156,12 @@ public class HotReposFragment extends Fragment implements HandlerInterface<Array
     	RequestManager.getInstance(getActivity()).addRequest(request);
     	currentRequest = request;
     }
+
+	@Override
+	public Void updateLanguage(String language) { 
+		this.language = language;
+    	mSwipeRefreshLayout.setRefreshing(true);
+		requestHotRepos(true, null);
+		return null;
+	}
 }

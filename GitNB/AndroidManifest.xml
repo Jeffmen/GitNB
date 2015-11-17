@@ -42,7 +42,7 @@
         <activity 
             android:name="com.example.gitnb.module.LanguageActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/ImageScale">
+            android:theme="@style/TransparentActivityStyle">
         </activity>
     </application>
 

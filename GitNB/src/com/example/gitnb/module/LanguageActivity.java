@@ -16,18 +16,21 @@ import android.view.View.MeasureSpec;
 import android.widget.Toast;
 
 import com.example.gitnb.R;
+import com.example.gitnb.utils.Utils;
 
 public class LanguageActivity  extends Activity {
     public static String LANGUAGE_KEY = "language_key";
     private RecyclerView recyclerView;
     private LanguageAdapter adapter;
     private static int COLUM_NUM = 4;
-    private static int ITEM_SPACE = 35;
+    private static int ITEM_SPACE = 20;
+    private int item_space;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_language);
+        item_space = Utils.dpToPx(this, ITEM_SPACE);
         recyclerView = (RecyclerView) findViewById(R.id.recylerView);
         adapter = new LanguageAdapter(this);
         adapter.SetOnItemClickListener(new LanguageAdapter.OnItemClickListener() {
@@ -35,17 +38,16 @@ public class LanguageActivity  extends Activity {
 			@Override
 			public void onItemClick(View view, int position) {
 				Intent intent=new Intent();
-			    intent.putExtra(LANGUAGE_KEY, adapter.getItem(position));
+			    intent.putExtra(LANGUAGE_KEY, adapter.getItemValue(position));
 			    setResult(RESULT_OK, intent);
 			    finish();
 				//Toast.makeText(LanguageActivity.this, "item:"+position, Toast.LENGTH_SHORT).show();
 			}
 		});
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(COLUM_NUM, ITEM_SPACE, true));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(COLUM_NUM, item_space, true));
         recyclerView.setLayoutManager(new MyGridLayoutManager(this,COLUM_NUM));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter.updateData(getResources().getTextArray(R.array.all_language_key));
     }
     
     @Override
@@ -68,8 +70,8 @@ public class LanguageActivity  extends Activity {
             if(view != null){
                 measureChild(view, widthSpec, heightSpec);
                 int measuredWidth = MeasureSpec.getSize(widthSpec);
-                int measuredHeight = view.getMeasuredHeight() + ITEM_SPACE;
-                setMeasuredDimension(measuredWidth, measuredHeight * getSpanCount() - ITEM_SPACE);
+                int measuredHeight = view.getMeasuredHeight() + item_space;
+                setMeasuredDimension(measuredWidth, measuredHeight * getSpanCount() - item_space);
             }
             else{
             	super.onMeasure(recycler, state, widthSpec, heightSpec);

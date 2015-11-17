@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -29,12 +30,16 @@ import android.widget.Toast;
 public class MainActivity extends BaseActivity {
     private static int FOR_LANGUAGE = 200;
     private TabPagerAdapter pagerAdapter;
-	private PagerSlidingTabStrip tabs;
+	private TabLayout tabs;
 	private FloatingActionButton faButton;
     private CoordinatorLayout layout;
 	private DisplayMetrics dm;
     private ViewPager pager;
 	
+    public interface UpdateLanguageListener{
+    	Void updateLanguage(String language);
+    }
+    
     protected void setTitle(TextView view){
     	view.setText("GitNB");
     }
@@ -50,15 +55,17 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 		dm = getResources().getDisplayMetrics();
 		pager = (ViewPager) findViewById(R.id.pager);
-		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+		tabs = (TabLayout) findViewById(R.id.tabs);
 		pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
 		pagerAdapter.addFragment(new HotUserFragment(), "User");
 		pagerAdapter.addFragment(new TrendingReposFragment(), "Trending");
-		pagerAdapter.addFragment(new HotReposFragment(), "Repository");
+		pagerAdapter.addFragment(new HotReposFragment(), "Repos");
 		pager.setAdapter(pagerAdapter);
-		tabs.setViewPager(pager);
+		tabs.setSelectedTabIndicatorColor(Color.WHITE);
+		tabs.setTabTextColors(getResources().getColor(R.color.transparent_dark_gray), Color.WHITE);
+		tabs.setupWithViewPager(pager);
 		//tabs.setOnPageChangeListener(new PageListener());
-		setTabsValue();
+		//setTabsValue();
 		pager.setCurrentItem(1);
 		pager.setOffscreenPageLimit(2);
 		layout = (CoordinatorLayout) findViewById(R.id.layout);
@@ -78,32 +85,32 @@ public class MainActivity extends BaseActivity {
 
         if (requestCode == FOR_LANGUAGE && resultCode == RESULT_OK) { 
         	String language = data.getStringExtra(LanguageActivity.LANGUAGE_KEY);
-        	if(language != null && !language.isEmpty()){
-				Snackbar.make(layout, "connection error", Snackbar.LENGTH_LONG).setAction("retry", new View.OnClickListener() {
-		              
-					@Override
-		              public void onClick(View v) {
-		                  Toast.makeText(MainActivity.this, "aleady click snackbar", Toast.LENGTH_SHORT).show();
-		              }
-					
-		         }).show();
-        	}
+        	UpdateLanguageListener languageListener = (UpdateLanguageListener) pagerAdapter.getItem(pager.getCurrentItem());
+        	languageListener.updateLanguage(language);
+//				Snackbar.make(layout, "connection error", Snackbar.LENGTH_LONG).setAction("retry", new View.OnClickListener() {
+//		              
+//					@Override
+//		              public void onClick(View v) {
+//		                  Toast.makeText(MainActivity.this, "aleady click snackbar", Toast.LENGTH_SHORT).show();
+//		              }
+//					
+//		         }).show();
         }
     }
     
-	private void setTabsValue() {
-		tabs.setShouldExpand(true);
-		//tabs.setDividerColor(ContextCompat.getColor(this,R.color.contacts_theme_color));
-		tabs.setUnderlineHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, dm));
-		tabs.setIndicatorHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, dm));
-		tabs.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, dm));
-		tabs.setTabPaddingLeftRight(0);
-		tabs.setIndicatorColor(Color.WHITE);
-		tabs.setSelectedTextColor(Color.WHITE);
-		//tabs.setBackgroundColor(ContextCompat.getColor(this,R.color.contacts_theme_color));
-		tabs.setTextColor(getResources().getColor(R.color.transparent_dark_gray));
-		tabs.setTabBackground(0);
-	}
+//	private void setTabsValue() {
+//		tabs.setShouldExpand(true);
+//		//tabs.setDividerColor(ContextCompat.getColor(this,R.color.contacts_theme_color));
+//		tabs.setUnderlineHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, dm));
+//		tabs.setIndicatorHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, dm));
+//		tabs.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, dm));
+//		tabs.setTabPaddingLeftRight(0);
+//		tabs.setIndicatorColor(Color.WHITE);
+//		tabs.setSelectedTextColor(Color.WHITE);
+//		//tabs.setBackgroundColor(ContextCompat.getColor(this,R.color.contacts_theme_color));
+//		tabs.setTextColor(getResources().getColor(R.color.transparent_dark_gray));
+//		tabs.setTabBackground(0);
+//	}
     
     public class TabPagerAdapter extends FragmentPagerAdapter {
 

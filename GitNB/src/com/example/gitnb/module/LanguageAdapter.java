@@ -15,7 +15,8 @@ import com.example.gitnb.utils.Utils;
 public class LanguageAdapter extends RecyclerView.Adapter<ViewHolder>{
 	private Context mContext;
 	private int iconSize;
-    private CharSequence[] languageKey;
+    private CharSequence[] languageName;
+    private CharSequence[] languageValue;
     protected final LayoutInflater mInflater;
     private OnItemClickListener mItemClickListener;
     
@@ -26,25 +27,26 @@ public class LanguageAdapter extends RecyclerView.Adapter<ViewHolder>{
     public LanguageAdapter(Context context) {
     	mContext = context;
     	mInflater = LayoutInflater.from(mContext);
-		iconSize = Utils.dpToPx(context, 60);
+		iconSize = Utils.dpToPx(context, 50);
+		languageName = mContext.getResources().getTextArray(R.array.all_language_name);
+		languageValue = mContext.getResources().getTextArray(R.array.all_language_value);
 	}
     
     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mItemClickListener = mItemClickListener;
     }
-    
-    public void updateData(CharSequence[] data){
-    	languageKey = data;
-    	this.notifyItemRangeChanged(0, data.length);
-    }
 
 	@Override
 	public int getItemCount() {
-		return languageKey == null ? 0 : languageKey.length;
+		return languageName == null ? 0 : languageName.length;
 	}
 
-	public String getItem(int position){
-		return languageKey == null ? null : languageKey[position].toString();
+	public String getItemName(int position){
+		return languageName == null ? null : languageName[position].toString();
+	}	
+	
+	public String getItemValue(int position){
+		return languageValue == null ? null : languageValue[position].toString();
 	}
 	
 	@Override
@@ -52,7 +54,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<ViewHolder>{
 		LanguageViewHolder viewHolder = (LanguageViewHolder) vh;
 		LetterTileDrawable titleIcon = new LetterTileDrawable(mContext.getResources(), iconSize);
 		titleIcon.setIsCircular(true);
-		titleIcon.setContactDetails(getItem(position), position);
+		titleIcon.setContactDetails(getItemName(position), position);
 	    viewHolder.language.setImageDrawable(titleIcon);
 	}
 
