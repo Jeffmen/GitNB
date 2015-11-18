@@ -7,7 +7,7 @@ import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.POST;
 
-public interface LoginInterface {
+public interface UserInterface {
     //Async
     @POST("/login/oauth/access_token")
     void requestToken(@Body RequestTokenDTO requestTokenDTO, Callback<Token> callback);

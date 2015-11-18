@@ -10,7 +10,7 @@ import retrofit.http.Query;
 import com.example.gitnb.model.Token;
 import com.example.gitnb.model.User;
 
-public interface UserSearchInterface {
+public interface SearchInterface {
     //Async
     @GET("/search/users")
     List<User> users(@Header("token") String token, @Query("q") String query, Callback<Token> callback);

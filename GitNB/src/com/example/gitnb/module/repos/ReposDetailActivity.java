@@ -31,9 +31,9 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
 
 	private String TAG = "UserDetailActivity";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private MaterialAnimatedSwitch swithBt;
     private LinearLayoutManager mLayoutManager;
     private ReposContributorAdapter adapter;
+    private MaterialAnimatedSwitch swithBt;
     private RecyclerView recyclerView;
     private WebRequest currentRequest;
 	private boolean isLoadingMore;
@@ -101,11 +101,10 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
         swithBt.setVisibility(View.VISIBLE);
         swithBt.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
         
-              @Override 
-              public void onCheckedChanged(boolean isChecked) {
-                Toast.makeText(ReposDetailActivity.this, swithBt.isChecked() + "",
-                    Toast.LENGTH_SHORT).show();
-              }
+           @Override 
+           public void onCheckedChanged(boolean isChecked) {
+              Toast.makeText(ReposDetailActivity.this, swithBt.isChecked() + "", Toast.LENGTH_SHORT).show();
+           }
         
         });
         requestContributors(true);
