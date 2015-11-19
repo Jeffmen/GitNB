@@ -3,7 +3,7 @@ package com.example.gitnb.api.retrofit;
 import com.example.gitnb.model.RequestTokenDTO;
 import com.example.gitnb.model.Token;
 
-import retrofit.Callback;
+import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.POST;
 
@@ -12,10 +12,7 @@ import retrofit.http.POST;
  */
 public interface LoginService {
 
-    //Async
     @POST("login/oauth/access_token")
-    void requestToken(@Body RequestTokenDTO requestTokenDTO, Callback<Token> callback);
+    Call<Token> requestToken(@Body RequestTokenDTO requestTokenDTO);
 
-    //Sync
-    Token requestToken(@Body RequestTokenDTO requestTokenDTO);
 }

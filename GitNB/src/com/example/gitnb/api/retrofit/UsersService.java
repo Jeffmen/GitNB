@@ -5,10 +5,11 @@ import java.util.List;
 import com.example.gitnb.model.Email;
 import com.example.gitnb.model.User;
 
-import retrofit.Callback;
+import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
+import retrofit.http.Headers;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -18,116 +19,59 @@ import retrofit.http.Query;
  */
 public interface UsersService {
 
-	//Async
-	@GET("/users/{user}")
-	void getSingleUser(@Path("user") String user, Callback<User> callback);
+	@GET("users/{user}")
+	Call<User> getSingleUser(@Path("user") String user);
 
-	@GET("/user/emails")
-	void userEmails(Callback<List<Email>> callback);
-
-	// Followers
-	@GET("/user/followers")
-	void followers(Callback<List<User>> callback);
-
-	@GET("/users/{username}/followers")
-	void followers(@Path("username") String username, Callback<List<User>> callback);
-
-	@GET("/user/followers")
-	void followers(@Query("page") int page, Callback<List<User>> callback);
-
-	@GET("/users/{username}/followers")
-	void followers(@Path("username") String username, @Query("page") int page, Callback<List<User>> callback);
-
-	// Following
-	@GET("/user/following")
-	void following(Callback<List<User>> callback);
-
-	@GET("/users/{username}/following")
-	void following(@Path("username") String username, Callback<List<User>> callback);
-
-	@GET("/user/following")
-	void following(@Query("page") int page, Callback<List<User>> callback);
-
-	@GET("/users/{username}/following")
-	void following(@Path("username") String username, @Query("page") int page, Callback<List<User>> callback);
-
-	@GET("/user")
-	void me(Callback<User> userCallback);
-
-	// FOLLOWING USER
-
-	@GET("/user/following/{username}")
-	void checkFollowing(@Path("username") String username, Callback<Object> callback);
-
-	@PUT("/user/following/{username}")
-	void followUser(@Body String empty, @Path("username") String username, Callback<Object> callback);
-
-	@DELETE("/user/following/{username}")
-	void unfollowUser(@Path("username") String username, Callback<Object> callback);
-
-
-	//ORGS MEMBERS
-
-	@GET("/orgs/{org}/members")
-	void orgMembers(@Path("org") String org, Callback<List<User>> callback);
-
-	@GET("/orgs/{org}/members")
-	void orgMembers(@Path("org") String org, @Query("page") int page, Callback<List<User>> callback);
-
-
-	//Sync
-	@GET("/users/{user}")
-	User getSingleUser(@Path("user") String user);
-
-	@GET("/user/emails")
-	List<Email> userEmails();
+	@GET("user/emails")
+	Call<List<Email>> userEmails();
 
 	// Followers
-	@GET("/user/followers")
-	List<User> followers();
+	@GET("user/followers")
+	Call<List<User>> followers();
 
-	@GET("/users/{username}/followers")
-	List<User> followers(@Path("username") String username);
+	@GET("users/{username}/followers")
+	Call<List<User>> followers(@Path("username") String username);
 
-	@GET("/user/followers")
-	List<User> followers(@Query("page") int page);
+	@GET("user/followers")
+	Call<List<User>> followers(@Query("page") int page);
 
-	@GET("/users/{username}/followers")
-	List<User> followers(@Path("username") String username, @Query("page") int page);
+	@GET("users/{username}/followers")
+	Call<List<User>> followers(@Path("username") String username, @Query("page") int page);
 
 	// Following
-	@GET("/user/following")
-	List<User> following();
+	@GET("user/following")
+	Call<List<User>> following();
 
-	@GET("/users/{username}/following")
-	List<User> following(@Path("username") String username);
+	@GET("users/{username}/following")
+	Call<List<User>> following(@Path("username") String username);
 
-	@GET("/user/following")
-	List<User> following(@Query("page") int page);
+	@GET("user/following")
+	Call<List<User>> following(@Query("page") int page);
 
-	@GET("/users/{username}/following")
+	@GET("users/{username}/following")
 	List<User> following(@Path("username") String username, @Query("page") int page);
 
-	@GET("/user")
-	User me();
+	@GET("user")
+	Call<User> me();
 
 	// FOLLOWING USER
 
-	@GET("/user/following/{username}")
-	Object checkFollowing(@Path("username") String username);
+	@GET("user/following/{username}")
+	Call<Object> checkFollowing(@Path("username") String username);
 
-	@PUT("/user/following/{username}")
-	Object followUser(@Body String empty, @Path("username") String username);
+    @Headers("Content-Length: 0")
+	@PUT("user/following/{username}")
+	Call<Object> followUser(@Body String empty, @Path("username") String username);
 
-	@DELETE("/user/following/{username}")
-	Object unfollowUser(@Path("username") String username);
+	@DELETE("user/following/{username}")
+	Call<Object> unfollowUser(@Path("username") String username);
 
 
 	//ORGS MEMBERS
 
-	@GET("/orgs/{org}/members")
-	List<User> orgMembers(@Path("org") String org);
+	@GET("orgs/{org}/members")
+	Call<List<User>> orgMembers(@Path("org") String org);
 
-	@GET("/orgs/{org}/members")
-	List<User> orgMembers(@Path("org") String org, @Query("page") int page);
+	@GET("orgs/{org}/members")
+	Call<List<User>> orgMembers(@Path("org") String org, @Query("page") int page);
 }

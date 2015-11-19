@@ -8,7 +8,10 @@ import com.example.gitnb.api.RequestManager;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.api.UserSearchRequest;
 import com.example.gitnb.api.UserSearchRequest.Condition;
+import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
+import com.example.gitnb.api.retrofit.SearchClient;
 import com.example.gitnb.model.User;
+import com.example.gitnb.model.search.UsersSearch;
 import com.example.gitnb.module.MainActivity.UpdateLanguageListener;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
@@ -169,6 +172,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 	}
     
     private void requestHotUser(boolean refresh, String key){
+    	/*
     	if(currentRequest != null) currentRequest.cancelRequest();
     	UserSearchRequest request = new UserSearchRequest(getActivity());
     	Condition condition = request.new Condition();
@@ -180,7 +184,21 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
     	request.SetHandler(this);
     	request.SetSearchCondition(condition);
     	RequestManager.getInstance(getActivity()).addRequest(request);
-    	currentRequest = request;
+    	currentRequest = request;*/
+    	SearchClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+
+			@Override
+			public void onOK(Object ts) {
+				UsersSearch userSearch = (UsersSearch)ts;
+				onSuccess((ArrayList<User>) userSearch.items);
+			}
+
+			@Override
+			public void onError(String Message) {
+				onFailure(Message);
+			}
+			
+    	}).users("location:world", page);
     }
 
 	@Override

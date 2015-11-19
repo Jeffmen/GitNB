@@ -26,21 +26,21 @@ public class GitHub implements ApiClient {
 
     @Override
     public String getApiOauthUrlEndpoint() {
-        return hostname == null ? "https://github.com": hostname;
+        return "https://github.com/";
     }
 
     @Override
     public String getApiEndpoint() {
-        String hostname = "https://api.github.com";
+        String hostname = "https://api.github.com/";
 
-        if (this.hostname != null) {
-            hostname = this.hostname;
-            if (!hostname.endsWith("/")) {
-                hostname = hostname + "/";
-            }
-
-            hostname = hostname + "api/v3/";
-        }
+//        if (this.hostname != null) {
+//            hostname = this.hostname;
+//            if (!hostname.endsWith("/")) {
+//                hostname = hostname + "/";
+//            }
+//
+//            hostname = hostname + "api/v3/";
+//        }
 
         return hostname;
     }
