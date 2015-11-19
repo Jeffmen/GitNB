@@ -40,8 +40,8 @@ public class ApiRetrofit extends BaseRetrofit{
 	public Response intercept(Chain chain) throws IOException {
         Request request = chain.request().newBuilder()
         		.header("Accept", "application/vnd.github.v3+json")
-		        .addHeader("User-Agent", "GtiNB")
-		        .addHeader("Authorization", "token " + getToken())
+		        //.addHeader("User-Agent", "GtiNB")
+		        //.addHeader("Authorization", "token " + getToken())
                 .build();
         return chain.proceed(request);
 	}

@@ -3,6 +3,7 @@ package com.example.gitnb.api.retrofit;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import com.example.gitnb.api.retrofit.converter.GsonConverterFactory;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Response;

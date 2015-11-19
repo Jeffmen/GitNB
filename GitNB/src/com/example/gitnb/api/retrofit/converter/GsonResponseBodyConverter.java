@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.gitnb.api.retrofit;
+package com.example.gitnb.api.retrofit.converter;
 
 import com.google.gson.TypeAdapter;
 import com.squareup.okhttp.ResponseBody;

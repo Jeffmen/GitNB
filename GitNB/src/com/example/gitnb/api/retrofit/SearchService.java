@@ -16,15 +16,19 @@ public interface SearchService {
     Call<ReposSearch> repos(@Query("q") String query);
 
     @GET("search/repositories")
-    Call<ReposSearch> reposPaginated(@Query("q") String query, @Query("page") int page);
+    Call<ReposSearch> reposPaginated(@Query("q") String query, @Query("page") int page);    
+    
+    @GET("search/repositories")
+    Call<ReposSearch> reposPaginated(@Query("q") String query, @Query("sort") String sort, @Query("order") String order, @Query("page") int page);
+
 
     @GET("search/users")
     Call<UsersSearch> users(@Query("q") String query);
     
     @GET("search/users")
-    Call<UsersSearch> usersPaginated(@Query("q") String query, @Query("sort") String sort, @Query("order") String order, @Query("page") int page);
+    Call<UsersSearch> usersPaginated(@Query("q") String query, @Query("page") int page);
     
     @GET("search/users")
-    Call<UsersSearch> usersPaginated(@Query("q") String query, @Query("page") int page);
-
+    Call<UsersSearch> usersPaginated(@Query("q") String query, @Query("sort") String sort, @Query("order") String order, @Query("page") int page);
+    
 }
