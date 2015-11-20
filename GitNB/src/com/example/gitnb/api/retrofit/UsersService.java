@@ -61,7 +61,7 @@ public interface UsersService {
 
     @Headers("Content-Length: 0")
 	@PUT("user/following/{username}")
-	Call<Object> followUser(@Body String empty, @Path("username") String username);
+	Call<Object> followUser(@Path("username") String username);
 
 	@DELETE("user/following/{username}")
 	Call<Object> unfollowUser(@Path("username") String username);

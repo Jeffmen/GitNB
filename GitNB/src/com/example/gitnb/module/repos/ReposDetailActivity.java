@@ -8,6 +8,9 @@ import com.example.gitnb.api.ReposContributorsRequest;
 import com.example.gitnb.api.ReposContributorsRequest.Condition;
 import com.example.gitnb.api.RequestManager;
 import com.example.gitnb.api.RequestManager.WebRequest;
+import com.example.gitnb.api.retrofit.RepoActionsClient;
+import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
+import com.example.gitnb.api.retrofit.UsersClient;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.User;
 import com.example.gitnb.model.Repository;
@@ -19,6 +22,7 @@ import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +41,7 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
     private RecyclerView recyclerView;
     private WebRequest currentRequest;
 	private boolean isLoadingMore;
+	private boolean isFirst = true;
 	private Repository repos;
 	private int page = 1;
 	
@@ -103,10 +108,18 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
         
            @Override 
            public void onCheckedChanged(boolean isChecked) {
-              Toast.makeText(ReposDetailActivity.this, swithBt.isChecked() + "", Toast.LENGTH_SHORT).show();
+        	   if(!isFirst){
+	        	   if(isChecked){
+	        		   starRepo();
+	        	   }
+	        	   else{
+	        		   unstarRepo();
+	        	   }
+        	   }
            }
         
         });
+        checkIfRepoIsStarred();
         requestContributors(true);
     }
     
@@ -134,6 +147,55 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
     	adapter.reset();
         MessageUtils.showErrorMessage(this, error);
     }
+	
+	private void checkIfRepoIsStarred(){
+		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+
+			@Override
+			public void onOK(Object ts) {
+				swithBt.toggle();
+				isFirst = false;
+			}
+
+			@Override
+			public void onError(String Message) {
+				isFirst = false;
+			}
+			
+    	}).checkIfRepoIsStarred(repos.getOwner().getLogin(), repos.getName());
+	}
+	
+	private void starRepo(){
+		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+
+			@Override
+			public void onOK(Object ts) {
+				Snackbar.make(recyclerView, "Already Stared", Snackbar.LENGTH_LONG).show();
+			}
+
+			@Override
+			public void onError(String Message) {
+				MessageUtils.showErrorMessage(ReposDetailActivity.this, Message);
+			}
+			
+    	}).starRepo(repos.getOwner().getLogin(), repos.getName());
+	}	
+	
+	private void unstarRepo(){
+		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+
+			@Override
+			public void onOK(Object ts) {
+				Snackbar.make(recyclerView, "Already unStared", Snackbar.LENGTH_LONG).show();
+			}
+
+			@Override
+			public void onError(String Message) {
+				MessageUtils.showErrorMessage(ReposDetailActivity.this, Message);
+			}
+			
+    	}).unstarRepo(repos.getOwner().getLogin(), repos.getName());
+	}
 	
     private void requestContributors(boolean refresh){
     	mSwipeRefreshLayout.setRefreshing(false);

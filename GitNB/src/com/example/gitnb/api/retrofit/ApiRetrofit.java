@@ -7,7 +7,7 @@ import com.squareup.okhttp.Response;
 import android.content.Context;
 
 public class ApiRetrofit extends BaseRetrofit{
-
+//https://api.github.com/user?access_token=51ee597f1442fdc47df77121d05b343cc249a74e
     public static String API_URL = "https://api.github.com/";
     private static ApiRetrofit me;
     
@@ -28,7 +28,7 @@ public class ApiRetrofit extends BaseRetrofit{
 	}
 	
     protected static String getToken() {
-		return "a942ce625571b358b776ac5ce9f0f9522746993a";
+		return "51ee597f1442fdc47df77121d05b343cc249a74e";
     }
 
 	@Override
@@ -40,8 +40,8 @@ public class ApiRetrofit extends BaseRetrofit{
 	public Response intercept(Chain chain) throws IOException {
         Request request = chain.request().newBuilder()
         		.header("Accept", "application/vnd.github.v3+json")
-		        //.addHeader("User-Agent", "GtiNB")
-		        //.addHeader("Authorization", "token " + getToken())
+		        .addHeader("User-Agent", "GtiNB")
+		        .addHeader("Authorization", "token " + getToken())
                 .build();
         return chain.proceed(request);
 	}

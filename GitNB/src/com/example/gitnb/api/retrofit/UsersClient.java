@@ -1,11 +1,31 @@
 package com.example.gitnb.api.retrofit;
 
-import android.content.Context;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Retrofit;
 
 public class UsersClient extends RetrofitNetworkAbs{
 
-	public UsersClient() {
-		super();
+	private UsersService usersService;
+	
+	private UsersClient(){
+		usersService = ApiRetrofit.getInstance().getRetrofit().create(UsersService.class);
+	}
+	
+    public static UsersClient getNewInstance() {
+        return new UsersClient();
+    }
+	
+	public void followUser(String username){
+		execute(usersService.followUser(username));
+	}
+	
+	public void checkFollowing(String username){
+		execute(usersService.checkFollowing(username));
+	}
+	
+	public void unfollowUser(String username){
+		execute(usersService.checkFollowing(username));
 	}
 	
 	@Override

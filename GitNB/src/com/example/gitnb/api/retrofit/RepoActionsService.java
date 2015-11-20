@@ -23,7 +23,7 @@ public interface RepoActionsService {
 
     @Headers("Content-Length: 0")
     @PUT("user/starred/{owner}/{name}")
-    Call<Response> starRepo(@Path("owner") String owner, @Path("name") String repo, @Body String empty);
+    Call<Response> starRepo(@Path("owner") String owner, @Path("name") String repo);
 
     @DELETE("/user/starred/{owner}/{name}")
     Call<Response> unstarRepo(@Path("owner") String owner, @Path("name") String repo);
@@ -33,16 +33,16 @@ public interface RepoActionsService {
 
     @Headers("Content-Length: 0")
     @PUT("user/subscriptions/{owner}/{name}")
-    Call<Response> watchRepo(@Path("owner") String owner, @Path("name") String repo, @Body String empty);
+    Call<Response> watchRepo(@Path("owner") String owner, @Path("name") String repo);
 
     @DELETE("user/subscriptions/{owner}/{name}")
     Call<Response> unwatchRepo(@Path("owner") String owner, @Path("name") String repo);
 
     @Headers("Content-Length: 0")
     @POST("repos/{owner}/{name}/forks")
-    Call<Repository> forkRepo(@Path("owner") String owner, @Path("name") String repo, @Body Object empty);
+    Call<Repository> forkRepo(@Path("owner") String owner, @Path("name") String repo);
 
     @Headers("Content-Length: 0")
     @POST("repos/{owner}/{name}/forks")
-    Call<Repository> forkRepo(@Path("owner") String owner, @Path("name") String repo, @Query("organization") String org, @Body Object empty);
+    Call<Repository> forkRepo(@Path("owner") String owner, @Path("name") String repo, @Query("organization") String org);
 }

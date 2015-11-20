@@ -1,5 +1,9 @@
 package com.example.gitnb.api.retrofit;
 
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Retrofit;
+
 
 public abstract class RetrofitNetworkAbs {
     protected final String TAG = this.getClass().getSimpleName();
@@ -12,8 +16,25 @@ public abstract class RetrofitNetworkAbs {
     }
 
     public abstract <T extends RetrofitNetworkAbs> T setNetworkListener(NetworkListener networkListener);
+	
+    @SuppressWarnings("unchecked")
+	protected void execute(Call call){
+		call.enqueue(new Callback() {
 
-    protected boolean myOnResponse(retrofit.Response<? extends Object> response) {
+            @Override
+            public void onFailure(Throwable t) {
+                myOnFailure(t);
+            }
+
+			@Override
+			public void onResponse(retrofit.Response response, Retrofit retrofit) {
+                myOnResponse(response);
+			}
+        });
+	}
+	
+    @SuppressWarnings("unchecked")
+	protected boolean myOnResponse(retrofit.Response<? extends Object> response) {
         if (response.isSuccess()) {
             if (networkListener != null) {
                 networkListener.onOK(response.body());

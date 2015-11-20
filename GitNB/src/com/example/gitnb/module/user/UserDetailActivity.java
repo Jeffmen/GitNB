@@ -8,23 +8,30 @@ import com.example.gitnb.api.RequestManager;
 import com.example.gitnb.api.UserInfoRequest;
 import com.example.gitnb.api.UserReposRequest;
 import com.example.gitnb.api.UserReposRequest.Condition;
+import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
+import com.example.gitnb.api.retrofit.SearchClient;
+import com.example.gitnb.api.retrofit.UsersClient;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.User;
 import com.example.gitnb.model.Repository;
+import com.example.gitnb.model.search.UsersSearch;
 import com.example.gitnb.module.repos.HotReposFragment;
 import com.example.gitnb.module.repos.ReposDetailActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
+import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class UserDetailActivity extends BaseActivity implements HandlerInterface<ArrayList<Repository>>{
 
@@ -32,10 +39,12 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
 	public static String AVATAR_URL = "avatar_url";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLayoutManager;
+    private MaterialAnimatedSwitch swithBt;
     private RecyclerView recyclerView;
     private WebRequest currentRequest;
     private UserReposAdapter adapter;
 	private boolean isLoadingMore;
+	private boolean isFirst = true;
 	private User user;
 	private int page = 1;
 	
@@ -102,7 +111,25 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
             	requestRepository(true);
             }
             
+        });        
+        swithBt = (MaterialAnimatedSwitch) findViewById(R.id.switch_bt);  
+        swithBt.setVisibility(View.VISIBLE);
+        swithBt.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
+        
+           @Override 
+           public void onCheckedChanged(boolean isChecked) {
+        	   if(!isFirst){
+	        	   if(isChecked){
+	        		   followUser();
+	        	   }
+	        	   else{
+	        		   unfollowUser();
+	        	   }
+        	   }
+           }
+        
         });
+        checkFollowing();
         requestUserInfo(true);
         requestRepository(true);
     }
@@ -130,6 +157,55 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
     	adapter.reset();
         MessageUtils.showErrorMessage(this, error);
     }
+	
+	private void checkFollowing(){
+    	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+
+			@Override
+			public void onOK(Object ts) {
+				swithBt.toggle();
+				isFirst = false;
+			}
+
+			@Override
+			public void onError(String Message) {
+				isFirst = false;
+			}
+			
+    	}).checkFollowing(user.getLogin());
+	}
+	
+	private void followUser(){
+    	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+
+			@Override
+			public void onOK(Object ts) {
+				Snackbar.make(recyclerView, "Already Followed", Snackbar.LENGTH_LONG).show();
+			}
+
+			@Override
+			public void onError(String Message) {
+				MessageUtils.showErrorMessage(UserDetailActivity.this, Message);
+			}
+			
+    	}).followUser(user.getLogin());
+	}	
+	
+	private void unfollowUser(){
+    	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+
+			@Override
+			public void onOK(Object ts) {
+				Snackbar.make(recyclerView, "Already unFollowed", Snackbar.LENGTH_LONG).show();
+			}
+
+			@Override
+			public void onError(String Message) {
+				MessageUtils.showErrorMessage(UserDetailActivity.this, Message);
+			}
+			
+    	}).unfollowUser(user.getLogin());
+	}
 	
     private void requestUserInfo(boolean refresh){
     	if(currentRequest != null) currentRequest.cancelRequest();

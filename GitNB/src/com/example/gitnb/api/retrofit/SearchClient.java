@@ -34,21 +34,6 @@ public class SearchClient extends RetrofitNetworkAbs{
 		execute(searchService.reposPaginated(query, sort, order, page));
 	}
 	
-	private void execute(Call call){
-		call.enqueue(new Callback() {
-
-            @Override
-            public void onFailure(Throwable t) {
-                myOnFailure(t);
-            }
-
-			@Override
-			public void onResponse(retrofit.Response response, Retrofit retrofit) {
-                myOnResponse(response);
-			}
-        });
-	}
-	
 	@Override
 	public SearchClient setNetworkListener(NetworkListener networkListener) {
         return setNetworkListener(networkListener, this);
