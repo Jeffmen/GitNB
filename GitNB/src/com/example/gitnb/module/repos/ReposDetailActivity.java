@@ -131,7 +131,6 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
 	@Override
     public void onSuccess(ArrayList<User> data, int totalPages, int currentPage){
     	mSwipeRefreshLayout.setRefreshing(false);
-        swithBt.toggle();
     	if(page == 1){
         	adapter.update(data);
     	}

@@ -19,24 +19,24 @@ import retrofit.http.Query;
 public interface RepoActionsService {
 
     @GET("user/starred/{owner}/{name}")
-    Call<Response> checkIfRepoIsStarred(@Path("owner") String owner, @Path("name") String repo);
+    Call<Object> checkIfRepoIsStarred(@Path("owner") String owner, @Path("name") String repo);
 
     @Headers("Content-Length: 0")
     @PUT("user/starred/{owner}/{name}")
-    Call<Response> starRepo(@Path("owner") String owner, @Path("name") String repo);
+    Call<Object> starRepo(@Path("owner") String owner, @Path("name") String repo);
 
     @DELETE("/user/starred/{owner}/{name}")
-    Call<Response> unstarRepo(@Path("owner") String owner, @Path("name") String repo);
+    Call<Object> unstarRepo(@Path("owner") String owner, @Path("name") String repo);
 
     @GET("user/subscriptions/{owner}/{name}")
-    Call<Response> checkIfRepoIsWatched(@Path("owner") String owner, @Path("name") String repo);
+    Call<Object> checkIfRepoIsWatched(@Path("owner") String owner, @Path("name") String repo);
 
     @Headers("Content-Length: 0")
     @PUT("user/subscriptions/{owner}/{name}")
-    Call<Response> watchRepo(@Path("owner") String owner, @Path("name") String repo);
+    Call<Object> watchRepo(@Path("owner") String owner, @Path("name") String repo);
 
     @DELETE("user/subscriptions/{owner}/{name}")
-    Call<Response> unwatchRepo(@Path("owner") String owner, @Path("name") String repo);
+    Call<Object> unwatchRepo(@Path("owner") String owner, @Path("name") String repo);
 
     @Headers("Content-Length: 0")
     @POST("repos/{owner}/{name}/forks")
