@@ -19,6 +19,7 @@
 	  <color name="md_white_1000">#ffffff</color>    
     <color name="letter_tile_default_color">#cccccc</color>
     <color name="letter_tile_font_color">#ffffff</color>
+    <color name="account_line">#A6A6A6</color>
 	  <array name="letter_tile_colors">
         <item>#DB4437</item>
         <item>#E91E63</item>

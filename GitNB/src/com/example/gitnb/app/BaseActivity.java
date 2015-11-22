@@ -36,7 +36,7 @@ public abstract class BaseActivity  extends AppCompatActivity {
     abstract protected void setTitle(TextView view);
     
     protected int getNavigationIcon(){
-    	return R.drawable.ic_back_white_60;
+    	return R.drawable.ic_arrow_back_white_48dp;
     }
     
     protected View.OnClickListener getNavigationOnClickListener(){

@@ -1,47 +1,39 @@
 package com.example.gitnb.module.repos;
 
-import java.util.ArrayList;
-
 import com.example.gitnb.R;
-import com.example.gitnb.api.HandlerInterface;
-import com.example.gitnb.api.ReposContributorsRequest;
-import com.example.gitnb.api.ReposContributorsRequest.Condition;
-import com.example.gitnb.api.RequestManager;
-import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.api.retrofit.RepoActionsClient;
+import com.example.gitnb.api.retrofit.RepoClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.app.BaseActivity;
-import com.example.gitnb.model.User;
+import com.example.gitnb.model.Content;
 import com.example.gitnb.model.Repository;
-import com.example.gitnb.module.user.HotUserFragment;
-import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-public class ReposDetailActivity extends BaseActivity implements HandlerInterface<ArrayList<User>>{
+public class RepositoryDetailActivity extends BaseActivity{
 
 	private String TAG = "UserDetailActivity";
+	public static String CONTENT = "content";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLayoutManager;
-    private ReposContributorAdapter adapter;
+    private ReposContentsAdapter adapter;
     private MaterialAnimatedSwitch swithBt;
     private RecyclerView recyclerView;
-    private WebRequest currentRequest;
-	private boolean isLoadingMore;
 	private boolean isFirst = true;
 	private Repository repos;
-	private int page = 1;
+    private String path;
 	
     protected void setTitle(TextView view){
         if(repos != null && !repos.getName().isEmpty()){
@@ -56,33 +48,24 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         repos = (Repository) intent.getParcelableExtra(HotReposFragment.REPOS_KEY);
-        setContentView(R.layout.activity_user_detail);
+        setContentView(R.layout.activity_repo_detail);
+        this.setRepository();
         recyclerView = (RecyclerView) findViewById(R.id.recylerView);  
-        adapter = new ReposContributorAdapter(this, repos);
+        adapter = new ReposContentsAdapter(this);
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
-        adapter.SetOnItemClickListener(new ReposContributorAdapter.OnItemClickListener() {
+        adapter.SetOnItemClickListener(new ReposContentsAdapter.OnItemClickListener() {
 			@Override
 			public void onItemClick(View view, int position) {
-				Intent intent = new Intent(ReposDetailActivity.this, UserDetailActivity.class);
-				Bundle bundle = new Bundle();
-				bundle.putParcelable(HotUserFragment.USER_KEY, adapter.getItem(position));
-				intent.putExtras(bundle);
-				startActivity(intent);
+				Content content = adapter.getItem(position);
+				if(content.isDir()){
+					path += content.name + "/";
+					requestContents();
+				}
+				if(content.isFile()){
+					showContent(content);
+				}
 			}
 		});
-        adapter.SetOnLoadMoreClickListener(new ReposContributorAdapter.OnItemClickListener() {
-			
-			@Override
-			public void onItemClick(View view, int position) {
-                if(isLoadingMore){
-	                Log.d(TAG,"ignore manually update!");
-	            } else{
-	             	page++;
-	                isLoadingMore = true;
-	                requestContributors(true);
-	            }
-			}
-		}); 
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -96,8 +79,7 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-            	page = 1;
-            	requestContributors(true);
+            	requestContents();
             }
         });
         swithBt = (MaterialAnimatedSwitch) findViewById(R.id.switch_bt);  
@@ -118,33 +100,40 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
         
         });
         checkIfRepoIsStarred();
-        requestContributors(true);
+        requestContents();
     }
     
-	@Override
-    public void onSuccess(ArrayList<User> data){
-		onSuccess(data, 0, 1);
-    }
-
-	@Override
-    public void onSuccess(ArrayList<User> data, int totalPages, int currentPage){
-    	mSwipeRefreshLayout.setRefreshing(false);
-    	if(page == 1){
-        	adapter.update(data);
-    	}
-    	else{
-            isLoadingMore = false;
-        	adapter.insertAtBack(data);
-    	}
-    }
-
-	@Override
-    public void onFailure(String error){
-    	mSwipeRefreshLayout.setRefreshing(false);
-    	adapter.reset();
-        MessageUtils.showErrorMessage(this, error);
+    private void setRepository(){
+    	TextView repos_name = (TextView) findViewById(R.id.repos_name);
+    	TextView repos_owner = (TextView) findViewById(R.id.repos_owner);
+    	TextView repos_created = (TextView) findViewById(R.id.repos_created);
+    	TextView repos_homepage = (TextView) findViewById(R.id.repos_homepage);
+    	TextView repos_discription = (TextView) findViewById(R.id.repos_description);
+    	SimpleDraweeView user_avatar = (SimpleDraweeView) findViewById(R.id.user_avatar);
+		if(this.repos != null){
+			repos_name.setText(repos.getName());				
+			String date = repos.getCreated_at();
+			if(date != null && !date.isEmpty()){
+				date = date.substring(0, date.indexOf('T'));
+			}
+			repos_created.setText(date);
+			repos_homepage.setText(repos.getHomepage());
+			repos_discription.setText(repos.getDescription());
+		}
+		if(repos.getOwner() != null){
+			repos_owner.setText(repos.getOwner().getLogin());
+			user_avatar.setImageURI(Uri.parse(repos.getOwner().getAvatar_url()));
+		}
     }
 	
+    private void showContent(Content content){
+		Intent intent = new Intent(RepositoryDetailActivity.this, ReposContentActivity.class);
+		Bundle bundle = new Bundle();
+		bundle.putParcelable(CONTENT, content);
+		intent.putExtras(bundle);
+		startActivity(intent);
+    }
+    
 	private void checkIfRepoIsStarred(){
 		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
 
@@ -172,7 +161,7 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
 
 			@Override
 			public void onError(String Message) {
-				MessageUtils.showErrorMessage(ReposDetailActivity.this, Message);
+				MessageUtils.showErrorMessage(RepositoryDetailActivity.this, Message);
 			}
 			
     	}).starRepo(repos.getOwner().getLogin(), repos.getName());
@@ -188,23 +177,25 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
 
 			@Override
 			public void onError(String Message) {
-				MessageUtils.showErrorMessage(ReposDetailActivity.this, Message);
+				MessageUtils.showErrorMessage(RepositoryDetailActivity.this, Message);
 			}
 			
     	}).unstarRepo(repos.getOwner().getLogin(), repos.getName());
 	}
 	
-    private void requestContributors(boolean refresh){
-    	mSwipeRefreshLayout.setRefreshing(false);
-    	if(currentRequest != null) currentRequest.cancelRequest();
-    	ReposContributorsRequest request = new ReposContributorsRequest(this);
-    	Condition condition = request.new Condition();
-    	condition.SetLogin(repos.getOwner().getLogin());
-    	condition.SetReposName(repos.getName());
-    	condition.SetRefresh(refresh);
-    	request.SetHandler(this);
-    	request.SetSearchCondition(condition);
-    	RequestManager.getInstance(this).addRequest(request);
-    	currentRequest = request;
+    private void requestContents(){
+    	RepoClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+
+			@Override
+			public void onOK(Object ts) {
+				Snackbar.make(recyclerView, "Already unStared", Snackbar.LENGTH_LONG).show();
+			}
+
+			@Override
+			public void onError(String Message) {
+				MessageUtils.showErrorMessage(RepositoryDetailActivity.this, Message);
+			}
+			
+    	}).contents(repos.getOwner().getLogin(), repos.getName(), path);
     }
 }

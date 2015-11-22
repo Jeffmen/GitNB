@@ -9,13 +9,11 @@ import com.example.gitnb.api.UserInfoRequest;
 import com.example.gitnb.api.UserReposRequest;
 import com.example.gitnb.api.UserReposRequest.Condition;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
-import com.example.gitnb.api.retrofit.SearchClient;
 import com.example.gitnb.api.retrofit.UsersClient;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.User;
 import com.example.gitnb.model.Repository;
-import com.example.gitnb.model.search.UsersSearch;
 import com.example.gitnb.module.repos.HotReposFragment;
 import com.example.gitnb.module.repos.ReposDetailActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
@@ -31,7 +29,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class UserDetailActivity extends BaseActivity implements HandlerInterface<ArrayList<Repository>>{
 
@@ -61,7 +58,7 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         user = (User) intent.getParcelableExtra(HotUserFragment.USER_KEY);
-        setContentView(R.layout.activity_user_layout);
+        setContentView(R.layout.activity_user_detail);
         recyclerView = (RecyclerView) findViewById(R.id.recylerView);  
         User userInfo = new User();
         userInfo.setAvatar_url(user.getAvatar_url());

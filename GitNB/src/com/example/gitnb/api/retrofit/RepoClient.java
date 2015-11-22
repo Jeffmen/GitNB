@@ -27,6 +27,8 @@ public class RepoClient extends RetrofitNetworkAbs{
 	}
     
     public void contents(String owner, String repo, String path){
+    	if(path == null || path.isEmpty())
+    		execute(repoService.contents(owner, repo));
 		execute(repoService.contents(owner, repo, path));
 	}
     
