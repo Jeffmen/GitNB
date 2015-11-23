@@ -5,7 +5,7 @@ public class RepoActionsClient extends RetrofitNetworkAbs{
 	private RepoActionsService repoActionsService;
 	
 	private RepoActionsClient(){
-		repoActionsService = ApiRetrofit.getInstance().getRetrofit().create(RepoActionsService.class);
+		repoActionsService = ApiRetrofit.getRetrofit().create(RepoActionsService.class);
 	}
 	
     public static RepoActionsClient getNewInstance() {

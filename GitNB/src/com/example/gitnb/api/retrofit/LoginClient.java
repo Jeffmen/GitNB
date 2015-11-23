@@ -19,7 +19,7 @@ public class LoginClient extends RetrofitNetworkAbs{
     
 	public void requestTokenAsync(Callback<Token> callback){
 
-        LoginService loginService = ApiRetrofit.getInstance().getRetrofit().create(LoginService.class);
+        LoginService loginService = ApiRetrofit.getRetrofit().create(LoginService.class);
         RequestTokenDTO tokenDTO = new RequestTokenDTO();
         tokenDTO.client_id = "";
         tokenDTO.client_secret = "";
@@ -41,7 +41,7 @@ public class LoginClient extends RetrofitNetworkAbs{
 	}
 	
 	public retrofit.Response<Token> requestTokenSync() throws IOException{
-		LoginService loginService = ApiRetrofit.getInstance().getRetrofit().create(LoginService.class);
+		LoginService loginService = ApiRetrofit.getRetrofit().create(LoginService.class);
         RequestTokenDTO tokenDTO = new RequestTokenDTO();
         tokenDTO.client_id = "";
         tokenDTO.client_secret = "";

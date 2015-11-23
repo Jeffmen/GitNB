@@ -11,7 +11,7 @@ public class SearchClient extends RetrofitNetworkAbs{
 	private SearchService searchService;
 	
 	private SearchClient(){
-	    searchService = ApiRetrofit.getInstance().getRetrofit().create(SearchService.class);
+	    searchService = ApiRetrofit.getRetrofit().create(SearchService.class);
 	}
 	
     public static SearchClient getNewInstance() {

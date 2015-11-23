@@ -5,12 +5,16 @@ public class RepoClient extends RetrofitNetworkAbs{
 	private RepoService repoService;
 	
 	private RepoClient(){
-		repoService = ApiRetrofit.getInstance().getRetrofit().create(RepoService.class);
+		repoService = ApiRetrofit.getRetrofit().create(RepoService.class);
 	}
 	
     public static RepoClient getNewInstance() {
         return new RepoClient();
-    }	
+    }
+    
+    public void get(String url){
+		execute(repoService.get(url));
+	}	
     
     public void get(String owner, String repo){
 		execute(repoService.get(owner, repo));

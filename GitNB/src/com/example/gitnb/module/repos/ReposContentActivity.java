@@ -3,6 +3,7 @@ package com.example.gitnb.module.repos;
 import java.util.ArrayList;
 
 import com.example.gitnb.R;
+import com.example.gitnb.api.retrofit.ApiRetrofit;
 import com.example.gitnb.api.retrofit.RepoClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.app.BaseActivity;
@@ -15,6 +16,7 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 public class ReposContentActivity extends BaseActivity {
+	private TextView contentView;
     private Content content;
 	
     protected void setTitle(TextView view){
@@ -31,19 +33,18 @@ public class ReposContentActivity extends BaseActivity {
         Intent intent = getIntent();
         content = (Content)intent.getParcelableExtra(RepositoryDetailActivity.CONTENT);
         setContentView(R.layout.activity_repo_content);
-        TextView contentView = (TextView) findViewById(R.id.content);
-        contentView.setText(content.content);
+        contentView = (TextView) findViewById(R.id.content);
         //contentView.getSettings().setJavaScriptEnabled(true);
         //contentView.loadUrl(content.html_url);
+        requestContents(content.url.replace(ApiRetrofit.API_URL, ""));
     }
     
-    private void requestContents(final String name){
+    private void requestContents(final String url){
     	RepoClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
 
 			@Override
 			public void onOK(Object ts) {
-				path += name + "/";
-				adapter.update((ArrayList<Content>) ts);
+		        contentView.setText(((Content) ts).content);
 			}
 
 			@Override
@@ -51,6 +52,6 @@ public class ReposContentActivity extends BaseActivity {
 				MessageUtils.showErrorMessage(ReposContentActivity.this, Message);
 			}
 			
-    	}).contents(content.getOwner().getLogin(), content.getName(), path + name);
+    	}).get(url);
     }
 }

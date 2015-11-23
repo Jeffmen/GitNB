@@ -9,7 +9,7 @@ public class UsersClient extends RetrofitNetworkAbs{
 	private UsersService usersService;
 	
 	private UsersClient(){
-		usersService = ApiRetrofit.getInstance().getRetrofit().create(UsersService.class);
+		usersService = ApiRetrofit.getRetrofit().create(UsersService.class);
 	}
 	
     public static UsersClient getNewInstance() {

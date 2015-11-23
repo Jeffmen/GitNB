@@ -22,6 +22,9 @@ import retrofit.http.Query;
  * Created by Bernat on 17/07/2014.
  */
 public interface RepoService {
+	
+    @GET("/{url}")
+    Call<Content> get(@Path("url") String url);
 
     @GET("/repos/{owner}/{name}")
     Call<Repository> get(@Path("owner") String owner, @Path("name") String repo);
