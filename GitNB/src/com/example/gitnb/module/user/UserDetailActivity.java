@@ -58,7 +58,7 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         user = (User) intent.getParcelableExtra(HotUserFragment.USER_KEY);
-        setContentView(R.layout.activity_user_detail);
+        setContentView(R.layout.activity_list_layout);
         recyclerView = (RecyclerView) findViewById(R.id.recylerView);  
         User userInfo = new User();
         userInfo.setAvatar_url(user.getAvatar_url());

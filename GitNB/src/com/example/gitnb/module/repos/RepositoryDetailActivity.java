@@ -1,5 +1,7 @@
 package com.example.gitnb.module.repos;
 
+import java.util.ArrayList;
+
 import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.RepoActionsClient;
 import com.example.gitnb.api.retrofit.RepoClient;
@@ -9,11 +11,9 @@ import com.example.gitnb.model.Content;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -33,7 +33,7 @@ public class RepositoryDetailActivity extends BaseActivity{
     private RecyclerView recyclerView;
 	private boolean isFirst = true;
 	private Repository repos;
-    private String path;
+    private String path = "";
 	
     protected void setTitle(TextView view){
         if(repos != null && !repos.getName().isEmpty()){
@@ -48,18 +48,16 @@ public class RepositoryDetailActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         repos = (Repository) intent.getParcelableExtra(HotReposFragment.REPOS_KEY);
-        setContentView(R.layout.activity_repo_detail);
-        this.setRepository();
+        setContentView(R.layout.activity_list_layout);
         recyclerView = (RecyclerView) findViewById(R.id.recylerView);  
-        adapter = new ReposContentsAdapter(this);
+        adapter = new ReposContentsAdapter(this, repos);
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
         adapter.SetOnItemClickListener(new ReposContentsAdapter.OnItemClickListener() {
 			@Override
 			public void onItemClick(View view, int position) {
 				Content content = adapter.getItem(position);
 				if(content.isDir()){
-					path += content.name + "/";
-					requestContents();
+					requestContents(content.name);
 				}
 				if(content.isFile()){
 					showContent(content);
@@ -79,7 +77,7 @@ public class RepositoryDetailActivity extends BaseActivity{
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-            	requestContents();
+            	requestContents("");
             }
         });
         swithBt = (MaterialAnimatedSwitch) findViewById(R.id.switch_bt);  
@@ -100,31 +98,31 @@ public class RepositoryDetailActivity extends BaseActivity{
         
         });
         checkIfRepoIsStarred();
-        requestContents();
+        requestContents("");
     }
     
-    private void setRepository(){
-    	TextView repos_name = (TextView) findViewById(R.id.repos_name);
-    	TextView repos_owner = (TextView) findViewById(R.id.repos_owner);
-    	TextView repos_created = (TextView) findViewById(R.id.repos_created);
-    	TextView repos_homepage = (TextView) findViewById(R.id.repos_homepage);
-    	TextView repos_discription = (TextView) findViewById(R.id.repos_description);
-    	SimpleDraweeView user_avatar = (SimpleDraweeView) findViewById(R.id.user_avatar);
-		if(this.repos != null){
-			repos_name.setText(repos.getName());				
-			String date = repos.getCreated_at();
-			if(date != null && !date.isEmpty()){
-				date = date.substring(0, date.indexOf('T'));
-			}
-			repos_created.setText(date);
-			repos_homepage.setText(repos.getHomepage());
-			repos_discription.setText(repos.getDescription());
-		}
-		if(repos.getOwner() != null){
-			repos_owner.setText(repos.getOwner().getLogin());
-			user_avatar.setImageURI(Uri.parse(repos.getOwner().getAvatar_url()));
-		}
-    }
+//    private void setRepository(){
+//    	TextView repos_name = (TextView) findViewById(R.id.repos_name);
+//    	TextView repos_owner = (TextView) findViewById(R.id.repos_owner);
+//    	TextView repos_created = (TextView) findViewById(R.id.repos_created);
+//    	TextView repos_homepage = (TextView) findViewById(R.id.repos_homepage);
+//    	TextView repos_discription = (TextView) findViewById(R.id.repos_description);
+//    	SimpleDraweeView user_avatar = (SimpleDraweeView) findViewById(R.id.user_avatar);
+//		if(this.repos != null){
+//			repos_name.setText(repos.getName());				
+//			String date = repos.getCreated_at();
+//			if(date != null && !date.isEmpty()){
+//				date = date.substring(0, date.indexOf('T'));
+//			}
+//			repos_created.setText(date);
+//			repos_homepage.setText(repos.getHomepage());
+//			repos_discription.setText(repos.getDescription());
+//		}
+//		if(repos.getOwner() != null){
+//			repos_owner.setText(repos.getOwner().getLogin());
+//			user_avatar.setImageURI(Uri.parse(repos.getOwner().getAvatar_url()));
+//		}
+//    }
 	
     private void showContent(Content content){
 		Intent intent = new Intent(RepositoryDetailActivity.this, ReposContentActivity.class);
@@ -183,12 +181,13 @@ public class RepositoryDetailActivity extends BaseActivity{
     	}).unstarRepo(repos.getOwner().getLogin(), repos.getName());
 	}
 	
-    private void requestContents(){
+    private void requestContents(final String name){
     	RepoClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
 
 			@Override
 			public void onOK(Object ts) {
-				Snackbar.make(recyclerView, "Already unStared", Snackbar.LENGTH_LONG).show();
+				path += name + "/";
+				adapter.update((ArrayList<Content>) ts);
 			}
 
 			@Override
@@ -196,6 +195,6 @@ public class RepositoryDetailActivity extends BaseActivity{
 				MessageUtils.showErrorMessage(RepositoryDetailActivity.this, Message);
 			}
 			
-    	}).contents(repos.getOwner().getLogin(), repos.getName(), path);
+    	}).contents(repos.getOwner().getLogin(), repos.getName(), path + name);
     }
 }

@@ -1,7 +1,11 @@
 package com.example.gitnb.model;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import android.os.Parcel;
+import android.os.Parcelable.Creator;
 
 /**
  * Created by Bernat on 20/07/2014.
@@ -17,7 +21,38 @@ public class Content extends ShaUrl implements Comparable<Content> {
 	public String encoding;
 	public List<Content> children;
 	public Content parent;
+	
+    public Content() {
 
+    }
+    
+    protected Content(Parcel in) {
+    	super(in);
+    	type = in.readParcelable(ContentType.class.getClassLoader());
+    	size = in.readInt();
+    	name = in.readString();
+    	content = in.readString();
+    	path = in.readString();
+    	git_url = in.readString();
+    	_links = in.readParcelable(Links.class.getClassLoader());
+    	encoding = in.readString();
+    	children = new ArrayList<Content>(); 
+    	in.readList(children, Content.class.getClassLoader());
+    	content = in.readParcelable(Content.class.getClassLoader());
+    }
+
+    public static final Creator<Content> CREATOR = new Creator<Content>() {
+        @Override
+        public Content createFromParcel(Parcel in) {
+            return new Content(in);
+        }
+
+        @Override
+        public Content[] newArray(int size) {
+            return new Content[size];
+        }
+    };
+    
 	public boolean isDir() {
 		return ContentType.dir.equals(type);
 	}
@@ -57,5 +92,20 @@ public class Content extends ShaUrl implements Comparable<Content> {
 				return content.name.compareTo(content2.name);
 			}
 		};
-	}
+	}    
+	
+	@Override
+    public void writeToParcel(Parcel dest, int flags) {
+		super.writeToParcel(dest, flags);
+        dest.writeParcelable(type, flags);
+		dest.writeInt(size);
+		dest.writeString(name);
+		dest.writeString(content);
+		dest.writeString(path);
+		dest.writeString(git_url);
+        dest.writeParcelable(_links, flags);
+		dest.writeString(encoding);
+		dest.writeList(children);
+        dest.writeParcelable(parent, flags);
+    }
 }

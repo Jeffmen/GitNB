@@ -1,7 +1,5 @@
 package com.example.gitnb.api.retrofit;
 
-import retrofit.http.Path;
-
 public class RepoClient extends RetrofitNetworkAbs{
 
 	private RepoService repoService;
@@ -20,6 +18,15 @@ public class RepoClient extends RetrofitNetworkAbs{
     
     public void contents(String owner, String repo){
 		execute(repoService.contents(owner, repo));
+	}    
+    
+    public void contentsByRef(String owner, String repo, String path, String pref){  	
+		if(path == null || path.isEmpty()){
+			execute(repoService.contentsByRef(owner, repo, pref));  
+    	}
+    	else{
+    		execute(repoService.contentsByRef(owner, repo, path, pref));  
+    	}
 	}
     
     public void readme(String owner, String repo){
@@ -27,9 +34,12 @@ public class RepoClient extends RetrofitNetworkAbs{
 	}
     
     public void contents(String owner, String repo, String path){
-    	if(path == null || path.isEmpty())
+    	if(path == null || path.isEmpty()){
     		execute(repoService.contents(owner, repo));
-		execute(repoService.contents(owner, repo, path));
+    	}
+    	else{
+    		execute(repoService.contents(owner, repo, path));
+    	}
 	}
     
     public void contributors(String owner, String repo){
@@ -46,7 +56,6 @@ public class RepoClient extends RetrofitNetworkAbs{
     
 	@Override
 	public RepoClient setNetworkListener(NetworkListener networkListener) {
-
         return setNetworkListener(networkListener, this);
 	}
 

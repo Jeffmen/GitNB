@@ -51,7 +51,7 @@ public class HotReposFragment extends Fragment implements HandlerInterface<Array
 			@Override
 			public void onItemClick(View view, int position) {
 				//Toast.makeText(getActivity(), "item:"+position, Toast.LENGTH_SHORT).show();
-				Intent intent = new Intent(getActivity(), ReposDetailActivity.class);
+				Intent intent = new Intent(getActivity(), RepositoryDetailActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putParcelable(REPOS_KEY, adapter.getItem(position));
 				intent.putExtras(bundle);

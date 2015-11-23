@@ -1,19 +1,24 @@
 package com.example.gitnb.module.repos;
 
-import com.example.gitnb.R;
-import com.example.gitnb.model.Content;
+import java.util.ArrayList;
 
-import android.app.Activity;
+import com.example.gitnb.R;
+import com.example.gitnb.api.retrofit.RepoClient;
+import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
+import com.example.gitnb.app.BaseActivity;
+import com.example.gitnb.model.Content;
+import com.example.gitnb.utils.MessageUtils;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.TextView;
 
-public class ReposContentActivity extends Activity {
+public class ReposContentActivity extends BaseActivity {
     private Content content;
 	
     protected void setTitle(TextView view){
-        if(content != null && content.name.isEmpty()){
+        if(content != null || content.name.isEmpty()){
         	view.setText(content.name);
         }else{
         	view.setText("NULL");
@@ -23,12 +28,29 @@ public class ReposContentActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_repo_content);
         Intent intent = getIntent();
-        content = intent.getParcelableExtra(RepositoryDetailActivity.CONTENT);
-        WebView contentView = (WebView) findViewById(R.id.content);
+        content = (Content)intent.getParcelableExtra(RepositoryDetailActivity.CONTENT);
+        setContentView(R.layout.activity_repo_content);
+        TextView contentView = (TextView) findViewById(R.id.content);
+        contentView.setText(content.content);
         //contentView.getSettings().setJavaScriptEnabled(true);
-        contentView.loadUrl(content.html_url);
+        //contentView.loadUrl(content.html_url);
     }
+    
+    private void requestContents(final String name){
+    	RepoClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
 
+			@Override
+			public void onOK(Object ts) {
+				path += name + "/";
+				adapter.update((ArrayList<Content>) ts);
+			}
+
+			@Override
+			public void onError(String Message) {
+				MessageUtils.showErrorMessage(ReposContentActivity.this, Message);
+			}
+			
+    	}).contents(content.getOwner().getLogin(), content.getName(), path + name);
+    }
 }

@@ -28,7 +28,7 @@ public class ApiRetrofit extends BaseRetrofit{
 	}
 	
     protected static String getToken() {
-		return "4b8f18ddaada742b384ad76f7be25d3edabb6827";
+		return "2f2cf9515d82dcd04f08ab330864f72e702a55f7";
     }
 
 	@Override

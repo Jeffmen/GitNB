@@ -35,6 +35,14 @@
             android:screenOrientation="portrait">
         </activity>
         <activity 
+            android:name="com.example.gitnb.module.repos.RepositoryDetailActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity 
+            android:name="com.example.gitnb.module.repos.ReposContentActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity 
             android:name="com.example.gitnb.module.user.ImageShowerActivity"
             android:screenOrientation="portrait"
         android:theme="@style/ImageScale">
