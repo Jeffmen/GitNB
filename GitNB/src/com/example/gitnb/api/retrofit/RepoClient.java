@@ -12,8 +12,8 @@ public class RepoClient extends RetrofitNetworkAbs{
         return new RepoClient();
     }
     
-    public void get(String url){
-		execute(repoService.get(url));
+    public void get(String path){
+		execute(repoService.get(path));
 	}	
     
     public void get(String owner, String repo){

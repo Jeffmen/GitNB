@@ -23,8 +23,8 @@ import retrofit.http.Query;
  */
 public interface RepoService {
 	
-    @GET("/{url}")
-    Call<Content> get(@Path("url") String url);
+    @GET("/{path}")
+    Call<Content> get(@Path("path") String path);
 
     @GET("/repos/{owner}/{name}")
     Call<Repository> get(@Path("owner") String owner, @Path("name") String repo);
