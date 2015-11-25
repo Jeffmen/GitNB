@@ -6,6 +6,7 @@ import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.Content;
 import com.example.gitnb.utils.MessageUtils;
+import com.example.gitnb.widget.ProgressWebView;
 import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
 
 import android.content.Intent;
@@ -19,25 +20,13 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 public class ReposContentActivity extends BaseActivity {
-	private static int UPDATE_CONTENT = 100;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MaterialAnimatedSwitch swithBt;
 	private TextView text_content;
-	private WebView web_content;
+	private ProgressWebView web_content;
     private Content content;
     private String content_url;
-    private boolean isShowInWeb = true;
-    
-    private Handler mHandler = new Handler(){ 
-        @Override
-        public void handleMessage(Message msg)
-        {
-            if(msg.what == UPDATE_CONTENT)
-            {
-            	updateContent();
-            }
-        }
-    };
+    private boolean isShowInWeb = false;
     
     protected void setTitle(TextView view){
         if(content == null || content.name.isEmpty()){
@@ -55,7 +44,7 @@ public class ReposContentActivity extends BaseActivity {
         content = (Content)intent.getParcelableExtra(ReposContentsListActivity.CONTENT);
         setContentView(R.layout.activity_repo_content);
         text_content = (TextView) findViewById(R.id.text_content);
-        web_content = (WebView) findViewById(R.id.web_content);
+        web_content = (ProgressWebView) findViewById(R.id.web_content);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(
         		android.R.color.holo_blue_bright,
@@ -64,13 +53,8 @@ public class ReposContentActivity extends BaseActivity {
                 android.R.color.holo_red_light);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh() {      
-                if(content_url != null){
-                    requestContents(content_url+"/readme");
-                }
-                if(content != null){
-             	   requestContents(content.url);
-                }
+            public void onRefresh() {    
+            	refreshHandler.sendEmptyMessage(START_UPDATE);
             }
         });
         swithBt = (MaterialAnimatedSwitch) findViewById(R.id.switch_bt);  
@@ -84,21 +68,36 @@ public class ReposContentActivity extends BaseActivity {
            }
         
         });
+    }
+
+    @Override
+    protected void startRefresh(){
+        mSwipeRefreshLayout.setRefreshing(true);
         if(content_url != null){
             requestContents(content_url+"/readme");
         } 
         if(content != null){
         	updateContent();
-        }        
+        }
     }
+
+    @Override
+    protected void endRefresh(){
+    	updateContent();
+    }
+
+    @Override
+    protected void endError(){
+    	mSwipeRefreshLayout.setRefreshing(false);
+    }
+    
     
     private void updateContent(){
     	mSwipeRefreshLayout.setRefreshing(false);
     	if(isShowInWeb){
     		text_content.setVisibility(View.GONE);
     		web_content.setVisibility(View.VISIBLE);
-            //web_content.getSettings().setJavaScriptEnabled(true);
-    		text_content.setText(null);
+            web_content.getSettings().setJavaScriptEnabled(true);
             web_content.loadUrl(content.html_url);
     	}
     	else{
@@ -115,13 +114,13 @@ public class ReposContentActivity extends BaseActivity {
 			@Override
 			public void onOK(Object ts) {
 				content = (Content) ts;
-				mHandler.sendEmptyMessage(UPDATE_CONTENT);
+				refreshHandler.sendEmptyMessage(END_UPDATE);
 			}
 
 			@Override
 			public void onError(String Message) {
 				MessageUtils.showErrorMessage(ReposContentActivity.this, Message);
-				mHandler.sendEmptyMessage(UPDATE_CONTENT);
+				refreshHandler.sendEmptyMessage(END_ERROR);
 			}
 			
     	}).request(url);

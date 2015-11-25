@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class UserDetailActivity extends BaseActivity{
@@ -23,6 +25,7 @@ public class UserDetailActivity extends BaseActivity{
 	public static String AVATAR_URL = "avatar_url";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MaterialAnimatedSwitch swithBt;
+    private LinearLayout main;
 	private boolean isFirst = true;
 	private User user;
 	
@@ -40,6 +43,8 @@ public class UserDetailActivity extends BaseActivity{
         Intent intent = getIntent();
         user = (User) intent.getParcelableExtra(HotUserFragment.USER_KEY);
         setContentView(R.layout.activity_user_detail);
+        main = (LinearLayout) findViewById(R.id.main);
+        main.setVisibility(View.GONE);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(
         		android.R.color.holo_blue_bright,
@@ -50,7 +55,7 @@ public class UserDetailActivity extends BaseActivity{
         	
             @Override
             public void onRefresh() {
-            	getSingleUser();
+                refreshHandler.sendEmptyMessage(START_UPDATE);
             }
             
         });        
@@ -71,9 +76,6 @@ public class UserDetailActivity extends BaseActivity{
            }
         
         });
-        getSingleUser();
-        checkFollowing();
-        mSwipeRefreshLayout.setRefreshing(true);
     }
 	
     private void setUserInfo(){
@@ -100,21 +102,52 @@ public class UserDetailActivity extends BaseActivity{
 			if(user.getCompany() == null || user.getCompany().isEmpty()){
 				user_company.setVisibility(View.VISIBLE);
 			}
-		}
+		}			
+		
+		user_avatar.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(UserDetailActivity.this, ImageShowerActivity.class);
+				intent.putExtra(UserDetailActivity.AVATAR_URL, user.getAvatar_url());
+				startActivity(intent);
+			}
+        	
+        });
     }
+
+	@Override
+    protected void startRefresh(){
+        mSwipeRefreshLayout.setRefreshing(true);
+        getSingleUser();
+        checkFollowing();
+    }
+
+	@Override
+    protected void endRefresh(){
+        setUserInfo();
+        main.setVisibility(View.VISIBLE);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+	@Override
+    protected void endError(){
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+    
 	private void getSingleUser(){
     	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
 
 			@Override
 			public void onOK(Object ts) {
 				user = (User) ts;
-                setUserInfo();
-                mSwipeRefreshLayout.setRefreshing(false);
+		        refreshHandler.sendEmptyMessage(END_UPDATE);
 			}
 
 			@Override
 			public void onError(String Message) {
 				MessageUtils.showErrorMessage(UserDetailActivity.this, Message);
+		        refreshHandler.sendEmptyMessage(END_ERROR);
 			}
 			
     	}).getSingleUser(user.getLogin());

@@ -78,7 +78,7 @@ public class ApiRetrofit{
     }
     
     protected static String getToken() {
-		return "0cbfd978b93b4c23d1e4b947e34b654c0755f986";
+		return "cb094040d2f01ee6fae66fa0b26d781e441cac46";
     }
 
 	public static String getBaseUrl() {

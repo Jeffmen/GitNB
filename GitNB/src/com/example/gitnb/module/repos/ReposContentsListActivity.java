@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,31 +21,22 @@ import com.example.gitnb.utils.MessageUtils;
 
 public class ReposContentsListActivity extends BaseActivity {
 	public static String CONTENT = "content";
-	private static int UPDATE_CONTENT = 100;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLayoutManager;
     private ReposContentsAdapter adapter;
     private RecyclerView recyclerView;
 	private Repository repos;
     private String path = "";
+    private String clickName = "";
     
 	public enum TYPE{
 		REPOS_CONTENT,
+		REPOS_CONTRIBUTOR,
 		USER_FOLLOWER,
 		USER_FOLLOWING,
 		USER_REPOSITORY
 	}    
 	
-	private Handler mHandler = new Handler(){ 
-        @Override
-        public void handleMessage(Message msg)
-        {
-            if(msg.what == UPDATE_CONTENT)
-            {
-            	mSwipeRefreshLayout.setRefreshing(false);
-            }
-        }
-    };
 
 	@Override
 	protected void setTitle(TextView view) {
@@ -72,7 +61,8 @@ public class ReposContentsListActivity extends BaseActivity {
 			public void onItemClick(View view, int position) {
 				Content content = adapter.getItem(position);
 				if(content.isDir()){
-					requestContents(content.name);
+					clickName = content.name;
+					requestContents();
 				}
 				if(content.isFile()){
 					showContent(content);
@@ -93,13 +83,28 @@ public class ReposContentsListActivity extends BaseActivity {
         	
             @Override
             public void onRefresh() {
-            	requestContents("");
+            	requestContents();
             }
             
         });
-        requestContents("");
     }
 
+    @Override
+    protected void startRefresh(){
+        mSwipeRefreshLayout.setRefreshing(true);
+    	requestContents();
+    }
+
+    @Override
+    protected void endRefresh(){
+    	mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    protected void endError(){
+    	mSwipeRefreshLayout.setRefreshing(false);
+    }
+    
     private void showContent(Content content){
 		Intent intent = new Intent(ReposContentsListActivity.this, ReposContentActivity.class);
 		Bundle bundle = new Bundle();
@@ -108,24 +113,24 @@ public class ReposContentsListActivity extends BaseActivity {
 		startActivity(intent);
     }
     
-    private void requestContents(final String name){
+    private void requestContents(){
     	mSwipeRefreshLayout.setRefreshing(true);
     	RepoClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
 
 			@Override
 			public void onOK(Object ts) {
-				path += name + "/";
+				path += clickName + "/";
 				adapter.update((ArrayList<Content>) ts);
-				mHandler.sendEmptyMessage(UPDATE_CONTENT);
+				refreshHandler.sendEmptyMessage(END_UPDATE);
 			}
 
 			@Override
 			public void onError(String Message) {
 				MessageUtils.showErrorMessage(ReposContentsListActivity.this, Message);
-				mHandler.sendEmptyMessage(UPDATE_CONTENT);
+				refreshHandler.sendEmptyMessage(END_ERROR);
 			}
 			
-    	}).contents(repos.getOwner().getLogin(), repos.getName(), path + name);
+    	}).contents(repos.getOwner().getLogin(), repos.getName(), path + clickName);
     }
     
 }

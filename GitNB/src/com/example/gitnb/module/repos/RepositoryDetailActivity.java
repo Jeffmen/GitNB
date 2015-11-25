@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class RepositoryDetailActivity extends BaseActivity{
@@ -24,6 +25,7 @@ public class RepositoryDetailActivity extends BaseActivity{
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MaterialAnimatedSwitch swithBt;
 	private boolean isFirst = true;
+    private LinearLayout main;
 	private Repository repos;
 	
     protected void setTitle(TextView view){
@@ -40,6 +42,8 @@ public class RepositoryDetailActivity extends BaseActivity{
         Intent intent = getIntent();
         repos = (Repository) intent.getParcelableExtra(HotReposFragment.REPOS);
         setContentView(R.layout.activity_repo_detail);
+        main = (LinearLayout) findViewById(R.id.main);
+        main.setVisibility(View.GONE);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(
         		android.R.color.holo_blue_bright,
@@ -70,8 +74,6 @@ public class RepositoryDetailActivity extends BaseActivity{
            }
         
         });
-    	setRepository();
-        checkIfRepoIsStarred();
     }
     
     private void setRepository(){
@@ -113,6 +115,7 @@ public class RepositoryDetailActivity extends BaseActivity{
 		
     	TextView stargazers = (TextView) findViewById(R.id.stargazers);
     	TextView readme = (TextView) findViewById(R.id.readme);
+    	TextView contributor = (TextView) findViewById(R.id.contributor);
     	TextView source = (TextView) findViewById(R.id.source);
     	stargazers.setOnClickListener(new View.OnClickListener() {
 			
@@ -122,6 +125,15 @@ public class RepositoryDetailActivity extends BaseActivity{
 			}
 		});
     	readme.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(RepositoryDetailActivity.this, ReposContentActivity.class);
+				intent.putExtra(CONTENT_URL, repos.getUrl());
+				startActivity(intent);
+			}
+		});
+    	contributor.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -141,6 +153,25 @@ public class RepositoryDetailActivity extends BaseActivity{
 				startActivity(intent);
 			}
 		});
+        refreshHandler.sendEmptyMessage(END_UPDATE);
+    }
+    
+    @Override
+    protected void startRefresh(){
+        mSwipeRefreshLayout.setRefreshing(true);
+    	setRepository();
+        checkIfRepoIsStarred();
+    }
+
+    @Override
+    protected void endRefresh(){
+        main.setVisibility(View.VISIBLE);
+    	mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    protected void endError(){
+    	mSwipeRefreshLayout.setRefreshing(false);
     }
     
 	private void checkIfRepoIsStarred(){
