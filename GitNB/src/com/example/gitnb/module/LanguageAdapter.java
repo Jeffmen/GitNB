@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.example.gitnb.R;
@@ -30,6 +32,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<ViewHolder>{
 		iconSize = Utils.dpToPx(context, 50);
 		languageName = mContext.getResources().getTextArray(R.array.all_language_name);
 		languageValue = mContext.getResources().getTextArray(R.array.all_language_value);
+		//notifyItemRangeInserted(0, languageValue.length);
 	}
     
     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -49,6 +52,16 @@ public class LanguageAdapter extends RecyclerView.Adapter<ViewHolder>{
 		return languageValue == null ? null : languageValue[position].toString();
 	}
 	
+	protected void setAnimation(View viewToAnimate, int position) {
+        Animation animation = AnimationUtils.loadAnimation(viewToAnimate.getContext(), R.anim.bottom_up);
+        viewToAnimate.startAnimation(animation);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.itemView.clearAnimation();
+    }
 	@Override
 	public void onBindViewHolder(ViewHolder vh, int position) {	
 		LanguageViewHolder viewHolder = (LanguageViewHolder) vh;
@@ -56,6 +69,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<ViewHolder>{
 		titleIcon.setIsCircular(true);
 		titleIcon.setContactDetails(getItemName(position), position);
 	    viewHolder.language.setImageDrawable(titleIcon);
+	    setAnimation(vh.itemView, position);
 	}
 
 	@Override

@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 
 public class HotReposFragment extends Fragment implements HandlerInterface<ArrayList<Repository>>, UpdateLanguageListener, TextWatcher{
 	private String TAG = "HotReposFragment";
-	public static String REPOS_KEY = "repos_key";
+	public static String REPOS = "repos";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLayoutManager;
     private WebRequest currentRequest;
@@ -53,7 +53,7 @@ public class HotReposFragment extends Fragment implements HandlerInterface<Array
 				//Toast.makeText(getActivity(), "item:"+position, Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(getActivity(), RepositoryDetailActivity.class);
 				Bundle bundle = new Bundle();
-				bundle.putParcelable(REPOS_KEY, adapter.getItem(position));
+				bundle.putParcelable(REPOS, adapter.getItem(position));
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}

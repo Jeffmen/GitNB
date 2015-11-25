@@ -151,7 +151,7 @@ public class ReposContributorAdapter extends RecyclerView.Adapter<ViewHolder>{
 				if(date != null && !date.isEmpty()){
 					date = date.substring(0, date.indexOf('T'));
 				}
-				reposDetailViewHolder.repos_created.setText(date);
+				reposDetailViewHolder.repos_updated.setText(date);
 				reposDetailViewHolder.repos_homepage.setText(reposInfo.getHomepage());
 				reposDetailViewHolder.repos_discription.setText(reposInfo.getDescription());
 			}

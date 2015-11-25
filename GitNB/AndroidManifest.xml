@@ -39,6 +39,10 @@
             android:screenOrientation="portrait">
         </activity>
         <activity 
+            android:name="com.example.gitnb.module.repos.ReposContentsListActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity 
             android:name="com.example.gitnb.module.repos.ReposContentActivity"
             android:screenOrientation="portrait">
         </activity>

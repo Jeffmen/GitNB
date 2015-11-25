@@ -10,7 +10,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 public class ReposDetailViewHolder extends RecyclerView.ViewHolder{
 	public TextView repos_name;
 	public TextView repos_owner;
-	public TextView repos_created;
+	public TextView repos_updated;
 	public TextView repos_homepage;
 	public TextView repos_discription;
 	public SimpleDraweeView user_avatar;
@@ -19,7 +19,7 @@ public class ReposDetailViewHolder extends RecyclerView.ViewHolder{
 		super(view);
 		repos_name = (TextView) view.findViewById(R.id.repos_name);
 		repos_owner = (TextView) view.findViewById(R.id.repos_owner);
-		repos_created = (TextView) view.findViewById(R.id.repos_created);
+    	repos_updated = (TextView) view.findViewById(R.id.repos_updated);
 		repos_homepage = (TextView) view.findViewById(R.id.repos_homepage);
 		repos_discription = (TextView) view.findViewById(R.id.repos_description);
 		user_avatar = (SimpleDraweeView) view.findViewById(R.id.user_avatar);

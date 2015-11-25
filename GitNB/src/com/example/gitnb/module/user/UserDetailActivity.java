@@ -1,49 +1,30 @@
 package com.example.gitnb.module.user;
 
-import java.util.ArrayList;
-
 import com.example.gitnb.R;
-import com.example.gitnb.api.HandlerInterface;
-import com.example.gitnb.api.RequestManager;
-import com.example.gitnb.api.UserInfoRequest;
-import com.example.gitnb.api.UserReposRequest;
-import com.example.gitnb.api.UserReposRequest.Condition;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.UsersClient;
-import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.User;
-import com.example.gitnb.model.Repository;
-import com.example.gitnb.module.repos.HotReposFragment;
-import com.example.gitnb.module.repos.ReposDetailActivity;
-import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-public class UserDetailActivity extends BaseActivity implements HandlerInterface<ArrayList<Repository>>{
+public class UserDetailActivity extends BaseActivity{
 
 	private String TAG = "UserDetailActivity";
 	public static String AVATAR_URL = "avatar_url";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private LinearLayoutManager mLayoutManager;
     private MaterialAnimatedSwitch swithBt;
-    private RecyclerView recyclerView;
-    private WebRequest currentRequest;
-    private UserReposAdapter adapter;
-	private boolean isLoadingMore;
 	private boolean isFirst = true;
 	private User user;
-	private int page = 1;
 	
     protected void setTitle(TextView view){
         if(user != null && !user.getLogin().isEmpty()){
@@ -58,42 +39,7 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         user = (User) intent.getParcelableExtra(HotUserFragment.USER_KEY);
-        setContentView(R.layout.activity_list_layout);
-        recyclerView = (RecyclerView) findViewById(R.id.recylerView);  
-        User userInfo = new User();
-        userInfo.setAvatar_url(user.getAvatar_url());
-        adapter = new UserReposAdapter(this, userInfo);
-        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
-        adapter.SetOnItemClickListener(new UserReposAdapter.OnItemClickListener() {
-        	
-			@Override
-			public void onItemClick(View view, int position) {
-				Intent intent = new Intent(UserDetailActivity.this, ReposDetailActivity.class);
-				Bundle bundle = new Bundle();
-				bundle.putParcelable(HotReposFragment.REPOS_KEY, adapter.getItem(position));
-				intent.putExtras(bundle);
-				startActivity(intent);
-			}
-			
-		});
-        adapter.SetOnLoadMoreClickListener(new UserReposAdapter.OnItemClickListener() {
-        	
-			@Override
-			public void onItemClick(View view, int position) {
-                if(isLoadingMore){
-	                Log.d(TAG,"ignore manually update!");
-	            } else{
-	             	page++;
-	                isLoadingMore = true;
-	             	requestRepository(true);
-	            }
-			}
-			
-		}); 
-        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
-        mLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(adapter);
+        setContentView(R.layout.activity_user_detail);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(
         		android.R.color.holo_blue_bright,
@@ -104,8 +50,7 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
         	
             @Override
             public void onRefresh() {
-            	page = 1;
-            	requestRepository(true);
+            	getSingleUser();
             }
             
         });        
@@ -126,34 +71,54 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
            }
         
         });
+        getSingleUser();
         checkFollowing();
-        requestUserInfo(true);
-        requestRepository(true);
+        mSwipeRefreshLayout.setRefreshing(true);
     }
-    
-	@Override
-    public void onSuccess(ArrayList<Repository> data){
-		onSuccess(data, 0, 1);
+	
+    private void setUserInfo(){
+		TextView user_name = (TextView) findViewById(R.id.user_name);
+		TextView user_company = (TextView) findViewById(R.id.user_company);
+		TextView user_location = (TextView) findViewById(R.id.user_location);
+		TextView user_created_date = (TextView) findViewById(R.id.user_created_date);
+		TextView user_blog = (TextView) findViewById(R.id.user_blog);
+		TextView user_email = (TextView) findViewById(R.id.user_email);
+		SimpleDraweeView user_avatar = (SimpleDraweeView) findViewById(R.id.user_avatar);
+		
+		if(user!=null){
+			user_name.setText(user.getName());
+			user_location.setText(user.getLocation());
+			String date = user.getCreated_at();
+			if(date != null && !date.isEmpty()){
+				date = date.substring(0, date.indexOf('T'));
+			}
+			user_avatar.setImageURI(Uri.parse(user.getAvatar_url()));
+			user_email.setText(user.getEmail());
+			user_created_date.setText(date);
+			user_blog.setText(user.getBlog());
+			user_company.setText(user.getCompany());
+			if(user.getCompany() == null || user.getCompany().isEmpty()){
+				user_company.setVisibility(View.VISIBLE);
+			}
+		}
     }
+	private void getSingleUser(){
+    	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
 
-	@Override
-    public void onSuccess(ArrayList<Repository> data, int totalPages, int currentPage){
-    	mSwipeRefreshLayout.setRefreshing(false);
-    	if(page == 1){
-        	adapter.update(data);
-    	}
-    	else{
-            isLoadingMore = false;
-        	adapter.insertAtBack(data);
-    	}
-    }
+			@Override
+			public void onOK(Object ts) {
+				user = (User) ts;
+                setUserInfo();
+                mSwipeRefreshLayout.setRefreshing(false);
+			}
 
-	@Override
-    public void onFailure(String error){
-    	mSwipeRefreshLayout.setRefreshing(false);
-    	adapter.reset();
-        MessageUtils.showErrorMessage(this, error);
-    }
+			@Override
+			public void onError(String Message) {
+				MessageUtils.showErrorMessage(UserDetailActivity.this, Message);
+			}
+			
+    	}).getSingleUser(user.getLogin());
+	} 
 	
 	private void checkFollowing(){
     	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
@@ -177,7 +142,7 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
 
 			@Override
 			public void onOK(Object ts) {
-				Snackbar.make(recyclerView, "Already Followed", Snackbar.LENGTH_LONG).show();
+				Snackbar.make(mSwipeRefreshLayout, "Already Followed", Snackbar.LENGTH_LONG).show();
 			}
 
 			@Override
@@ -193,7 +158,7 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
 
 			@Override
 			public void onOK(Object ts) {
-				Snackbar.make(recyclerView, "Already unFollowed", Snackbar.LENGTH_LONG).show();
+				Snackbar.make(mSwipeRefreshLayout, "Already unFollowed", Snackbar.LENGTH_LONG).show();
 			}
 
 			@Override
@@ -203,46 +168,5 @@ public class UserDetailActivity extends BaseActivity implements HandlerInterface
 			
     	}).unfollowUser(user.getLogin());
 	}
-	
-    private void requestUserInfo(boolean refresh){
-    	if(currentRequest != null) currentRequest.cancelRequest();
-    	UserInfoRequest request = new UserInfoRequest(this);
-    	UserInfoRequest.Condition condition = request.new Condition();
-    	condition.SetLogin(user.getLogin());
-    	condition.SetRefresh(refresh);
-    	request.SetHandler(new HandlerInterface<User>(){
-
-			@Override
-			public void onSuccess(User data) {
-				adapter.UpdateUserInfo(data);
-			}
-
-			@Override
-			public void onSuccess(User data, int totalPages, int currentPage) {
-				
-			}
-
-			@Override
-			public void onFailure(String error) {
-		        MessageUtils.showErrorMessage(UserDetailActivity.this, error);
-			}
-    		
-    	});
-    	request.SetSearchCondition(condition);
-    	RequestManager.getInstance(this).addRequest(request);
-    	currentRequest = request;
-    }
     
-    private void requestRepository(boolean refresh){
-    	mSwipeRefreshLayout.setRefreshing(false);
-    	if(currentRequest != null) currentRequest.cancelRequest();
-    	UserReposRequest request = new UserReposRequest(this);
-    	Condition condition = request.new Condition();
-    	condition.SetLogin(user.getLogin());
-    	condition.SetRefresh(refresh);
-    	request.SetHandler(this);
-    	request.SetSearchCondition(condition);
-    	RequestManager.getInstance(this).addRequest(request);
-    	currentRequest = request;
-    }
 }

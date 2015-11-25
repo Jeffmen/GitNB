@@ -55,7 +55,7 @@ public class ReposDetailActivity extends BaseActivity implements HandlerInterfac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        repos = (Repository) intent.getParcelableExtra(HotReposFragment.REPOS_KEY);
+        repos = (Repository) intent.getParcelableExtra(HotReposFragment.REPOS);
         setContentView(R.layout.activity_list_layout);
         recyclerView = (RecyclerView) findViewById(R.id.recylerView);  
         adapter = new ReposContributorAdapter(this, repos);
