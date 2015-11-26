@@ -1,6 +1,10 @@
 package com.example.gitnb.api.retrofit;
 
 import java.io.IOException;
+
+import android.os.Handler;
+import android.os.Looper;
+
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs.NetworkListener;
 import com.example.gitnb.model.Content;
 import com.google.gson.Gson;
@@ -12,7 +16,7 @@ public class OKHttpClient{
 	private static String TAG = "OKHttpClient";
     protected NetworkListener networkListener;
     private Gson gson = new Gson();
-	
+    private Handler mDelivery = new Handler();
 	private OKHttpClient(){
 	}
 	
@@ -26,9 +30,14 @@ public class OKHttpClient{
     	.enqueue(new Callback() {
 
 			@Override
-			public void onFailure(Request request, IOException exception) {
+			public void onFailure(Request request, final IOException exception) {
 		        if (networkListener != null) {
-		            networkListener.onError(exception.getMessage());
+	        		mDelivery.post(new Runnable() {
+	        			@Override
+	        			public void run() {
+	    		            networkListener.onError(exception.getMessage());
+	        			}
+	        		});
 		        }
 			}
 
@@ -38,13 +47,23 @@ public class OKHttpClient{
 		        if (response.isSuccessful()) {
 		            if (networkListener != null) {	
 		            	String reponse = response.body().string();
-		            	Object o = gson.fromJson(reponse, Content.class);
-		                networkListener.onOK(o);
+		            	final Object o = gson.fromJson(reponse, Content.class);
+		        		mDelivery.post(new Runnable() {
+		        			@Override
+		        			public void run() {
+				                networkListener.onOK(o);
+		        			}
+		        		});
 		            }
 		        } else {
-		            String mess = response.message();
-		            if (networkListener != null) {
-		                networkListener.onError(mess);
+		            final String mess = response.message();
+		            if (networkListener != null) {	
+		                mDelivery.post(new Runnable() {
+		        			@Override
+		        			public void run() {
+				                networkListener.onError(mess);	
+		        			}
+		        		});
 		            }
 		        }
 			}

@@ -20,6 +20,7 @@ public class ReposContentsAdapter extends RecyclerView.Adapter<ViewHolder>{
     private static final int TYPE_HEADER_VIEW = 2;
     private static final int TYPE_NOMAL_VIEW = 0;
     private OnItemClickListener mItemClickListener;
+    private OnItemClickListener headClickListener;
     protected final LayoutInflater mInflater;
     private ArrayList<Content> mContents;
     
@@ -35,6 +36,10 @@ public class ReposContentsAdapter extends RecyclerView.Adapter<ViewHolder>{
     
     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mItemClickListener = mItemClickListener;
+    }
+    
+    public void SetOnHeadClickListener(final OnItemClickListener mItemClickListener) {
+        this.headClickListener = mItemClickListener;
     }
     
 	public Content getItem(int position) {
@@ -81,13 +86,23 @@ public class ReposContentsAdapter extends RecyclerView.Adapter<ViewHolder>{
 
 	@Override
 	public ViewHolder onCreateViewHolder(ViewGroup viewgroup, int viewType) {
-		View v = mInflater.inflate(R.layout.repo_content_list_item,viewgroup,false);
-		return new ReposContentView(v);
+		if(viewType == TYPE_HEADER_VIEW){
+			View v = mInflater.inflate(R.layout.repo_content_list_item,viewgroup,false);
+			return new HeadView(v);
+		}
+		else{
+			View v = mInflater.inflate(R.layout.repo_content_list_item,viewgroup,false);
+			return new ReposContentView(v);
+		}
 	}
 	  
 	@Override
 	public void onBindViewHolder(ViewHolder vh, int position) {		
 		switch(getItemViewType(position)){
+		case TYPE_HEADER_VIEW:
+			HeadView headViewHolder = (HeadView) vh;
+			headViewHolder.content_name.setText("Back to the Previous Level");
+			break;
 		case TYPE_NOMAL_VIEW:
 			ReposContentView viewHolder = (ReposContentView) vh;
 			Content content = getItem(position);
@@ -98,7 +113,26 @@ public class ReposContentsAdapter extends RecyclerView.Adapter<ViewHolder>{
 			    if(content.isFile())
 			    	viewHolder.content_type.setImageResource(R.drawable.ic_attachment_white_48dp);
 			}
+			else{
+			    viewHolder.content_name.setText("Back to the Previous Level");
+			}
 			break;
+		}
+	}
+	
+	private class HeadView extends RepoContentViewHolder{
+		
+		public HeadView(View view) {
+			super(view);		
+			content_name.setText("Back to the Previous Level");			
+			content_name.setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v) {
+			        if (headClickListener != null) {
+			        	headClickListener.onItemClick(v, getLayoutPosition());
+			        }
+				}
+			});
 		}
 	}
 	

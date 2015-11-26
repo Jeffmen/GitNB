@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.gitnb.module.user;
+package com.example.gitnb.widget;
 
 
 import android.content.res.Resources;

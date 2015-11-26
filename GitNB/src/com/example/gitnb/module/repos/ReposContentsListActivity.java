@@ -69,6 +69,24 @@ public class ReposContentsListActivity extends BaseActivity {
 				}
 			}
 		});
+        adapter.SetOnHeadClickListener(new ReposContentsAdapter.OnItemClickListener() {
+			@Override
+			public void onItemClick(View view, int position) {
+				int pos;
+				if(path != null || !path.isEmpty()){
+					pos = path.lastIndexOf("/");
+					if(pos >= 0)
+						path = path.substring(0, pos);
+				}
+				if(path != null || !path.isEmpty()){
+					pos = path.lastIndexOf("/");
+					if(pos >= 0)
+						path = path.substring(0, pos);
+				}
+				clickName = "";
+				requestContents();
+			}
+		});
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);

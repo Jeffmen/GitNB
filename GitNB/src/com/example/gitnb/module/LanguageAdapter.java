@@ -11,8 +11,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.example.gitnb.R;
-import com.example.gitnb.module.user.LetterTileDrawable;
 import com.example.gitnb.utils.Utils;
+import com.example.gitnb.widget.LetterTileDrawable;
 
 public class LanguageAdapter extends RecyclerView.Adapter<ViewHolder>{
 	private Context mContext;
