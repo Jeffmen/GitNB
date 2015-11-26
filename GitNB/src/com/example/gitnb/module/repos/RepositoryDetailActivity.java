@@ -5,6 +5,8 @@ import com.example.gitnb.api.retrofit.RepoActionsClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.Repository;
+import com.example.gitnb.module.user.HotUserFragment;
+import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.utils.MessageUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
@@ -83,7 +85,17 @@ public class RepositoryDetailActivity extends BaseActivity{
     	TextView repos_homepage = (TextView) findViewById(R.id.repos_homepage);
     	TextView repos_discription = (TextView) findViewById(R.id.repos_description);
     	SimpleDraweeView user_avatar = (SimpleDraweeView) findViewById(R.id.user_avatar);
-
+    	
+		user_avatar.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(RepositoryDetailActivity.this, UserDetailActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable(HotUserFragment.USER_KEY, repos.getOwner());
+				intent.putExtras(bundle);
+				startActivity(intent);
+			}
+		});
     	TextView type = (TextView) findViewById(R.id.type);
     	TextView issues = (TextView) findViewById(R.id.issues);
     	TextView created_date = (TextView) findViewById(R.id.created_date);
