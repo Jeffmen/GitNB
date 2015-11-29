@@ -35,7 +35,7 @@
             android:screenOrientation="portrait">
         </activity>
         <activity 
-            android:name="com.example.gitnb.module.repos.RepositoryDetailActivity"
+            android:name="com.example.gitnb.module.repos.ReposDetailActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity 
@@ -55,6 +55,14 @@
             android:name="com.example.gitnb.module.LanguageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/TransparentActivityStyle">
+        </activity>
+        <activity 
+            android:name="com.example.gitnb.module.user.UserListActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity 
+            android:name="com.example.gitnb.module.repos.ReposListActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

@@ -3,7 +3,6 @@ package com.example.gitnb.api.retrofit;
 import java.util.List;
 
 import com.example.gitnb.model.Content;
-import com.example.gitnb.model.Contributor;
 import com.example.gitnb.model.Release;
 import com.example.gitnb.model.RepoRequestDTO;
 import com.example.gitnb.model.Repository;

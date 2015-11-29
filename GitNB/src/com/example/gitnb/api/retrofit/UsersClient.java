@@ -1,9 +1,5 @@
 package com.example.gitnb.api.retrofit;
 
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Retrofit;
-
 public class UsersClient extends RetrofitNetworkAbs{
 
 	private UsersService usersService;
@@ -30,6 +26,22 @@ public class UsersClient extends RetrofitNetworkAbs{
 	
 	public void unfollowUser(String username){
 		execute(usersService.checkFollowing(username));
+	}
+	
+	public void following(String username, int page){
+		execute(usersService.following(username, page));
+	}
+	
+	public void followers(String username, int page){
+		execute(usersService.followers(username, page));
+	}
+	
+	public void userReposList(String sort, int page){
+		execute(usersService.userReposList(sort, page));
+	}
+	
+	public void userReposList(String username, String sort, int page){
+		execute(usersService.userReposList(username, sort, page));
 	}
 	
 	@Override

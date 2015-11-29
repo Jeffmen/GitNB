@@ -62,7 +62,7 @@ public class ReposContentsListActivity extends BaseActivity {
 				Content content = adapter.getItem(position);
 				if(content.isDir()){
 					clickName = content.name;
-					requestContents();
+	                refreshHandler.sendEmptyMessage(START_UPDATE);
 				}
 				if(content.isFile()){
 					showContent(content);
@@ -84,7 +84,7 @@ public class ReposContentsListActivity extends BaseActivity {
 						path = path.substring(0, pos);
 				}
 				clickName = "";
-				requestContents();
+                refreshHandler.sendEmptyMessage(START_UPDATE);
 			}
 		});
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
@@ -101,7 +101,7 @@ public class ReposContentsListActivity extends BaseActivity {
         	
             @Override
             public void onRefresh() {
-            	requestContents();
+                refreshHandler.sendEmptyMessage(START_UPDATE);
             }
             
         });
@@ -132,7 +132,6 @@ public class ReposContentsListActivity extends BaseActivity {
     }
     
     private void requestContents(){
-    	mSwipeRefreshLayout.setRefreshing(true);
     	RepoClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
 
 			@Override

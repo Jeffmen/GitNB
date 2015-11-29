@@ -4,10 +4,6 @@ import java.util.ArrayList;
 
 import com.example.gitnb.R;
 import com.example.gitnb.api.HandlerInterface;
-import com.example.gitnb.api.RequestManager;
-import com.example.gitnb.api.RequestManager.WebRequest;
-import com.example.gitnb.api.UserSearchRequest;
-import com.example.gitnb.api.UserSearchRequest.Condition;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.SearchClient;
 import com.example.gitnb.model.User;
@@ -22,24 +18,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnScrollListener;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<User>>, UpdateLanguageListener, TextWatcher{
+public class HotUserFragment extends Fragment implements HandlerInterface<ArrayList<User>>, UpdateLanguageListener{
 	private String TAG = "HotUserFragment";
-	public static String USER_KEY = "user_key";
+	public static String USER = "user_key";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private LinearLayoutManager mLayoutManager;
-    private WebRequest currentRequest;
     private RecyclerView recyclerView;
-    private HotUserAdapter adapter;
+    private UserListAdapter adapter;
 	private boolean isLoadingMore;
     private String language;
+    private String location;
 	private int page;
 
 	@Override
@@ -48,22 +40,20 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
         recyclerView = (RecyclerView) view.findViewById(R.id.recylerView);
         page = 1;
         language = "java";
-        adapter = new HotUserAdapter(getActivity());
-        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).build());
-        //adapter.SetSearchTextWatcher(this);
-        adapter.SetOnItemClickListener(new HotUserAdapter.OnItemClickListener() {
+        adapter = new UserListAdapter(getActivity());
+        adapter.setShowSearch(true);
+        adapter.setOnItemClickListener(new UserListAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
-				//Toast.makeText(getActivity(), "item:"+position, Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(getActivity(), UserDetailActivity.class);
 				Bundle bundle = new Bundle();
-				bundle.putParcelable(USER_KEY, adapter.getItem(position));
+				bundle.putParcelable(USER, adapter.getItem(position));
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}
 		});
-        adapter.SetOnLoadMoreClickListener(new HotUserAdapter.OnItemClickListener() {
+        adapter.setOnLoadMoreClickListener(new UserListAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
@@ -72,21 +62,21 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 	            } else{
 	             	page++;
 	                isLoadingMore = true;
-	             	requestHotUser(true, null);
+	             	requestHotUser(null);
 	            }
 			}
 		});        
-        adapter.SetOnSearchClickListener(new HotUserAdapter.OnItemClickListener() {
+        adapter.setOnSearchClickListener(new UserListAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
 	        	page = 1;
 	        	mSwipeRefreshLayout.setRefreshing(true);
-	        	requestHotUser(adapter.getSearchText().isEmpty() ? false : true, adapter.getSearchText());
+	        	requestHotUser(adapter.getSearchText());
 			}
 		});
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).build());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         /*
         recyclerView.addOnScrollListener(new OnScrollListener() {
@@ -117,31 +107,12 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
             @Override
             public void onRefresh() {
             	page = 1;
-            	requestHotUser(true, null);
+            	requestHotUser(null);
             }
         });
-        requestHotUser(false, null);
+        requestHotUser(null);
         return view;
     }
-	
-	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count,
-			int after) {
-		
-	}
-
-	@Override
-	public void onTextChanged(CharSequence s, int start, int before, int count){
-		if(s.length() > 0){
-        	page = 1;
-        	requestHotUser(true, s.toString());
-		}
-	}
-
-	@Override
-	public void afterTextChanged(Editable s) {
-		
-	}
 	
 	@Override
     public void onSuccess(ArrayList<User> data){
@@ -171,20 +142,22 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 		
 	}
     
-    private void requestHotUser(boolean refresh, String key){
-    	/*
-    	if(currentRequest != null) currentRequest.cancelRequest();
-    	UserSearchRequest request = new UserSearchRequest(getActivity());
-    	Condition condition = request.new Condition();
-    	condition.SetLanguage(language);
-    	condition.SetLocation("china");
-    	condition.SetRefresh(refresh);
-    	condition.SetPage(page);
-        condition.SetKey(key);
-    	request.SetHandler(this);
-    	request.SetSearchCondition(condition);
-    	RequestManager.getInstance(getActivity()).addRequest(request);
-    	currentRequest = request;*/
+    private void requestHotUser(String key){
+    	String q = "";
+		if(key != null && !key.isEmpty())
+		{
+			q += key;
+		}
+		if(location != null && !location.isEmpty())
+		{
+			q += "+location:" + location;
+		}
+		if(language != null && !language.isEmpty())
+		{
+			q += "+language:" + language;
+		}
+    	q += "+followers:%3E200";
+    	
     	SearchClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
 
 			@Override
@@ -198,14 +171,14 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 				onFailure(Message);
 			}
 			
-    	}).users("location:world", page);
+    	}).users(q, "followers", "desc", page);
     }
 
 	@Override
 	public Void updateLanguage(String language) {
 		this.language = language;
     	mSwipeRefreshLayout.setRefreshing(true);
-    	requestHotUser(true, null);
+    	requestHotUser(null);
 		return null;
 	}
 }

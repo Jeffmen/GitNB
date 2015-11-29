@@ -17,13 +17,14 @@ import android.view.ViewGroup;
 
 import com.example.gitnb.R;
 import com.example.gitnb.model.Repository;
+import com.example.gitnb.model.User;
 import com.example.gitnb.module.viewholder.LoadMoreViewHolder;
 import com.example.gitnb.module.viewholder.ReposViewHolder;
 import com.example.gitnb.module.viewholder.SearchViewHolder;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 
-public class HotReposAdapter extends RecyclerView.Adapter<ViewHolder>{
+public class ReposListAdapter extends RecyclerView.Adapter<ViewHolder>{
 
 	private Context mContext;
     private static final int TYPE_HEADER_VIEW = 2;
@@ -35,7 +36,8 @@ public class HotReposAdapter extends RecyclerView.Adapter<ViewHolder>{
     private OnItemClickListener mItemClickListener;
     private OnItemClickListener mLoadMoreClickListener;
     private OnItemClickListener mSearchClickListener;
-    private boolean isShowLoadMore = true;
+    private boolean isShowLoadMore = false;
+    private boolean isShowSearch = false;
     private boolean isLoadingMore = false;
     private String searchText = "";
 
@@ -43,20 +45,28 @@ public class HotReposAdapter extends RecyclerView.Adapter<ViewHolder>{
         void onItemClick(View view, int position);
     }
     
-    public HotReposAdapter(Context context) {
+    public ReposListAdapter(Context context) {
     	mContext = context;
     	mInflater = LayoutInflater.from(mContext);
 	}
     
-    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
+    public void setShowLoadMore(boolean value){
+    	this.isShowLoadMore = value;
+    }
+    
+    public void setShowSearch(boolean value){
+    	this.isShowSearch = value;
+    }
+    
+    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mItemClickListener = mItemClickListener;
     }
     
-    public void SetOnLoadMoreClickListener(final OnItemClickListener mLastItemClickListener) {
+    public void setOnLoadMoreClickListener(final OnItemClickListener mLastItemClickListener) {
         this.mLoadMoreClickListener = mLastItemClickListener;
     }
     
-    public void SetOnSearchClickListener(final OnItemClickListener mSearchClickListener) {
+    public void setOnSearchClickListener(final OnItemClickListener mSearchClickListener) {
         this.mSearchClickListener = mSearchClickListener;
     }
     
@@ -65,13 +75,13 @@ public class HotReposAdapter extends RecyclerView.Adapter<ViewHolder>{
     }
     
 	public Repository getItem(int position) {
-		if(position == 0){
+		if(isShowSearch && position == 0){
 			return null;
 		}
 		if(isShowLoadMore && position == getItemCount()-1){
 			return null;
 		}
-		return mRepos == null ? null : mRepos.get(position-1);
+		return mRepos == null ? null : mRepos.get(position-(isShowSearch?1:0));
 	}
 
 	@Override
@@ -80,15 +90,11 @@ public class HotReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 	}
     
     public void update(ArrayList<Repository> data){
+		isShowLoadMore = true;
     	if(data == null || data.size()<PAGE_COUNT){
     		isShowLoadMore = false;
-    	}   
-    	else{
-    		isShowLoadMore = true;
     	}
-//    	if (data != null && data.size() > 0){
     	mRepos= data;
-//    	}
     	reset();
     }
     
@@ -112,12 +118,20 @@ public class HotReposAdapter extends RecyclerView.Adapter<ViewHolder>{
     
 	@Override
 	public int getItemCount() {
-		return (mRepos == null ? 0 : mRepos.size())+(isShowLoadMore ? 2 : 1);
+		int orther = 0;
+		if(isShowLoadMore) orther++;
+		if(isShowSearch) orther++;
+		if(mRepos == null){
+			return 0 + orther;
+		}
+		else {
+			return mRepos.size() + orther;
+		}
 	}
 	
     @Override
     public int getItemViewType(int position) {
-    	if(position == 0){
+    	if(isShowSearch && position == 0){
     		return TYPE_HEADER_VIEW;
     	}
     	else if (isShowLoadMore && getItemCount() - 1 == position) { // footer
@@ -170,7 +184,7 @@ public class HotReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 			if(item.getOwner() != null){
 			    viewHolder.user_avatar.setImageURI(Uri.parse(item.getOwner().getAvatar_url()));
 			}
-			viewHolder.repos_rank.setText(String.valueOf(position)+".");
+			viewHolder.repos_rank.setText(String.valueOf(isShowSearch?position:position+1)+".");
 			break;
 		case TYPE_HEADER_VIEW:
 			SearchView searchHolder = (SearchView) vh;

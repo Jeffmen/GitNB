@@ -23,7 +23,7 @@ import com.example.gitnb.module.viewholder.UserViewHolder;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 
-public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
+public class UserListAdapter extends RecyclerView.Adapter<ViewHolder>{
 
 	private Context mContext;
     private static final int TYPE_HEADER_VIEW = 2;
@@ -35,7 +35,8 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
     private OnItemClickListener mItemClickListener;
     private OnItemClickListener mLoadMoreClickListener;
     private OnItemClickListener mSearchClickListener;
-    private boolean isShowLoadMore = true;
+    private boolean isShowLoadMore = false;
+    private boolean isShowSearch = false;
     private boolean isLoadingMore = false;
     private String searchText = "";
 
@@ -43,20 +44,28 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
         void onItemClick(View view, int position);
     }
     
-    public HotUserAdapter(Context context) {
+    public UserListAdapter(Context context) {
     	mContext = context;
     	mInflater = LayoutInflater.from(mContext);
 	}
     
-    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
+    public void setShowLoadMore(boolean value){
+    	this.isShowLoadMore = value;
+    }
+    
+    public void setShowSearch(boolean value){
+    	this.isShowSearch = value;
+    }
+    
+    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mItemClickListener = mItemClickListener;
     }
     
-    public void SetOnLoadMoreClickListener(final OnItemClickListener mLastItemClickListener) {
+    public void setOnLoadMoreClickListener(final OnItemClickListener mLastItemClickListener) {
         this.mLoadMoreClickListener = mLastItemClickListener;
     }
     
-    public void SetOnSearchClickListener(final OnItemClickListener mSearchClickListener) {
+    public void setOnSearchClickListener(final OnItemClickListener mSearchClickListener) {
         this.mSearchClickListener = mSearchClickListener;
     }
     
@@ -65,13 +74,13 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
     }
     
 	public User getItem(int position) {
-		if(position == 0){
+		if(isShowSearch && position == 0){
 			return null;
 		}
 		if(isShowLoadMore && position == getItemCount()-1){
 			return null;
 		}
-		return mUsers == null ? null : mUsers.get(position-1);
+		return mUsers == null ? null : mUsers.get(position-(isShowSearch?1:0));
 	}
 
 	@Override
@@ -80,24 +89,22 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 	}
     
     public void update(ArrayList<User> data){
+		isShowLoadMore = true;
     	if(data == null || data.size()<PAGE_COUNT){
     		isShowLoadMore = false;
-    	}   
-    	else{
-    		isShowLoadMore = true;
-    	}
-//    	if (data != null && data.size() > 0){
-        	mUsers= data;
-//    	}
+    	}  
+        mUsers= data;
     	reset();
     }
     
     public void insertAtBack(ArrayList<User> data){
-    	if(data == null || data.size()<PAGE_COUNT){
-    		isShowLoadMore = false;
-    	}
-    	else{
-    		isShowLoadMore = true;
+    	if(isShowLoadMore){
+	    	if(data == null || data.size()<PAGE_COUNT){
+	    		isShowLoadMore = false;
+	    	}
+	    	else{
+	    		isShowLoadMore = true;
+	    	}
     	}
         if (data != null && data.size() > 0){
         	mUsers.addAll(data);
@@ -112,12 +119,20 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
     
 	@Override
 	public int getItemCount() {
-		return (mUsers == null ? 0 : mUsers.size())+(isShowLoadMore ? 2 : 1);
+		int orther = 0;
+		if(isShowLoadMore) orther++;
+		if(isShowSearch) orther++;
+		if(mUsers == null){
+			return 0 + orther;
+		}
+		else {
+			return mUsers.size() + orther;
+		}
 	}
 	
     @Override
     public int getItemViewType(int position) {
-    	if(position == 0){
+    	if(isShowSearch && position == 0){
     		return TYPE_HEADER_VIEW;
     	}
     	else if (isShowLoadMore && getItemCount() - 1 == position) { // footer
@@ -161,7 +176,7 @@ public class HotUserAdapter extends RecyclerView.Adapter<ViewHolder>{
 			    viewHolder.ivAvatar.setImageURI(Uri.parse(user.getAvatar_url()));
 				viewHolder.tvLogin.setText(user.getLogin());
 			}
-			viewHolder.tvRank.setText(String.valueOf(position)+".");
+			viewHolder.tvRank.setText(String.valueOf(isShowSearch?position:position+1)+".");
 			break;
 		case TYPE_HEADER_VIEW:
 			SearchView searchHolder = (SearchView) vh;

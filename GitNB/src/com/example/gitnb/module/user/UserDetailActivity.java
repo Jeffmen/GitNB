@@ -5,6 +5,7 @@ import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.UsersClient;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.User;
+import com.example.gitnb.module.repos.ReposListActivity;
 import com.example.gitnb.utils.MessageUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
@@ -41,7 +42,7 @@ public class UserDetailActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        user = (User) intent.getParcelableExtra(HotUserFragment.USER_KEY);
+        user = (User) intent.getParcelableExtra(HotUserFragment.USER);
         setContentView(R.layout.activity_user_detail);
         main = (LinearLayout) findViewById(R.id.main);
         main.setVisibility(View.GONE);
@@ -114,8 +115,65 @@ public class UserDetailActivity extends BaseActivity{
 			}
         	
         });
+		
+    	TextView events = (TextView) findViewById(R.id.events);
+    	TextView organizations = (TextView) findViewById(R.id.organizations);
+    	TextView followers = (TextView) findViewById(R.id.followers);
+    	TextView following = (TextView) findViewById(R.id.following);
+    	TextView repositorys = (TextView) findViewById(R.id.repositorys);
+    	
+    	events.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+			}
+		});
+    	organizations.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+			}
+		});
+    	followers.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(UserDetailActivity.this, UserListActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable(HotUserFragment.USER, user);
+				intent.putExtras(bundle);
+				intent.putExtra(UserListActivity.USER_TYPE, UserListActivity.USER_TYPE_FOLLOWER);
+				startActivity(intent);
+			}
+		});
+    	following.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(UserDetailActivity.this, UserListActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable(HotUserFragment.USER, user);
+				intent.putExtras(bundle);
+				intent.putExtra(UserListActivity.USER_TYPE, UserListActivity.USER_TYPE_FOLLOWING);
+				startActivity(intent);
+			}
+		});
+    	repositorys.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(UserDetailActivity.this, ReposListActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable(HotUserFragment.USER, user);
+				intent.putExtras(bundle);
+				intent.putExtra(ReposListActivity.REPOS_TYPE, ReposListActivity.REPOS_TYPE_USER);
+				startActivity(intent);
+			}
+		});
     }
-
+    
 	@Override
     protected void startRefresh(){
         mSwipeRefreshLayout.setRefreshing(true);

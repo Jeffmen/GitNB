@@ -30,10 +30,9 @@ public class HotReposFragment extends Fragment implements HandlerInterface<Array
 	private String TAG = "HotReposFragment";
 	public static String REPOS = "repos";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private LinearLayoutManager mLayoutManager;
     private WebRequest currentRequest;
     private RecyclerView recyclerView;
-    private HotReposAdapter adapter;
+    private ReposListAdapter adapter;
 	private boolean isLoadingMore;
     private String language;
 	private int page;
@@ -44,21 +43,21 @@ public class HotReposFragment extends Fragment implements HandlerInterface<Array
         recyclerView = (RecyclerView) view.findViewById(R.id.recylerView);
         page = 1;
         language = "java";
-        adapter = new HotReposAdapter(getActivity());
-        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).build());
-        adapter.SetOnItemClickListener(new HotReposAdapter.OnItemClickListener() {
+        adapter = new ReposListAdapter(getActivity());
+        adapter.setShowSearch(true);
+        adapter.setOnItemClickListener(new ReposListAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
 				//Toast.makeText(getActivity(), "item:"+position, Toast.LENGTH_SHORT).show();
-				Intent intent = new Intent(getActivity(), RepositoryDetailActivity.class);
+				Intent intent = new Intent(getActivity(), ReposDetailActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putParcelable(REPOS, adapter.getItem(position));
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}
 		});
-        adapter.SetOnLoadMoreClickListener(new HotReposAdapter.OnItemClickListener() {
+        adapter.setOnLoadMoreClickListener(new ReposListAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
@@ -71,7 +70,7 @@ public class HotReposFragment extends Fragment implements HandlerInterface<Array
 	            }
 			}
 		});        
-        adapter.SetOnSearchClickListener(new HotReposAdapter.OnItemClickListener() {
+        adapter.setOnSearchClickListener(new ReposListAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
@@ -80,8 +79,8 @@ public class HotReposFragment extends Fragment implements HandlerInterface<Array
 	        	requestHotRepos(adapter.getSearchText().isEmpty() ? false : true, adapter.getSearchText());
 			}
 		});
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).build());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(

@@ -40,7 +40,7 @@ public class ReposContentActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        content_url = intent.getStringExtra(RepositoryDetailActivity.CONTENT_URL);
+        content_url = intent.getStringExtra(ReposDetailActivity.CONTENT_URL);
         content = (Content)intent.getParcelableExtra(ReposContentsListActivity.CONTENT);
         setContentView(R.layout.activity_repo_content);
         text_content = (TextView) findViewById(R.id.text_content);

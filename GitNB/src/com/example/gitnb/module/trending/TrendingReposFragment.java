@@ -10,6 +10,7 @@ import com.example.gitnb.api.RequestManager;
 import com.example.gitnb.api.RequestManager.WebRequest;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.module.MainActivity.UpdateLanguageListener;
+import com.example.gitnb.module.repos.HotReposFragment;
 import com.example.gitnb.module.repos.ReposDetailActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
@@ -26,7 +27,6 @@ import android.view.ViewGroup;
 
 public class TrendingReposFragment extends Fragment implements HandlerInterface<ArrayList<Repository>>, UpdateLanguageListener{
 	private String TAG = "TrendingReposFragment";
-	public static String REPOS_KEY = "repos_key";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLayoutManager;
     private TrendingReposAdapter adapter;
@@ -46,7 +46,7 @@ public class TrendingReposFragment extends Fragment implements HandlerInterface<
 			public void onItemClick(View view, int position) {
 				Intent intent = new Intent(getActivity(), ReposDetailActivity.class);
 				Bundle bundle = new Bundle();
-				bundle.putParcelable(REPOS_KEY, adapter.getItem(position));
+				bundle.putParcelable(HotReposFragment.REPOS, adapter.getItem(position));
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}

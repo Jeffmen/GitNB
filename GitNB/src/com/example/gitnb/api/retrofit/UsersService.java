@@ -3,6 +3,7 @@ package com.example.gitnb.api.retrofit;
 import java.util.List;
 
 import com.example.gitnb.model.Email;
+import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.User;
 
 import retrofit.Call;
@@ -49,7 +50,7 @@ public interface UsersService {
 	Call<List<User>> following(@Query("page") int page);
 
 	@GET("users/{username}/following")
-	List<User> following(@Path("username") String username, @Query("page") int page);
+	Call<List<User>> following(@Path("username") String username, @Query("page") int page);
 
 	@GET("user")
 	Call<User> me();
@@ -74,4 +75,24 @@ public interface UsersService {
 
 	@GET("orgs/{org}/members")
 	Call<List<User>> orgMembers(@Path("org") String org, @Query("page") int page);
+	
+	// User repositories
+	@GET("/user/repos?type=owner")
+	Call<List<Repository>> userReposList(@Query("sort") String sort);
+
+	@GET("/user/repos?type=owner")
+	Call<List<Repository>> userReposList(@Query("sort") String sort, @Query("page") int page);
+
+	@GET("/users/{username}/repos?type=owner")
+	Call<List<Repository>> userReposList(@Path("username") String username, @Query("sort") String sort);
+
+	@GET("/users/{username}/repos?type=owner")
+	Call<List<Repository>> userReposList(@Path("username") String username, @Query("sort") String sort,  @Query("page") int page);
+
+	@GET("/user/repos?affiliation=organization_member")
+	Call<List<Repository>> userReposListFromOrgs(@Query("sort") String sort);
+
+	@GET("/user/repos?affiliation=organization_member")
+	Call<List<Repository>> userReposListFromOrgs(@Query("sort") String sort, @Query("page") int page);
+
 }
