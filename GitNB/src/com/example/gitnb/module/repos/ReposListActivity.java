@@ -63,9 +63,9 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
         adapter.setOnItemClickListener(new ReposListAdapter.OnItemClickListener() {
 			@Override
 			public void onItemClick(View view, int position) {
-				Intent intent = new Intent(ReposListActivity.this, UserDetailActivity.class);
+				Intent intent = new Intent(ReposListActivity.this, ReposDetailActivity.class);
 				Bundle bundle = new Bundle();
-				bundle.putParcelable(HotUserFragment.USER, adapter.getItem(position));
+				bundle.putParcelable(HotReposFragment.REPOS, adapter.getItem(position));
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}
