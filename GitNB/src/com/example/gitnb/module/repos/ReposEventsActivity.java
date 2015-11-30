@@ -14,36 +14,32 @@ import android.util.Log;
 import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.RepoClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
-import com.example.gitnb.api.retrofit.UsersClient;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.Repository;
-import com.example.gitnb.model.User;
-import com.example.gitnb.module.user.UserListAdapter;
 import com.example.gitnb.module.user.HotUserFragment;
 import com.example.gitnb.module.user.UserDetailActivity;
-import com.example.gitnb.module.user.UserListAdapter.OnItemClickListener;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
-public class ReposListActivity  extends BaseActivity implements RetrofitNetworkAbs.NetworkListener{
-	private String TAG = "ReposListActivity";
-	public static final String REPOS_TYPE = "repos_type";
-	public static final String REPOS_TYPE_USER = "Repositorys";
+public class ReposEventsActivity  extends BaseActivity implements RetrofitNetworkAbs.NetworkListener{
+	private String TAG = "ReposEventsActivity";
+	public static final String EVENT_TYPE = "event_type";
+	public static final String EVENT_TYPE_REPOS = "Events";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ReposListAdapter adapter;
     private RecyclerView recyclerView;
 	private boolean isLoadingMore;
-	private User user;
+	private Repository repos;
 	private String type;
 	private int page = 1;
 
 	
 	@Override
 	protected void setTitle(TextView view) {
-        if(user != null && !user.getName().isEmpty()){    
+        if(repos != null && !repos.getName().isEmpty()){    
         	switch(type){
-	        case REPOS_TYPE_USER:
-	        	view.setText(user.getLogin()+" / " + REPOS_TYPE_USER);    
+	        case EVENT_TYPE_REPOS:
+	        	view.setText(repos.getName()+" / "+EVENT_TYPE_REPOS);    
 	        	break;
         }
         }else{
@@ -55,15 +51,15 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
-		user = (User) intent.getParcelableExtra(HotUserFragment.USER);
-		type = intent.getStringExtra(REPOS_TYPE);
+		repos = (Repository) intent.getParcelableExtra(HotReposFragment.REPOS);
+		type = intent.getStringExtra(EVENT_TYPE);
 		this.setContentView(R.layout.activity_list_layout);
 		
         adapter = new ReposListAdapter(this);
         adapter.setOnItemClickListener(new ReposListAdapter.OnItemClickListener() {
 			@Override
 			public void onItemClick(View view, int position) {
-				Intent intent = new Intent(ReposListActivity.this, UserDetailActivity.class);
+				Intent intent = new Intent(ReposEventsActivity.this, UserDetailActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putParcelable(HotUserFragment.USER, adapter.getItem(position));
 				intent.putExtras(bundle);
@@ -108,8 +104,8 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
     protected void startRefresh(){
         mSwipeRefreshLayout.setRefreshing(true);
         switch(type){
-	        case REPOS_TYPE_USER:
-	        	userReposList();
+	        case EVENT_TYPE_REPOS:
+	        	getEvents();
 	        	break;
         }
     }
@@ -140,12 +136,12 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
 
 	@Override
 	public void onError(String Message) {
-		MessageUtils.showErrorMessage(ReposListActivity.this, Message);
+		MessageUtils.showErrorMessage(ReposEventsActivity.this, Message);
 		refreshHandler.sendEmptyMessage(END_ERROR);
 	}
 	
-	private void userReposList(){
-		UsersClient.getNewInstance().setNetworkListener(this)
-		  .userReposList(user.getLogin(), "updated", page);
+	private void getEvents(){
+		RepoClient.getNewInstance().setNetworkListener(this)
+		  .events(repos.getOwner().getLogin(), repos.getName(), page);
 	}
 }

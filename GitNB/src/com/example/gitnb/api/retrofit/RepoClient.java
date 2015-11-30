@@ -62,6 +62,10 @@ public class RepoClient extends RetrofitNetworkAbs{
 		execute(repoService.stargazers(owner, repo, page));
 	}
     
+    public void events(String owner, String repo, int page){
+		execute(repoService.events(owner, repo, page));
+	}
+    
     public void delete(String owner, String repo){
 		execute(repoService.delete(owner, repo));
 	}

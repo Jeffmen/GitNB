@@ -3,6 +3,7 @@ package com.example.gitnb.api.retrofit;
 import java.util.List;
 
 import com.example.gitnb.model.Content;
+import com.example.gitnb.model.Event;
 import com.example.gitnb.model.Release;
 import com.example.gitnb.model.RepoRequestDTO;
 import com.example.gitnb.model.Repository;
@@ -88,8 +89,8 @@ public interface RepoService {
     //@GET("/repos/{owner}/{name}/events")
     //List<GithubEvent> events(@Path("owner") String owner, @Path("name") String repo);
 
-    //@GET("/repos/{owner}/{name}/events")
-    //List<GithubEvent> events(@Path("owner") String owner, @Path("name") String repo, @Query("page") int page);
+    @GET("/repos/{owner}/{name}/events")
+    Call<List<Event>> events(@Path("owner") String owner, @Path("name") String repo, @Query("page") int page);
 
     @GET("/repos/{owner}/{name}/forks")
     Call<List<Repository>> listForks(@Path("owner") String owner, @Path("name") String repo, @Query("sort") String sort);

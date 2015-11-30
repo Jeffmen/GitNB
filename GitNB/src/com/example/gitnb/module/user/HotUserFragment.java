@@ -156,7 +156,7 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 		{
 			q += "+language:" + language;
 		}
-    	q += "+followers:%3E200";
+    	//q += "+followers:%3E200";
     	
     	SearchClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
 
