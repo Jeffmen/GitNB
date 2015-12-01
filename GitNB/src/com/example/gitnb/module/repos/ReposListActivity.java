@@ -45,7 +45,7 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
 	        case REPOS_TYPE_USER:
 	        	view.setText(user.getLogin()+" / " + REPOS_TYPE_USER);    
 	        	break;
-        }
+            }
         }else{
         	view.setText("NULL");
         }

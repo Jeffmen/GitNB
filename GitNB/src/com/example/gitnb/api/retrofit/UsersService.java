@@ -3,6 +3,7 @@ package com.example.gitnb.api.retrofit;
 import java.util.List;
 
 import com.example.gitnb.model.Email;
+import com.example.gitnb.model.Event;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.User;
 
@@ -94,5 +95,8 @@ public interface UsersService {
 
 	@GET("/user/repos?affiliation=organization_member")
 	Call<List<Repository>> userReposListFromOrgs(@Query("sort") String sort, @Query("page") int page);
+
+	@GET("/users/{username}/received_events")
+	Call<List<Event>> events(@Path("username") String username, @Query("page") int page);
 
 }

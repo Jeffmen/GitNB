@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.example.gitnb.R;
 import com.example.gitnb.model.Event;
+import com.example.gitnb.model.EventType;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.User;
 import com.example.gitnb.module.viewholder.EventViewHolder;
@@ -157,7 +158,7 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 			return new EventView(v);
 		}
 	}
-	  
+	//https://api.github.com/users/jeffmen/received_events
 	@Override
 	public void onBindViewHolder(ViewHolder vh, int position) {		
 		switch(getItemViewType(position)){
@@ -175,18 +176,17 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 			EventView viewHolder = (EventView) vh;
 			Event item = getItem(position);
 			if(item != null){
-				viewHolder.repos_name.setText(item.getName());
-				viewHolder.repos_star.setText("Star:"+item.getStargazers_count());
-				viewHolder.repos_fork.setText(item.isFork()?"fork":"owner");
-				viewHolder.repos_language.setText(item.getLanguage());
-				viewHolder.repos_homepage.setText(item.getHomepage());
-				viewHolder.repos_discription.setText(item.getDescription());
+				viewHolder.type_img.setBackgroundResource(R.drawable.ic_chevron_right_white_18dp);
+				viewHolder.created_date.setText(item.created_at);
+				viewHolder.event_user.setText(item.actor.getLogin());
+				viewHolder.event_type.setText(getTypeString(item.getType()));
+				viewHolder.repos_name.setText(item.repo.getName());
+				viewHolder.description.setText(item.payload.issue.title);
 			}
 			viewHolder.user_avatar.setVisibility(View.VISIBLE);
-			if(item.getOwner() != null){
-			    viewHolder.user_avatar.setImageURI(Uri.parse(item.getOwner().getAvatar_url()));
+			if(item.actor != null){
+			    viewHolder.user_avatar.setImageURI(Uri.parse(item.actor.getAvatar_url()));
 			}
-			viewHolder.repos_rank.setText(String.valueOf(isShowSearch?position:position+1)+".");
 			break;
 		case TYPE_HEADER_VIEW:
 			SearchView searchHolder = (SearchView) vh;
@@ -202,6 +202,43 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 		}
 	}
 	
+	private String getTypeString(EventType type){
+		switch (type) {
+		case WatchEvent:
+				return "starred";
+		case CreateEvent:
+				return "starred";
+		case CommitCommentEvent:
+				return "starred";
+		case DownloadEvent:
+				return "starred";
+		case FollowEvent:
+				return "starred";
+		case ForkEvent:
+				return "starred";
+		case GistEvent:
+				return "starred";
+		case GollumEvent:
+				return "starred";
+		case IssueCommentEvent:
+				return "starred";
+		case IssuesEvent:
+				return "starred";
+		case MemberEvent:
+				return "starred";
+		case PublicEvent:
+		case PullRequestEvent:
+		case PullRequestReviewCommentEvent:
+		case PushEvent:
+		case StatusEvent:
+		case TeamAddEvent:
+		case DeleteEvent:
+		case ReleaseEvent:
+				return "starred";
+			default:
+				return "null";
+		}
+	}
 	
 	private class EventView extends EventViewHolder implements View.OnClickListener{
 		
