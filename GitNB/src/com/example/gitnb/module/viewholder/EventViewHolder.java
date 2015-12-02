@@ -13,6 +13,8 @@ public class EventViewHolder extends RecyclerView.ViewHolder{
 	public TextView event_user;
 	public TextView event_type;
 	public TextView repos_name;
+	public TextView event_action;
+	public TextView event_to;
 	public TextView description;
 	public SimpleDraweeView user_avatar;
 	public ImageView type_img;
@@ -24,6 +26,8 @@ public class EventViewHolder extends RecyclerView.ViewHolder{
 		event_user = (TextView) view.findViewById(R.id.event_user);
 		event_type = (TextView) view.findViewById(R.id.event_type);
 		type_img = (ImageView) view.findViewById(R.id.type_img);
+		event_action = (TextView) view.findViewById(R.id.event_action);
+		event_to = (TextView) view.findViewById(R.id.event_to);
 		user_avatar = (SimpleDraweeView) view.findViewById(R.id.user_avatar);
 	}
 }

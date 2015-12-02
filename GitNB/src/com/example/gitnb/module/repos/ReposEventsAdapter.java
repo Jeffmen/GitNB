@@ -179,9 +179,9 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 				viewHolder.type_img.setBackgroundResource(R.drawable.ic_chevron_right_white_18dp);
 				viewHolder.created_date.setText(item.created_at);
 				viewHolder.event_user.setText(item.actor.getLogin());
-				viewHolder.event_type.setText(getTypeString(item.getType()));
-				viewHolder.repos_name.setText(item.repo.getName());
-				viewHolder.description.setText(item.payload.issue.title);
+				//viewHolder.description.setText(item.payload.issue.title);
+				//viewHolder.event_type.setText(getTypeString(item.getType()));
+				getTypeString(viewHolder, item);
 			}
 			viewHolder.user_avatar.setVisibility(View.VISIBLE);
 			if(item.actor != null){
@@ -202,41 +202,87 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 		}
 	}
 	
-	private String getTypeString(EventType type){
-		switch (type) {
+	private void getTypeString(EventView viewHolder, Event item){
+		switch (item.type) {
 		case WatchEvent:
-				return "starred";
+			viewHolder.event_type.setText(" starred ");
+			viewHolder.repos_name.setText(item.repo.getName());
+			return;
 		case CreateEvent:
-				return "starred";
+			viewHolder.event_type.setText(" created repository ");
+			viewHolder.repos_name.setText(item.repo.getName());
+			return;
 		case CommitCommentEvent:
-				return "starred";
-		case DownloadEvent:
-				return "starred";
-		case FollowEvent:
-				return "starred";
+			viewHolder.event_type.setText(" commented on ");
+			viewHolder.repos_name.setText(item.repo.getName());
+			viewHolder.description.setText(item.payload.comment.body);
+			return;
 		case ForkEvent:
-				return "starred";
-		case GistEvent:
-				return "starred";
+			viewHolder.event_type.setText(" forked ");
+			viewHolder.event_to.setText(item.repo.getName());
+			viewHolder.event_action.setText(" to ");
+			viewHolder.repos_name.setText(item.payload.forkee.getName());
+			return;
 		case GollumEvent:
-				return "starred";
+			viewHolder.event_type.setText(" created wiki page on ");
+			viewHolder.repos_name.setText(item.repo.getName());
+			//viewHolder.description.setText(item.payload.pages.get(0).html_url
+			return;
 		case IssueCommentEvent:
-				return "starred";
+			viewHolder.event_type.setText(" commented on issue ");
+			viewHolder.repos_name.setText(item.repo.getName());
+			viewHolder.description.setText(item.payload.comment.body);
+			return;
 		case IssuesEvent:
-				return "starred";
+			viewHolder.event_type.setText(item.payload.action + " issue ");
+			viewHolder.repos_name.setText(item.payload.issue.title);
+			return;
 		case MemberEvent:
-				return "starred";
+			viewHolder.event_type.setText(" added ");
+			viewHolder.event_to.setText(item.payload.member.getLogin());
+			viewHolder.event_action.setText(" as collaborator to ");
+			viewHolder.repos_name.setText(item.repo.getName());
+			return;
+		case MembershipEvent:
+			viewHolder.event_type.setText(" " + item.payload.action + " ");
+			viewHolder.event_to.setText(item.payload.member.getLogin());
+			viewHolder.event_action.setText(" to ");
+			viewHolder.repos_name.setText(item.repo.getName());
+			return;
 		case PublicEvent:
+			viewHolder.event_type.setText(" public ");
+			viewHolder.repos_name.setText(item.payload.repository.getName());
+			return;
 		case PullRequestEvent:
+			viewHolder.event_type.setText(" " + item.payload.action + " ");
+			viewHolder.event_to.setText(item.payload.pull_request.number);
+			viewHolder.repos_name.setText(item.payload.pull_request.repository.getName());
+			viewHolder.description.setText(item.payload.pull_request.title);
+			return;
 		case PullRequestReviewCommentEvent:
+			viewHolder.event_type.setText(" created comment on");
+			viewHolder.repos_name.setText(item.payload.pull_request.repository.getName());
+			viewHolder.description.setText(item.payload.comment.body);
 		case PushEvent:
+			viewHolder.event_type.setText(" pushed to ");
+			viewHolder.event_to.setText(item.payload.ref);
+			viewHolder.repos_name.setText(item.repo.getName());
+			viewHolder.description.setText(item.payload.commits.get(0).message);
+			return;
 		case StatusEvent:
 		case TeamAddEvent:
 		case DeleteEvent:
+			viewHolder.event_type.setText(" deleted ");
+			viewHolder.repos_name.setText(item.repo.getName());
+			return;
 		case ReleaseEvent:
-				return "starred";
-			default:
-				return "null";
+			viewHolder.event_type.setText(" released ");
+			viewHolder.repos_name.setText(item.payload.repository.getName());
+			return;
+		default:
+			viewHolder.event_type.setText(" starred ");
+			viewHolder.repos_name.setText(item.repo.getName());
+			return;
 		}
 	}
 	
