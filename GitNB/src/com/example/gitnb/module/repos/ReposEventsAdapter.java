@@ -18,11 +18,8 @@ import android.view.ViewGroup;
 import com.example.gitnb.R;
 import com.example.gitnb.model.Event;
 import com.example.gitnb.model.EventType;
-import com.example.gitnb.model.Repository;
-import com.example.gitnb.model.User;
 import com.example.gitnb.module.viewholder.EventViewHolder;
 import com.example.gitnb.module.viewholder.LoadMoreViewHolder;
-import com.example.gitnb.module.viewholder.ReposViewHolder;
 import com.example.gitnb.module.viewholder.SearchViewHolder;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -179,9 +176,10 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 				viewHolder.type_img.setBackgroundResource(R.drawable.ic_chevron_right_white_18dp);
 				viewHolder.created_date.setText(item.created_at);
 				viewHolder.event_user.setText(item.actor.getLogin());
-				viewHolder.event_type.setText(getTypeString(item.getType()));
 				viewHolder.repos_name.setText(item.repo.getName());
-				viewHolder.description.setText(item.payload.issue.title);
+				setTypeAndDiscription(viewHolder, item.getType());
+				//viewHolder.event_type.setText(getTypeString(item.getType()));
+				//viewHolder.description.setText(item.payload.issue.title);
 			}
 			viewHolder.user_avatar.setVisibility(View.VISIBLE);
 			if(item.actor != null){
@@ -202,37 +200,44 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 		}
 	}
 	
-	private String getTypeString(EventType type){
+	private String setTypeAndDiscription(EventView viewHolder, EventType type){
 		switch (type) {
 		case WatchEvent:
-				return "starred";
+				return " starred ";
 		case CreateEvent:
-				return "starred";
+				return " created ";
 		case CommitCommentEvent:
-				return "starred";
+				return " commit comment ";
 		case DownloadEvent:
-				return "starred";
+				return " downloaded";
 		case FollowEvent:
-				return "starred";
+				return " followed ";
 		case ForkEvent:
-				return "starred";
+				return " forked ";
 		case GistEvent:
-				return "starred";
+				return " gisted ";
 		case GollumEvent:
-				return "starred";
+				return " gollumed ";
 		case IssueCommentEvent:
-				return "starred";
+				return " issume comment";
 		case IssuesEvent:
-				return "starred";
+				return " issues ";
 		case MemberEvent:
-				return "starred";
+				return " member ";
 		case PublicEvent:
+			return " public ";
 		case PullRequestEvent:
+			return " pull request ";
 		case PullRequestReviewCommentEvent:
+			return " pull request review comment ";
 		case PushEvent:
+			return " pushed ";
 		case StatusEvent:
+			return " status ";
 		case TeamAddEvent:
+			return " team added ";
 		case DeleteEvent:
+			return " deleted ";
 		case ReleaseEvent:
 				return "starred";
 			default:
