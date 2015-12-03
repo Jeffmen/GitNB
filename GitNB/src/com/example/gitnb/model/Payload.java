@@ -30,4 +30,5 @@ public class Payload {
     public String before;
     public List<Commit> commits;
     public Repository forkee;
+    public User member;
 }

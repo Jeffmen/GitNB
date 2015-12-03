@@ -15,6 +15,7 @@ public enum EventType {
 	IssueCommentEvent,
 	IssuesEvent,
 	MemberEvent,
+	MembershipEvent,
 	PublicEvent,
 	PullRequestEvent,
 	PullRequestReviewCommentEvent,
