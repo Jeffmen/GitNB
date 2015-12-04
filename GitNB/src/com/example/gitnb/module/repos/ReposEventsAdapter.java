@@ -267,6 +267,10 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 			return;
 		case StatusEvent:
 		case TeamAddEvent:
+			viewHolder.event_type.setText(" added ");
+			viewHolder.event_to.setText(item.payload.team.name);
+			viewHolder.repos_name.setText(item.payload.repository.getName());
+			return;
 		case DeleteEvent:
 			viewHolder.event_type.setText(" deleted ");
 			viewHolder.repos_name.setText(item.repo.getName());
