@@ -21,6 +21,12 @@
 			android:textColor="@android:color/white"
 			android:textSize="20sp"
 			android:textStyle="bold" />
+        <Switch
+	        android:id="@+id/switch_bt"
+	        android:layout_width="80dp"
+	        android:layout_height="wrap_content"
+			android:visibility="gone"/>
+        <!-- 
         <com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch
 	        android:id="@+id/switch_bt"
 	        android:layout_width="wrap_content"
@@ -33,5 +39,6 @@
 	        app:icon_release="@drawable/ic_play_arrow_white_36dp"
 	        app:icon_press="@drawable/ic_stop_deep_orange_500_36dp"
 	        />
+	         -->
     </LinearLayout>
 </android.support.v7.widget.Toolbar>

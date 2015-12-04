@@ -10,7 +10,6 @@ import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.module.user.UserListActivity;
 import com.example.gitnb.utils.MessageUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -18,7 +17,9 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 public class ReposDetailActivity extends BaseActivity{
@@ -26,10 +27,9 @@ public class ReposDetailActivity extends BaseActivity{
 	private String TAG = "ReposDetailActivity";
 	public static String CONTENT_URL = "content_url";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private MaterialAnimatedSwitch swithBt;
-	private boolean isFirst = true;
     private LinearLayout main;
 	private Repository repos;
+    private Switch swithBt;
 	
     protected void setTitle(TextView view){
         if(repos != null && !repos.getName().isEmpty()){
@@ -61,23 +61,24 @@ public class ReposDetailActivity extends BaseActivity{
             }
             
         });
-        swithBt = (MaterialAnimatedSwitch) findViewById(R.id.switch_bt);  
-        swithBt.setVisibility(View.VISIBLE);
-        swithBt.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
-        
-           @Override 
-           public void onCheckedChanged(boolean isChecked) {
-        	   if(!isFirst){
-	        	   if(isChecked){
-	        		   starRepo();
-	        	   }
-	        	   else{
-	        		   unstarRepo();
-	        	   }
+        swithBt = (Switch) findViewById(R.id.switch_bt);  
+
+    }
+
+    private void setSwitchClicker(){
+        swithBt.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+            
+            @Override 
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        	   if(isChecked){
+        		   starRepo();
         	   }
-           }
-        
-        });
+        	   else{
+        		   unstarRepo();
+        	   }
+            }
+         
+         });
     }
     
     private void setRepository(){
@@ -202,13 +203,15 @@ public class ReposDetailActivity extends BaseActivity{
 
 			@Override
 			public void onOK(Object ts) {
-				swithBt.toggle();
-				isFirst = false;
+		        swithBt.setVisibility(View.VISIBLE);
+				swithBt.setChecked(true);
+				setSwitchClicker();
 			}
 
 			@Override
 			public void onError(String Message) {
-				isFirst = false;
+		        swithBt.setVisibility(View.VISIBLE);
+				setSwitchClicker();
 			}
 			
     	}).checkIfRepoIsStarred(repos.getOwner().getLogin(), repos.getName());

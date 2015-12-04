@@ -7,21 +7,19 @@ import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.Content;
 import com.example.gitnb.utils.MessageUtils;
 import com.example.gitnb.widget.ProgressWebView;
-import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
 import android.view.View;
-import android.webkit.WebView;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 public class ReposContentActivity extends BaseActivity {
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private MaterialAnimatedSwitch swithBt;
+    private Switch swithBt;
 	private TextView text_content;
 	private ProgressWebView web_content;
     private Content content;
@@ -57,12 +55,12 @@ public class ReposContentActivity extends BaseActivity {
             	refreshHandler.sendEmptyMessage(START_UPDATE);
             }
         });
-        swithBt = (MaterialAnimatedSwitch) findViewById(R.id.switch_bt);  
+        swithBt = (Switch) findViewById(R.id.switch_bt);  
         swithBt.setVisibility(View.VISIBLE);
-        swithBt.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
+        swithBt.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
         
            @Override 
-           public void onCheckedChanged(boolean isChecked) {
+           public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         	   isShowInWeb = isChecked;
         	   updateContent();  
            }

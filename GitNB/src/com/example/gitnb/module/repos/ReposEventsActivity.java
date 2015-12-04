@@ -15,8 +15,8 @@ import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.RepoClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.app.BaseActivity;
+import com.example.gitnb.model.Event;
 import com.example.gitnb.model.Repository;
-import com.example.gitnb.module.user.HotUserFragment;
 import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
@@ -26,7 +26,7 @@ public class ReposEventsActivity  extends BaseActivity implements RetrofitNetwor
 	public static final String EVENT_TYPE = "event_type";
 	public static final String EVENT_TYPE_REPOS = "Events";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private ReposListAdapter adapter;
+    private ReposEventsAdapter adapter;
     private RecyclerView recyclerView;
 	private boolean isLoadingMore;
 	private Repository repos;
@@ -55,18 +55,18 @@ public class ReposEventsActivity  extends BaseActivity implements RetrofitNetwor
 		type = intent.getStringExtra(EVENT_TYPE);
 		this.setContentView(R.layout.activity_list_layout);
 		
-        adapter = new ReposListAdapter(this);
-        adapter.setOnItemClickListener(new ReposListAdapter.OnItemClickListener() {
+        adapter = new ReposEventsAdapter(this);
+        adapter.setOnItemClickListener(new ReposEventsAdapter.OnItemClickListener() {
 			@Override
 			public void onItemClick(View view, int position) {
 				Intent intent = new Intent(ReposEventsActivity.this, UserDetailActivity.class);
 				Bundle bundle = new Bundle();
-				bundle.putParcelable(HotUserFragment.USER, adapter.getItem(position));
+				bundle.putParcelable(HotReposFragment.REPOS, adapter.getItem(position).repo);
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}
 		});
-        adapter.setOnLoadMoreClickListener(new ReposListAdapter.OnItemClickListener() {
+        adapter.setOnLoadMoreClickListener(new ReposEventsAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
@@ -125,11 +125,11 @@ public class ReposEventsActivity  extends BaseActivity implements RetrofitNetwor
 	@Override
 	public void onOK(Object ts) {   	
 		if(page == 1){
-        	adapter.update((ArrayList<Repository>) ts);
+        	adapter.update((ArrayList<Event>) ts);
     	}
     	else{
             isLoadingMore = false;
-        	adapter.insertAtBack((ArrayList<Repository>) ts);
+        	adapter.insertAtBack((ArrayList<Event>) ts);
     	}
 		refreshHandler.sendEmptyMessage(END_UPDATE);
 	}

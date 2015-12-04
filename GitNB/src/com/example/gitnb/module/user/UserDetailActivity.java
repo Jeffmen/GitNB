@@ -17,7 +17,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 public class UserDetailActivity extends BaseActivity{
@@ -25,9 +27,8 @@ public class UserDetailActivity extends BaseActivity{
 	private String TAG = "UserDetailActivity";
 	public static String AVATAR_URL = "avatar_url";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private MaterialAnimatedSwitch swithBt;
     private LinearLayout main;
-	private boolean isFirst = true;
+    private Switch swithBt;
 	private User user;
 	
     protected void setTitle(TextView view){
@@ -60,25 +61,25 @@ public class UserDetailActivity extends BaseActivity{
             }
             
         });        
-        swithBt = (MaterialAnimatedSwitch) findViewById(R.id.switch_bt);  
-        swithBt.setVisibility(View.VISIBLE);
-        swithBt.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
-        
-           @Override 
-           public void onCheckedChanged(boolean isChecked) {
-        	   if(!isFirst){
-	        	   if(isChecked){
-	        		   followUser();
-	        	   }
-	        	   else{
-	        		   unfollowUser();
-	        	   }
-        	   }
-           }
-        
-        });
+        swithBt = (Switch) findViewById(R.id.switch_bt); 
     }
 	
+    private void setSwitchClicker(){
+        swithBt.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+            
+            @Override 
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        	   if(isChecked){
+        		   followUser();
+        	   }
+        	   else{
+        		   unfollowUser();
+        	   }
+            }
+         
+         });
+    }
+    
     private void setUserInfo(){
 		TextView user_name = (TextView) findViewById(R.id.user_name);
 		TextView user_company = (TextView) findViewById(R.id.user_company);
@@ -216,13 +217,15 @@ public class UserDetailActivity extends BaseActivity{
 
 			@Override
 			public void onOK(Object ts) {
-				swithBt.toggle();
-				isFirst = false;
+		        swithBt.setVisibility(View.VISIBLE);
+				swithBt.setChecked(true);
+				setSwitchClicker();
 			}
 
 			@Override
 			public void onError(String Message) {
-				isFirst = false;
+		        swithBt.setVisibility(View.VISIBLE);
+				setSwitchClicker();
 			}
 			
     	}).checkFollowing(user.getLogin());
