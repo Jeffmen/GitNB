@@ -86,7 +86,6 @@
 	                    android:id="@+id/event_type"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
-	                    android:layout_marginLeft="15dp"
 	                    android:singleLine="true"
 	                    android:textColor="?android:attr/textColorPrimary"
 	                    android:textSize="12sp" />
@@ -95,7 +94,6 @@
 	                    android:id="@+id/event_to"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
-	                    android:layout_marginLeft="15dp"
 	                    android:singleLine="true"
 	                    android:textColor="?android:attr/textColorPrimary"
 	                    android:textSize="12sp" />
@@ -112,7 +110,6 @@
 	                    android:id="@+id/repos_name"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
-	                    android:layout_marginLeft="15dp"
 	                    android:singleLine="true"
 	                    android:ellipsize="end" 
 	                    android:textColor="?android:attr/textColorPrimary"

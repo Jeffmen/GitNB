@@ -132,6 +132,7 @@ public class ReposDetailActivity extends BaseActivity{
     	TextView readme = (TextView) findViewById(R.id.readme);
     	TextView contributor = (TextView) findViewById(R.id.contributor);
     	TextView source = (TextView) findViewById(R.id.source);
+    	TextView events = (TextView) findViewById(R.id.events);
     	stargazers.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -174,6 +175,18 @@ public class ReposDetailActivity extends BaseActivity{
 				Bundle bundle = new Bundle();
 				bundle.putParcelable(HotReposFragment.REPOS, repos);
 				intent.putExtras(bundle);
+				startActivity(intent);
+			}
+		});
+    	events.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(ReposDetailActivity.this, ReposEventsActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable(HotReposFragment.REPOS, repos);
+				intent.putExtras(bundle);
+				intent.putExtra(ReposEventsActivity.EVENT_TYPE, ReposEventsActivity.EVENT_TYPE_REPOS);
 				startActivity(intent);
 			}
 		});

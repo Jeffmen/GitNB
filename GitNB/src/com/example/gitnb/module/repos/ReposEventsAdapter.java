@@ -3,12 +3,19 @@ package com.example.gitnb.module.repos;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextWatcher;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +24,7 @@ import android.view.ViewGroup;
 
 import com.example.gitnb.R;
 import com.example.gitnb.model.Event;
+import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.module.viewholder.EventViewHolder;
 import com.example.gitnb.module.viewholder.LoadMoreViewHolder;
 import com.example.gitnb.module.viewholder.SearchViewHolder;
@@ -198,6 +206,33 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 		}
 	}
 	
+	private SpannableString getSpanString(Event item, final int position){
+        SpannableString spanString = new SpannableString(""); 
+        spanString.setSpan(new URLSpan(item.actor.getLogin()), 0, item.actor.getLogin().length()
+        		, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);                
+        spanString.setSpan(new ClickableSpan() {
+             
+            @Override
+            public void onClick(View widget) {
+
+				Intent intent = new Intent(mContext, UserDetailActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable(HotReposFragment.REPOS, getItem(position).actor);
+				intent.putExtras(bundle);
+				mContext.startActivity(intent);
+            }
+
+			public void updateDrawState(TextPaint ds) {
+				super.updateDrawState(ds);
+				ds.setColor(mContext.getResources().getColor(android.R.color.darker_gray));
+				ds.setUnderlineText(false);
+				ds.clearShadowLayer();
+			}
+			
+        }, 0, item.actor.getLogin().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spanString;
+	}
+	
 	private void getTypeString(EventView viewHolder, Event item){
 		switch (item.type) {
 		case WatchEvent:
@@ -251,14 +286,15 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 			return;
 		case PullRequestEvent:
 			viewHolder.event_type.setText(" " + item.payload.action + " ");
-			viewHolder.event_to.setText(item.payload.pull_request.number);
-			viewHolder.repos_name.setText(item.payload.pull_request.repository.getName());
+			viewHolder.event_to.setText(String.valueOf(item.payload.pull_request.number));
+			viewHolder.repos_name.setText(item.repo.getName());
 			viewHolder.description.setText(item.payload.pull_request.title);
 			return;
 		case PullRequestReviewCommentEvent:
 			viewHolder.event_type.setText(" created comment on");
-			viewHolder.repos_name.setText(item.payload.pull_request.repository.getName());
+			viewHolder.repos_name.setText(item.repo.getName());
 			viewHolder.description.setText(item.payload.comment.body);
+			return;
 		case PushEvent:
 			viewHolder.event_type.setText(" pushed to ");
 			viewHolder.event_to.setText(item.payload.ref);
@@ -266,6 +302,7 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 			viewHolder.description.setText(item.payload.commits.get(0).message);
 			return;
 		case StatusEvent:
+			return;
 		case TeamAddEvent:
 			viewHolder.event_type.setText(" added ");
 			viewHolder.event_to.setText(item.payload.team.name);
@@ -290,7 +327,7 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 		
 		public EventView(View view) {
 			super(view);
-            view.setOnClickListener(this);
+            //view.setOnClickListener(this);
 		}
 	
 		@Override

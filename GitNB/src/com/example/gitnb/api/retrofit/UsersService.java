@@ -16,9 +16,6 @@ import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-/**
- * Created by Bernat on 12/07/2014.
- */
 public interface UsersService {
 
 	@GET("users/{user}")
@@ -96,7 +93,11 @@ public interface UsersService {
 	@GET("/user/repos?affiliation=organization_member")
 	Call<List<Repository>> userReposListFromOrgs(@Query("sort") String sort, @Query("page") int page);
 
+	//events
 	@GET("/users/{username}/received_events")
 	Call<List<Event>> events(@Path("username") String username, @Query("page") int page);
+	
+	@GET("/users/{username}/events")
+	Call<List<Event>> createdEvents(@Path("username") String username, @Query("page") int page);
 
 }

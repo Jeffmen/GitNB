@@ -14,9 +14,12 @@ import android.util.Log;
 import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.RepoClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
+import com.example.gitnb.api.retrofit.UsersClient;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.Event;
 import com.example.gitnb.model.Repository;
+import com.example.gitnb.model.User;
+import com.example.gitnb.module.user.HotUserFragment;
 import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
@@ -24,12 +27,14 @@ import com.example.gitnb.utils.MessageUtils;
 public class ReposEventsActivity  extends BaseActivity implements RetrofitNetworkAbs.NetworkListener{
 	private String TAG = "ReposEventsActivity";
 	public static final String EVENT_TYPE = "event_type";
-	public static final String EVENT_TYPE_REPOS = "Events";
+	public static final String EVENT_TYPE_REPOS = "Events_REPOS";
+	public static final String EVENT_TYPE_USER = "Events_USER";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ReposEventsAdapter adapter;
     private RecyclerView recyclerView;
 	private boolean isLoadingMore;
 	private Repository repos;
+	private User user;
 	private String type;
 	private int page = 1;
 
@@ -39,7 +44,10 @@ public class ReposEventsActivity  extends BaseActivity implements RetrofitNetwor
         if(repos != null && !repos.getName().isEmpty()){    
         	switch(type){
 	        case EVENT_TYPE_REPOS:
-	        	view.setText(repos.getName()+" / "+EVENT_TYPE_REPOS);    
+	        	view.setText(repos.getName()+" / Events");    
+	        	break;
+	        case EVENT_TYPE_USER:
+	        	view.setText(user.getLogin()+" / Events");    
 	        	break;
         }
         }else{
@@ -53,6 +61,14 @@ public class ReposEventsActivity  extends BaseActivity implements RetrofitNetwor
 		Intent intent = getIntent();
 		repos = (Repository) intent.getParcelableExtra(HotReposFragment.REPOS);
 		type = intent.getStringExtra(EVENT_TYPE);
+        switch(type){
+	        case EVENT_TYPE_REPOS:
+	    		repos = (Repository) intent.getParcelableExtra(HotReposFragment.REPOS);
+	        	break;
+	        case EVENT_TYPE_USER:
+	    		user = (User) intent.getParcelableExtra(HotUserFragment.USER);
+	        	break;
+	    }
 		this.setContentView(R.layout.activity_list_layout);
 		
         adapter = new ReposEventsAdapter(this);
@@ -105,7 +121,10 @@ public class ReposEventsActivity  extends BaseActivity implements RetrofitNetwor
         mSwipeRefreshLayout.setRefreshing(true);
         switch(type){
 	        case EVENT_TYPE_REPOS:
-	        	getEvents();
+	        	getReposEvents();
+	        	break;
+	        case EVENT_TYPE_USER:
+	        	getUserEvents();
 	        	break;
         }
     }
@@ -140,8 +159,13 @@ public class ReposEventsActivity  extends BaseActivity implements RetrofitNetwor
 		refreshHandler.sendEmptyMessage(END_ERROR);
 	}
 	
-	private void getEvents(){
+	private void getReposEvents(){
 		RepoClient.getNewInstance().setNetworkListener(this)
 		  .events(repos.getOwner().getLogin(), repos.getName(), page);
+	}
+	
+	private void getUserEvents(){
+		UsersClient.getNewInstance().setNetworkListener(this)
+		  .createdEvents(user.getLogin(), page);
 	}
 }

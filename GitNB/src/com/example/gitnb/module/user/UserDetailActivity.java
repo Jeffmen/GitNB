@@ -5,6 +5,9 @@ import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.UsersClient;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.User;
+import com.example.gitnb.module.repos.HotReposFragment;
+import com.example.gitnb.module.repos.ReposDetailActivity;
+import com.example.gitnb.module.repos.ReposEventsActivity;
 import com.example.gitnb.module.repos.ReposListActivity;
 import com.example.gitnb.utils.MessageUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -122,12 +125,17 @@ public class UserDetailActivity extends BaseActivity{
     	TextView followers = (TextView) findViewById(R.id.followers);
     	TextView following = (TextView) findViewById(R.id.following);
     	TextView repositorys = (TextView) findViewById(R.id.repositorys);
-    	
+
     	events.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				
+				Intent intent = new Intent(UserDetailActivity.this, ReposEventsActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable(HotUserFragment.USER, user);
+				intent.putExtras(bundle);
+				intent.putExtra(ReposEventsActivity.EVENT_TYPE, ReposEventsActivity.EVENT_TYPE_USER);
+				startActivity(intent);
 			}
 		});
     	organizations.setOnClickListener(new View.OnClickListener() {

@@ -28,6 +28,7 @@ public class EventViewHolder extends RecyclerView.ViewHolder{
 		type_img = (ImageView) view.findViewById(R.id.type_img);
 		event_action = (TextView) view.findViewById(R.id.event_action);
 		event_to = (TextView) view.findViewById(R.id.event_to);
+		description = (TextView) view.findViewById(R.id.description);
 		user_avatar = (SimpleDraweeView) view.findViewById(R.id.user_avatar);
 	}
 }

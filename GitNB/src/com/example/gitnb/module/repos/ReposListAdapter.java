@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 
 import com.example.gitnb.R;
 import com.example.gitnb.model.Repository;
-import com.example.gitnb.model.User;
 import com.example.gitnb.module.viewholder.LoadMoreViewHolder;
 import com.example.gitnb.module.viewholder.ReposViewHolder;
 import com.example.gitnb.module.viewholder.SearchViewHolder;

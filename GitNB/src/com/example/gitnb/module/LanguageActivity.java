@@ -47,7 +47,7 @@ public class LanguageActivity  extends Activity {
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(COLUM_NUM, item_space, true));
         recyclerView.setLayoutManager(new MyGridLayoutManager(this,COLUM_NUM));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        //recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
     
     @Override

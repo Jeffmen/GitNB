@@ -5,6 +5,8 @@
     android:id="@+id/item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:minHeight="40dp"
 	card_view:cardBackgroundColor="@color/miky_white" 
 	card_view:cardElevation="0dp"
 	card_view:cardPreventCornerOverlap="true">
@@ -12,12 +14,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-	    android:orientation="horizontal"
-        android:padding="10dp">
+	    android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
             android:layout_gravity="center">
@@ -25,7 +26,7 @@
                 <TextView
                     android:id="@+id/repos_rank"
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"/>
+                    android:layout_height="wrap_content"/>
 	            <com.facebook.drawee.view.SimpleDraweeView
 	                android:id="@+id/user_avatar"
 	                android:layout_width="30dp"
@@ -40,14 +41,13 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="6"
             android:gravity="center"
             android:orientation="vertical">
 	        <LinearLayout
 	            android:layout_width="fill_parent"
-	            android:layout_height="0dp"
-	            android:layout_weight="3"
+	            android:layout_height="20dp"
 	            android:gravity="center"
 	            android:orientation="horizontal">
 	
@@ -73,8 +73,7 @@
 	        </LinearLayout>
 	        <LinearLayout
 	            android:layout_width="fill_parent"
-	            android:layout_height="0dp"
-	            android:layout_weight="3"
+	            android:layout_height="20dp"
 	            android:orientation="horizontal">
 	
 	                <TextView
@@ -106,8 +105,7 @@
 	        </LinearLayout>
 	        <LinearLayout
 	            android:layout_width="fill_parent"
-	            android:layout_height="0dp"
-	            android:layout_weight="5"
+	            android:layout_height="wrap_content"
 	            android:gravity="center"
 	            android:orientation="horizontal">
 	
