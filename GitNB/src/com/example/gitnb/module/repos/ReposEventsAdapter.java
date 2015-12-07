@@ -14,6 +14,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.KeyEvent;
@@ -24,6 +25,7 @@ import android.view.ViewGroup;
 
 import com.example.gitnb.R;
 import com.example.gitnb.model.Event;
+import com.example.gitnb.module.user.HotUserFragment;
 import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.module.viewholder.EventViewHolder;
 import com.example.gitnb.module.viewholder.LoadMoreViewHolder;
@@ -182,10 +184,10 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 			if(item != null){
 				viewHolder.type_img.setBackgroundResource(R.drawable.ic_chevron_right_white_18dp);
 				viewHolder.created_date.setText(item.created_at);
-				viewHolder.event_user.setText(item.actor.getLogin());
+				//viewHolder.event_user.setText(item.actor.getLogin());
 				//viewHolder.description.setText(item.payload.issue.title);
 				//viewHolder.event_type.setText(getTypeString(item.getType()));
-				getTypeString(viewHolder, item);
+				setSpanString(viewHolder, item, position);
 			}
 			viewHolder.user_avatar.setVisibility(View.VISIBLE);
 			if(item.actor != null){
@@ -206,9 +208,11 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 		}
 	}
 	
-	private SpannableString getSpanString(Event item, final int position){
-        SpannableString spanString = new SpannableString(""); 
-        spanString.setSpan(new URLSpan(item.actor.getLogin()), 0, item.actor.getLogin().length()
+	//https://api.github.com/repos/elastic/elasticsearch/events
+	private void setSpanString(EventView viewHolder, Event item, final int position){
+
+        SpannableString spanString = new SpannableString(item.actor.getLogin()); 
+        spanString.setSpan(item.actor.getLogin(), 0, item.actor.getLogin().length()
         		, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);                
         spanString.setSpan(new ClickableSpan() {
              
@@ -217,22 +221,92 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 
 				Intent intent = new Intent(mContext, UserDetailActivity.class);
 				Bundle bundle = new Bundle();
-				bundle.putParcelable(HotReposFragment.REPOS, getItem(position).actor);
+				bundle.putParcelable(HotUserFragment.USER, getItem(position).actor);
 				intent.putExtras(bundle);
 				mContext.startActivity(intent);
             }
 
 			public void updateDrawState(TextPaint ds) {
 				super.updateDrawState(ds);
-				ds.setColor(mContext.getResources().getColor(android.R.color.darker_gray));
-				ds.setUnderlineText(false);
+				ds.setColor(mContext.getResources().getColor(android.R.color.holo_blue_light));
+				ds.setUnderlineText(true);
 				ds.clearShadowLayer();
 			}
 			
         }, 0, item.actor.getLogin().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spanString;
+        viewHolder.event_user.setText(spanString);
+		String showText = "";
+		switch (item.type) {
+		case WatchEvent:
+			showText += " starred "+ item.repo.getName();
+			break;
+		case CreateEvent:
+			showText += " created repository "+ item.repo.getName();
+			break;
+		case CommitCommentEvent:
+			showText += " commented on "+ item.repo.getName();
+			viewHolder.description.setText(item.payload.comment.body);
+			break;
+		case ForkEvent:
+			showText += " forked "+ item.repo.getName() + " to " + item.payload.forkee.getName();
+			break;
+		case GollumEvent:
+			//viewHolder.description.setText(item.payload.pages.get(0).html_url
+			showText += " created wiki page on "+ item.repo.getName();
+			break;
+		case IssueCommentEvent:
+			viewHolder.description.setText(item.payload.comment.body);
+			showText += " commented on pull request " +  item.payload.issue.number 
+					+ " in " + item.repo.getName();
+			break;
+		case IssuesEvent:
+			showText += item.payload.action + " issue " + item.repo.getName();
+			viewHolder.description.setText(item.payload.issue.title);
+			break;
+		case MemberEvent:
+			showText += " added " + item.payload.member.getLogin() 
+					+ " as collaborator to " + item.repo.getName();
+			break;
+		case MembershipEvent:
+			showText += " " + item.payload.action + " " + item.payload.member.getLogin() 
+					+ " to " + item.repo.getName();
+			break;
+		case PublicEvent:
+			showText += " public "+ item.payload.repository.getName();
+			break;
+		case PullRequestEvent:
+			viewHolder.description.setText(item.payload.pull_request.title);
+			showText += " " + item.payload.action + " "
+					+ String.valueOf(item.payload.pull_request.number) + item.repo.getName();
+			break;
+		case PullRequestReviewCommentEvent:
+			viewHolder.description.setText(item.payload.comment.body);
+			showText += " created comment on "+ item.repo.getName();
+			break;
+		case PushEvent:
+			viewHolder.description.setText(item.payload.commits.get(0).message);
+			showText += " pushed to " + item.payload.ref + " on " + item.repo.getName();
+			break;
+		case StatusEvent:
+			break;
+		case TeamAddEvent:
+			showText += " added " + item.payload.team.name 
+					+ " to " + item.repo.getName();
+			break;
+		case DeleteEvent:
+			showText += " deleted "+ item.repo.getName();
+			break;
+		case ReleaseEvent:
+			showText += " released "+ item.payload.repository.getName();
+			break;
+		default:
+			showText += " starred "+ item.repo.getName();
+			break;
+		}
+
+		viewHolder.event_user.append(showText);
 	}
-	
+	/*
 	private void getTypeString(EventView viewHolder, Event item){
 		switch (item.type) {
 		case WatchEvent:
@@ -321,13 +395,14 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 			viewHolder.repos_name.setText(item.repo.getName());
 			return;
 		}
-	}
+	}*/
 	
 	private class EventView extends EventViewHolder implements View.OnClickListener{
 		
 		public EventView(View view) {
 			super(view);
             //view.setOnClickListener(this);
+			event_user.setMovementMethod(LinkMovementMethod.getInstance());
 		}
 	
 		@Override

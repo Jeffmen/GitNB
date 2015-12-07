@@ -24,10 +24,10 @@ public class EventViewHolder extends RecyclerView.ViewHolder{
 		created_date = (TextView) view.findViewById(R.id.created_date);
 		repos_name = (TextView) view.findViewById(R.id.repos_name);
 		event_user = (TextView) view.findViewById(R.id.event_user);
-		event_type = (TextView) view.findViewById(R.id.event_type);
+		//event_type = (TextView) view.findViewById(R.id.event_type);
 		type_img = (ImageView) view.findViewById(R.id.type_img);
-		event_action = (TextView) view.findViewById(R.id.event_action);
-		event_to = (TextView) view.findViewById(R.id.event_to);
+		//event_action = (TextView) view.findViewById(R.id.event_action);
+		//event_to = (TextView) view.findViewById(R.id.event_to);
 		description = (TextView) view.findViewById(R.id.description);
 		user_avatar = (SimpleDraweeView) view.findViewById(R.id.user_avatar);
 	}
