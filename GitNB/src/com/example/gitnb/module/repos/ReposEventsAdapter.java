@@ -445,7 +445,6 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 			}
 			
         }, 0, showText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        
     	return spanString;
     }
     
