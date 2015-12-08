@@ -209,102 +209,99 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 	}
 	
 	//https://api.github.com/repos/elastic/elasticsearch/events
-	private void setSpanString(EventView viewHolder, Event item, final int position){
-
-        SpannableString spanString = new SpannableString(item.actor.getLogin()); 
-        spanString.setSpan(item.actor.getLogin(), 0, item.actor.getLogin().length()
-        		, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);                
-        spanString.setSpan(new ClickableSpan() {
-             
-            @Override
-            public void onClick(View widget) {
-
-				Intent intent = new Intent(mContext, UserDetailActivity.class);
-				Bundle bundle = new Bundle();
-				bundle.putParcelable(HotUserFragment.USER, getItem(position).actor);
-				intent.putExtras(bundle);
-				mContext.startActivity(intent);
-            }
-
-			public void updateDrawState(TextPaint ds) {
-				super.updateDrawState(ds);
-				ds.setColor(mContext.getResources().getColor(android.R.color.holo_blue_light));
-				ds.setUnderlineText(true);
-				ds.clearShadowLayer();
-			}
-			
-        }, 0, item.actor.getLogin().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        viewHolder.event_user.setText(spanString);
-		String showText = "";
+	private void setSpanString(EventView viewHolder, Event item, int position){
+        viewHolder.event_user.setText(createUserSpan(item.actor.getLogin(), position));
 		switch (item.type) {
 		case WatchEvent:
-			showText += " starred "+ item.repo.getName();
+			viewHolder.event_user.append(" starred ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			break;
 		case CreateEvent:
-			showText += " created repository "+ item.repo.getName();
+			viewHolder.event_user.append(" created repository ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			break;
 		case CommitCommentEvent:
-			showText += " commented on "+ item.repo.getName();
+			viewHolder.event_user.append(" commented on ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			viewHolder.description.setText(item.payload.comment.body);
 			break;
 		case ForkEvent:
-			showText += " forked "+ item.repo.getName() + " to " + item.payload.forkee.getName();
+			viewHolder.event_user.append(" forked ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
+			viewHolder.event_user.append(" to ");
+			viewHolder.event_user.append(createReposSpan(item.payload.forkee.getName(), position));
 			break;
 		case GollumEvent:
+			viewHolder.event_user.append(" created wiki page on ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			//viewHolder.description.setText(item.payload.pages.get(0).html_url
-			showText += " created wiki page on "+ item.repo.getName();
 			break;
 		case IssueCommentEvent:
+			viewHolder.event_user.append(" commented on pull request ");
+			viewHolder.event_user.append(String.valueOf(item.payload.issue.number));
+			viewHolder.event_user.append(" in ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			viewHolder.description.setText(item.payload.comment.body);
-			showText += " commented on pull request " +  item.payload.issue.number 
-					+ " in " + item.repo.getName();
 			break;
 		case IssuesEvent:
-			showText += item.payload.action + " issue " + item.repo.getName();
+			viewHolder.event_user.append(item.payload.action + " issue ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			viewHolder.description.setText(item.payload.issue.title);
 			break;
 		case MemberEvent:
-			showText += " added " + item.payload.member.getLogin() 
-					+ " as collaborator to " + item.repo.getName();
+			viewHolder.event_user.append(" added ");
+			viewHolder.event_user.append(createUserSpan(item.payload.member.getLogin(), position));
+			viewHolder.event_user.append(" as collaborator to ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			break;
 		case MembershipEvent:
-			showText += " " + item.payload.action + " " + item.payload.member.getLogin() 
-					+ " to " + item.repo.getName();
+			viewHolder.event_user.append(" " + item.payload.action + " ");
+			viewHolder.event_user.append(createUserSpan(item.payload.member.getLogin(), position));
+			viewHolder.event_user.append(" to ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			break;
 		case PublicEvent:
-			showText += " public "+ item.payload.repository.getName();
+			viewHolder.event_user.append(" public ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
+			//showText += " public "+ item.payload.repository.getName();
 			break;
 		case PullRequestEvent:
+			viewHolder.event_user.append(" " + item.payload.action + " ");
+			viewHolder.event_user.append(String.valueOf(item.payload.pull_request.number));
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			viewHolder.description.setText(item.payload.pull_request.title);
-			showText += " " + item.payload.action + " "
-					+ String.valueOf(item.payload.pull_request.number) + item.repo.getName();
 			break;
 		case PullRequestReviewCommentEvent:
+			viewHolder.event_user.append(" created comment on ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			viewHolder.description.setText(item.payload.comment.body);
-			showText += " created comment on "+ item.repo.getName();
 			break;
 		case PushEvent:
+			viewHolder.event_user.append(" pushed to ");
+			viewHolder.event_user.append(item.payload.ref);
+			viewHolder.event_user.append(" on ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			viewHolder.description.setText(item.payload.commits.get(0).message);
-			showText += " pushed to " + item.payload.ref + " on " + item.repo.getName();
 			break;
 		case StatusEvent:
 			break;
 		case TeamAddEvent:
-			showText += " added " + item.payload.team.name 
-					+ " to " + item.repo.getName();
+			viewHolder.event_user.append(" is added " + item.payload.team.name + " to " );
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			break;
 		case DeleteEvent:
-			showText += " deleted "+ item.repo.getName();
+			viewHolder.event_user.append(" deleted ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			break;
 		case ReleaseEvent:
-			showText += " released "+ item.payload.repository.getName();
+			viewHolder.event_user.append(" released ");
+			viewHolder.event_user.append(createReposSpan(item.payload.repository.getName(), position));
 			break;
 		default:
-			showText += " starred "+ item.repo.getName();
+			viewHolder.event_user.append(" starred ");
+			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			break;
 		}
-
-		viewHolder.event_user.append(showText);
 	}
 	/*
 	private void getTypeString(EventView viewHolder, Event item){
@@ -397,6 +394,60 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 		}
 	}*/
 	
+    private SpannableString createUserSpan(String showText, final int position){
+
+        SpannableString spanString = new SpannableString(showText); 
+        spanString.setSpan(showText, 0, showText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);                
+        spanString.setSpan(new ClickableSpan() {
+             
+            @Override
+            public void onClick(View widget) {
+
+				Intent intent = new Intent(mContext, UserDetailActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable(HotUserFragment.USER, getItem(position).actor);
+				intent.putExtras(bundle);
+				mContext.startActivity(intent);
+            }
+
+			public void updateDrawState(TextPaint ds) {
+				super.updateDrawState(ds);
+				ds.setColor(mContext.getResources().getColor(android.R.color.holo_blue_light));
+				ds.setUnderlineText(true);
+				ds.clearShadowLayer();
+			}
+			
+        }, 0, showText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    	return spanString;
+    }
+    
+    private SpannableString createReposSpan(String showText, final int position){
+
+        SpannableString spanString = new SpannableString(showText); 
+        spanString.setSpan(showText, 0, showText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);                
+        spanString.setSpan(new ClickableSpan() {
+             
+            @Override
+            public void onClick(View widget) {
+
+				Intent intent = new Intent(mContext, UserDetailActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable(HotReposFragment.REPOS, getItem(position).repo);
+				intent.putExtras(bundle);
+				mContext.startActivity(intent);
+            }
+
+			public void updateDrawState(TextPaint ds) {
+				super.updateDrawState(ds);
+				ds.setColor(mContext.getResources().getColor(android.R.color.holo_blue_light));
+				ds.setUnderlineText(true);
+				ds.clearShadowLayer();
+			}
+			
+        }, 0, showText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    	return spanString;
+    }
+    
 	private class EventView extends EventViewHolder implements View.OnClickListener{
 		
 		public EventView(View view) {
