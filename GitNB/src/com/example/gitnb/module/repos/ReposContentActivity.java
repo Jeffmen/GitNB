@@ -121,6 +121,6 @@ public class ReposContentActivity extends BaseActivity {
 				refreshHandler.sendEmptyMessage(END_ERROR);
 			}
 			
-    	}).request(url);
+    	}).request(url, Content.class);
     }
 }

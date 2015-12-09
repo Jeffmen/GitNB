@@ -1,6 +1,7 @@
 package com.example.gitnb.module.repos;
 
 import com.example.gitnb.R;
+import com.example.gitnb.api.retrofit.OKHttpClient;
 import com.example.gitnb.api.retrofit.RepoActionsClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.app.BaseActivity;
@@ -57,20 +58,19 @@ public class ReposDetailActivity extends BaseActivity{
         	
             @Override
             public void onRefresh() {
-                refreshHandler.sendEmptyMessage(END_UPDATE);
+                refreshHandler.sendEmptyMessage(START_UPDATE);
             }
             
         });
         swithBt = (Switch) findViewById(R.id.switch_bt);  
-
     }
 
     private void setSwitchClicker(){
-        swithBt.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
-            
-            @Override 
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        	   if(isChecked){
+        swithBt.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+        	   if(swithBt.isChecked()){
         		   starRepo();
         	   }
         	   else{
@@ -195,8 +195,7 @@ public class ReposDetailActivity extends BaseActivity{
     @Override
     protected void startRefresh(){
         mSwipeRefreshLayout.setRefreshing(true);
-        checkIfRepoIsStarred();
-        refreshHandler.sendEmptyMessage(END_UPDATE);
+        getRepositoryInfo();
     }
 
     @Override
@@ -209,6 +208,30 @@ public class ReposDetailActivity extends BaseActivity{
     @Override
     protected void endError(){
     	mSwipeRefreshLayout.setRefreshing(false);
+    }
+    
+    private void getRepositoryInfo(){
+    	if(repos.getOwner() != null){
+            checkIfRepoIsStarred();
+			refreshHandler.sendEmptyMessage(END_UPDATE);
+			return;
+    	}
+    	OKHttpClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+
+			@Override
+			public void onOK(Object ts) {
+				repos = (Repository) ts;
+		        checkIfRepoIsStarred();
+				refreshHandler.sendEmptyMessage(END_UPDATE);
+			}
+
+			@Override
+			public void onError(String Message) {
+				MessageUtils.showErrorMessage(ReposDetailActivity.this, Message);
+				refreshHandler.sendEmptyMessage(END_ERROR);
+			}
+			
+    	}).request(repos.getUrl(), Repository.class);
     }
     
 	private void checkIfRepoIsStarred(){
@@ -231,15 +254,19 @@ public class ReposDetailActivity extends BaseActivity{
 	}
 	
 	private void starRepo(){
+		final Snackbar snackbar = Snackbar.make(mSwipeRefreshLayout, "UnStaring ...", Snackbar.LENGTH_INDEFINITE);
+		snackbar.show();
 		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
 
 			@Override
 			public void onOK(Object ts) {
-				Snackbar.make(mSwipeRefreshLayout, "Already Stared", Snackbar.LENGTH_LONG).show();
+				swithBt.setChecked(true);
+				snackbar.dismiss();
 			}
 
 			@Override
 			public void onError(String Message) {
+				snackbar.dismiss();
 				MessageUtils.showErrorMessage(ReposDetailActivity.this, Message);
 			}
 			
@@ -247,15 +274,19 @@ public class ReposDetailActivity extends BaseActivity{
 	}	
 	
 	private void unstarRepo(){
+		final Snackbar snackbar = Snackbar.make(mSwipeRefreshLayout, "Staring ...", Snackbar.LENGTH_INDEFINITE);
+		snackbar.show();
 		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
 
 			@Override
 			public void onOK(Object ts) {
-				Snackbar.make(mSwipeRefreshLayout, "Already unStared", Snackbar.LENGTH_LONG).show();
+				swithBt.setChecked(false);
+				snackbar.dismiss();
 			}
 
 			@Override
 			public void onError(String Message) {
+				snackbar.dismiss();
 				MessageUtils.showErrorMessage(ReposDetailActivity.this, Message);
 			}
 			

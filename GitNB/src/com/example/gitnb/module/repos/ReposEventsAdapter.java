@@ -229,7 +229,7 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 			viewHolder.event_user.append(" forked ");
 			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			viewHolder.event_user.append(" to ");
-			viewHolder.event_user.append(createReposSpan(item.payload.forkee.getName(), position));
+			viewHolder.event_user.append(createReposSpan(item.payload.forkee.getFull_name(), position));
 			break;
 		case GollumEvent:
 			viewHolder.event_user.append(" created wiki page on ");
@@ -237,14 +237,14 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 			//viewHolder.description.setText(item.payload.pages.get(0).html_url
 			break;
 		case IssueCommentEvent:
-			viewHolder.event_user.append(" commented on pull request ");
-			viewHolder.event_user.append(String.valueOf(item.payload.issue.number));
+			viewHolder.event_user.append(" commented on issue ");
+			viewHolder.event_user.append("#" + String.valueOf(item.payload.issue.number));
 			viewHolder.event_user.append(" in ");
 			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			viewHolder.description.setText(item.payload.comment.body);
 			break;
 		case IssuesEvent:
-			viewHolder.event_user.append(item.payload.action + " issue ");
+			viewHolder.event_user.append(" " + item.payload.action + " issue ");
 			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			viewHolder.description.setText(item.payload.issue.title);
 			break;
@@ -266,20 +266,20 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 			//showText += " public "+ item.payload.repository.getName();
 			break;
 		case PullRequestEvent:
-			viewHolder.event_user.append(" " + item.payload.action + " ");
+			viewHolder.event_user.append(" " + item.payload.action + " pull request ");
 			viewHolder.event_user.append(String.valueOf(item.payload.pull_request.number));
-			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
+			viewHolder.event_user.append(" " + createReposSpan(item.repo.getName(), position));
 			viewHolder.description.setText(item.payload.pull_request.title);
 			break;
 		case PullRequestReviewCommentEvent:
-			viewHolder.event_user.append(" created comment on ");
+			viewHolder.event_user.append(" commented on pull request in ");
 			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			viewHolder.description.setText(item.payload.comment.body);
 			break;
 		case PushEvent:
 			viewHolder.event_user.append(" pushed to ");
 			viewHolder.event_user.append(item.payload.ref);
-			viewHolder.event_user.append(" on ");
+			viewHolder.event_user.append(" at ");
 			viewHolder.event_user.append(createReposSpan(item.repo.getName(), position));
 			viewHolder.description.setText(item.payload.commits.get(0).message);
 			break;
@@ -430,7 +430,7 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
             @Override
             public void onClick(View widget) {
 
-				Intent intent = new Intent(mContext, UserDetailActivity.class);
+				Intent intent = new Intent(mContext, ReposDetailActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putParcelable(HotReposFragment.REPOS, getItem(position).repo);
 				intent.putExtras(bundle);

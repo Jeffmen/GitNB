@@ -24,7 +24,7 @@ public class OKHttpClient{
         return new OKHttpClient();
     }	
 	
-    public void request(String url){
+    public <T> void request(String url, final Class<T> className){
     	final Request request = new Request.Builder().url(url).build();
         ApiRetrofit.getRetrofit().client().newCall(request)
     	.enqueue(new Callback() {
@@ -47,7 +47,7 @@ public class OKHttpClient{
 		        if (response.isSuccessful()) {
 		            if (networkListener != null) {	
 		            	String reponse = response.body().string();
-		            	final Object o = gson.fromJson(reponse, Content.class);
+		            	final Object o = gson.fromJson(reponse, className);
 		        		mDelivery.post(new Runnable() {
 		        			@Override
 		        			public void run() {
