@@ -3,7 +3,6 @@ package com.example.gitnb.module;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.example.gitnb.R;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.module.repos.HotReposFragment;
@@ -15,17 +14,14 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends BaseActivity {
     private static int FOR_LANGUAGE = 200;
@@ -48,7 +44,18 @@ public class MainActivity extends BaseActivity {
     protected int getNavigationIcon(){
     	return R.drawable.ic_git_white_50;
     }
- 
+
+    @Override
+    protected View.OnClickListener getNavigationOnClickListener(){
+    	return new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(MainActivity.this, GitHubAnthorizeActivity.class);
+				startActivity(intent);
+			}
+		};
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

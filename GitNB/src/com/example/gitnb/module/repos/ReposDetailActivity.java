@@ -1,5 +1,7 @@
 package com.example.gitnb.module.repos;
 
+import java.text.SimpleDateFormat;
+
 import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.OKHttpClient;
 import com.example.gitnb.api.retrofit.RepoActionsClient;
@@ -10,6 +12,7 @@ import com.example.gitnb.module.user.HotUserFragment;
 import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.module.user.UserListActivity;
 import com.example.gitnb.utils.MessageUtils;
+import com.example.gitnb.utils.Utils;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import android.content.Intent;
@@ -27,6 +30,7 @@ public class ReposDetailActivity extends BaseActivity{
 
 	private String TAG = "ReposDetailActivity";
 	public static String CONTENT_URL = "content_url";
+	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayout main;
 	private Repository repos;
@@ -108,20 +112,51 @@ public class ReposDetailActivity extends BaseActivity{
     	
 		if(this.repos != null){
 			repos_name.setText(repos.getName());	
-			repos_updated.setText(repos.getUpdated_at());
+			//repos_updated.setText(repos.getUpdated_at());				
+			int hours = Utils.fromNow(repos.getUpdated_at());
+			int days = hours/24;
+			int months = days/30;
+			int years = months/12;
+			if(years == 1){
+				repos_updated.setText("Updated " + years+" year ago");
+			}
+			else if(years > 1){
+				repos_updated.setText("Updated " + years+" years ago");
+			}
+			else if(months == 1){
+				repos_updated.setText("Updated " + months+" month ago");
+			}
+			else if(months > 1){
+				repos_updated.setText("Updated " + months+" months ago");
+			}
+			else if(days == 1){
+				repos_updated.setText("Updated " + days+" day ago");
+			}
+			else if(days > 1){
+				repos_updated.setText("Updated " + days+" days ago");
+			}
+			else if(hours > 1){
+				repos_updated.setText("Updated " + hours + " hours ago");
+			}
+			else{
+				repos_updated.setText("Updated " + hours + " hour ago");
+			}
 			repos_homepage.setText(repos.getHomepage());
 			repos_discription.setText(repos.getDescription());
 
 			type.setText(repos.is_private() ? "Private" : "Public");
 			issues.setText(repos.getOpen_issues()+" Issues");			
-			String date = repos.getCreated_at();
-			if(date != null && !date.isEmpty()){
-				date = date.substring(0, date.indexOf('T'));
-			}
-			created_date.setText(date);
+			created_date.setText(format.format(Utils.getDate(repos.getCreated_at())));
 			language.setText(repos.getLanguage());
 			forks.setText(repos.getForks_count()+" Forks");
-			size.setText((float)((repos.getSize()/1024*100))/100+"M");
+			size.setText((float)((repos.getSize()/1024*100))/100+"M");			
+			float m = repos.getSize()/1024;
+			if(m>0){
+				size.setText(((int)(m*100))/100+"M");
+			}
+			else{
+				size.setText(repos.getSize()+"K");
+			}
 		}
 		if(repos.getOwner() != null){
 			repos_owner.setText(repos.getOwner().getLogin());
@@ -182,11 +217,11 @@ public class ReposDetailActivity extends BaseActivity{
 			
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(ReposDetailActivity.this, ReposEventsActivity.class);
+				Intent intent = new Intent(ReposDetailActivity.this, EventListActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putParcelable(HotReposFragment.REPOS, repos);
 				intent.putExtras(bundle);
-				intent.putExtra(ReposEventsActivity.EVENT_TYPE, ReposEventsActivity.EVENT_TYPE_REPOS);
+				intent.putExtra(EventListActivity.EVENT_TYPE, EventListActivity.EVENT_TYPE_REPOS);
 				startActivity(intent);
 			}
 		});
@@ -211,11 +246,12 @@ public class ReposDetailActivity extends BaseActivity{
     }
     
     private void getRepositoryInfo(){
+    	/*
     	if(repos.getOwner() != null){
             checkIfRepoIsStarred();
 			refreshHandler.sendEmptyMessage(END_UPDATE);
 			return;
-    	}
+    	}*/
     	OKHttpClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
 
 			@Override

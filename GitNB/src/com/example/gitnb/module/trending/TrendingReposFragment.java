@@ -66,7 +66,7 @@ public class TrendingReposFragment extends Fragment implements HandlerInterface<
             	requestTrendingRepos(true);
             }
         });
-        requestTrendingRepos(false);
+        requestTrendingRepos(true);
         return view;
     }
 	

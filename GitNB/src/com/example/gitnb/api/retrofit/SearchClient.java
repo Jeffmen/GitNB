@@ -1,11 +1,5 @@
 package com.example.gitnb.api.retrofit;
 
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.Retrofit;
-import retrofit.http.Query;
-
-import com.example.gitnb.model.search.UsersSearch;
 //http://blog.csdn.net/lmj623565791/article/details/48129405
 public class SearchClient extends RetrofitNetworkAbs{
 	private SearchService searchService;

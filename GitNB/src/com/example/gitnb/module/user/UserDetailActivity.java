@@ -1,23 +1,24 @@
 package com.example.gitnb.module.user;
 
+import java.text.SimpleDateFormat;
+
 import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.UsersClient;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.User;
-import com.example.gitnb.module.repos.HotReposFragment;
-import com.example.gitnb.module.repos.ReposDetailActivity;
-import com.example.gitnb.module.repos.ReposEventsActivity;
+import com.example.gitnb.module.repos.EventListActivity;
 import com.example.gitnb.module.repos.ReposListActivity;
 import com.example.gitnb.utils.MessageUtils;
+import com.example.gitnb.utils.Utils;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CompoundButton;
@@ -29,6 +30,7 @@ public class UserDetailActivity extends BaseActivity{
 
 	private String TAG = "UserDetailActivity";
 	public static String AVATAR_URL = "avatar_url";
+	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayout main;
     private Switch swithBt;
@@ -95,13 +97,9 @@ public class UserDetailActivity extends BaseActivity{
 		if(user!=null){
 			user_name.setText(user.getName());
 			user_location.setText(user.getLocation());
-			String date = user.getCreated_at();
-			if(date != null && !date.isEmpty()){
-				date = date.substring(0, date.indexOf('T'));
-			}
 			user_avatar.setImageURI(Uri.parse(user.getAvatar_url()));
 			user_email.setText(user.getEmail());
-			user_created_date.setText(date);
+			user_created_date.setText(format.format(Utils.getDate(user.getCreated_at())));
 			user_blog.setText(user.getBlog());
 			user_company.setText(user.getCompany());
 			if(user.getCompany() == null || user.getCompany().isEmpty()){
@@ -130,11 +128,11 @@ public class UserDetailActivity extends BaseActivity{
 			
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(UserDetailActivity.this, ReposEventsActivity.class);
+				Intent intent = new Intent(UserDetailActivity.this, EventListActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putParcelable(HotUserFragment.USER, user);
 				intent.putExtras(bundle);
-				intent.putExtra(ReposEventsActivity.EVENT_TYPE, ReposEventsActivity.EVENT_TYPE_USER);
+				intent.putExtra(EventListActivity.EVENT_TYPE, EventListActivity.EVENT_TYPE_USER);
 				startActivity(intent);
 			}
 		});

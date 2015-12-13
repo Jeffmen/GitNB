@@ -28,7 +28,6 @@ public class OauthUrlRetrofit {
 
     static final int CONNECT_TIMEOUT_MILLIS = 30 * 1000;
     static final int READ_TIMEOUT_MILLIS = 30 * 1000;
-    public static String API_OAUTH_URL = "https://github.com/";
     
     public static Retrofit getRetrofit(){
         Retrofit retrofit = new Retrofit.Builder()
@@ -39,7 +38,7 @@ public class OauthUrlRetrofit {
     }
 
 	public static String getBaseUrl() {
-		return API_OAUTH_URL;
+		return GitHub.API_OAUTH_URL;
 	}
 	
     public static OkHttpClient getOkClient() {

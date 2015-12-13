@@ -24,13 +24,13 @@ import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
-public class ReposEventsActivity  extends BaseActivity implements RetrofitNetworkAbs.NetworkListener{
+public class EventListActivity  extends BaseActivity implements RetrofitNetworkAbs.NetworkListener{
 	private String TAG = "ReposEventsActivity";
 	public static final String EVENT_TYPE = "event_type";
 	public static final String EVENT_TYPE_REPOS = "Events_REPOS";
 	public static final String EVENT_TYPE_USER = "Events_USER";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private ReposEventsAdapter adapter;
+    private EventListAdapter adapter;
     private RecyclerView recyclerView;
 	private boolean isLoadingMore;
 	private Repository repos;
@@ -71,18 +71,18 @@ public class ReposEventsActivity  extends BaseActivity implements RetrofitNetwor
 	    }
 		this.setContentView(R.layout.activity_list_layout);
 		
-        adapter = new ReposEventsAdapter(this);
-        adapter.setOnItemClickListener(new ReposEventsAdapter.OnItemClickListener() {
+        adapter = new EventListAdapter(this);
+        adapter.setOnItemClickListener(new EventListAdapter.OnItemClickListener() {
 			@Override
 			public void onItemClick(View view, int position) {
-				Intent intent = new Intent(ReposEventsActivity.this, UserDetailActivity.class);
+				Intent intent = new Intent(EventListActivity.this, UserDetailActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putParcelable(HotReposFragment.REPOS, adapter.getItem(position).repo);
 				intent.putExtras(bundle);
 				startActivity(intent);
 			}
 		});
-        adapter.setOnLoadMoreClickListener(new ReposEventsAdapter.OnItemClickListener() {
+        adapter.setOnLoadMoreClickListener(new EventListAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
@@ -155,7 +155,7 @@ public class ReposEventsActivity  extends BaseActivity implements RetrofitNetwor
 
 	@Override
 	public void onError(String Message) {
-		MessageUtils.showErrorMessage(ReposEventsActivity.this, Message);
+		MessageUtils.showErrorMessage(EventListActivity.this, Message);
 		refreshHandler.sendEmptyMessage(END_ERROR);
 	}
 	

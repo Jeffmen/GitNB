@@ -16,6 +16,8 @@ import retrofit.Retrofit;
 
 import com.example.gitnb.api.FakeX509TrustManager;
 import com.example.gitnb.api.retrofit.converter.GsonConverterFactory;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -28,7 +30,6 @@ public class ApiRetrofit{
 
     static final int CONNECT_TIMEOUT_MILLIS = 30 * 1000;
     static final int READ_TIMEOUT_MILLIS = 30 * 1000;
-    public static String API_URL = "https://api.github.com/";
 	
     public static OkHttpClient getOkClient() {
         OkHttpClient client = new OkHttpClient();
@@ -61,7 +62,7 @@ public class ApiRetrofit{
 		        Request request = chain.request().newBuilder()
 		        		.header("Accept", "application/vnd.github.v3+json")
 				        .addHeader("User-Agent", "GtiNB")
-				        .addHeader("Authorization", "token " + getToken())
+				        .addHeader("Authorization", "token " + GitHub.getInstance().getToken())
 		                .build();
 		        return chain.proceed(request);
 			}
@@ -70,18 +71,18 @@ public class ApiRetrofit{
     }
     
     public static Retrofit getRetrofit(){
+    	Gson gson = new GsonBuilder()
+    	.setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    	.create();
         Retrofit retrofit = new Retrofit.Builder()
          	.baseUrl(getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .client(getOkClient()).build();
         return retrofit;
     }
     
-    protected static String getToken() {
-		return "d84ac551c6e16b0f1e48c57e1845d35ae2527cbe";
-    }
 
 	public static String getBaseUrl() {
-		return API_URL;
+		return GitHub.API_URL;
 	}
 }

@@ -16,7 +16,6 @@ import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.URLSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,10 +29,11 @@ import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.module.viewholder.EventViewHolder;
 import com.example.gitnb.module.viewholder.LoadMoreViewHolder;
 import com.example.gitnb.module.viewholder.SearchViewHolder;
+import com.example.gitnb.utils.Utils;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 
-public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
+public class EventListAdapter extends RecyclerView.Adapter<ViewHolder>{
 
 	private Context mContext;
     private static final int TYPE_HEADER_VIEW = 2;
@@ -54,7 +54,7 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
         void onItemClick(View view, int position);
     }
     
-    public ReposEventsAdapter(Context context) {
+    public EventListAdapter(Context context) {
     	mContext = context;
     	mInflater = LayoutInflater.from(mContext);
 	}
@@ -183,7 +183,34 @@ public class ReposEventsAdapter extends RecyclerView.Adapter<ViewHolder>{
 			Event item = getItem(position);
 			if(item != null){
 				viewHolder.type_img.setBackgroundResource(R.drawable.ic_chevron_right_white_18dp);
-				viewHolder.created_date.setText(item.created_at);
+				int hours = Utils.fromNow(item.created_at);
+				int days = hours/24;
+				int months = days/30;
+				int years = months/12;
+				if(years == 1){
+					viewHolder.created_date.setText(years+" year ago");
+				}
+				else if(years > 1){
+					viewHolder.created_date.setText(years+" years ago");
+				}
+				else if(months == 1){
+					viewHolder.created_date.setText(months+" month ago");
+				}
+				else if(months > 1){
+					viewHolder.created_date.setText(months+" months ago");
+				}
+				else if(days == 1){
+					viewHolder.created_date.setText(days+" day ago");
+				}
+				else if(days > 1){
+					viewHolder.created_date.setText(days+" days ago");
+				}
+				else if(hours > 1){
+					viewHolder.created_date.setText(hours + " hours ago");
+				}
+				else{
+					viewHolder.created_date.setText(hours + " hour ago");
+				}
 				//viewHolder.event_user.setText(item.actor.getLogin());
 				//viewHolder.description.setText(item.payload.issue.title);
 				//viewHolder.event_type.setText(getTypeString(item.getType()));
