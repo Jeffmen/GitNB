@@ -12,27 +12,29 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.gitnb.R;
-import com.example.gitnb.api.retrofit.RepoClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
+import com.example.gitnb.api.retrofit.TrendingClient;
 import com.example.gitnb.api.retrofit.UsersClient;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.Repository;
+import com.example.gitnb.model.ShowCase;
 import com.example.gitnb.model.User;
-import com.example.gitnb.module.user.UserListAdapter;
+import com.example.gitnb.model.search.ShowCaseSearch;
+import com.example.gitnb.module.trending.ShowCaseFragment;
 import com.example.gitnb.module.user.HotUserFragment;
-import com.example.gitnb.module.user.UserDetailActivity;
-import com.example.gitnb.module.user.UserListAdapter.OnItemClickListener;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
-public class ReposListActivity  extends BaseActivity implements RetrofitNetworkAbs.NetworkListener{
+public class ReposListActivity  extends BaseActivity implements RetrofitNetworkAbs.NetworkListener<ArrayList<Repository>>{
 	private String TAG = "ReposListActivity";
 	public static final String REPOS_TYPE = "repos_type";
-	public static final String REPOS_TYPE_USER = "Repositorys";
+	public static final String REPOS_TYPE_USER = "user_repository";
+	public static final String REPOS_TYPE_SHOWCASE = "showcase_epository";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ReposListAdapter adapter;
     private RecyclerView recyclerView;
 	private boolean isLoadingMore;
+	private ShowCase showCase;
 	private User user;
 	private String type;
 	private int page = 1;
@@ -43,7 +45,14 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
         if(user != null && !user.getName().isEmpty()){    
         	switch(type){
 	        case REPOS_TYPE_USER:
-	        	view.setText(user.getLogin()+" / " + REPOS_TYPE_USER);    
+	        	view.setText(user.getLogin()+" / Repositorys");    
+	        	break;
+            }
+        }
+        else if(showCase != null && !showCase.name.isEmpty()){    
+        	switch(type){
+	        case REPOS_TYPE_SHOWCASE:
+	        	view.setText(showCase.name +" / Repositorys");    
 	        	break;
             }
         }else{
@@ -55,8 +64,15 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
-		user = (User) intent.getParcelableExtra(HotUserFragment.USER);
 		type = intent.getStringExtra(REPOS_TYPE);
+        switch(type){
+        case REPOS_TYPE_USER:
+    		user = (User) intent.getParcelableExtra(HotUserFragment.USER);
+        	break;
+        case REPOS_TYPE_SHOWCASE:
+    		showCase = (ShowCase) intent.getParcelableExtra(ShowCaseFragment.SHOWCASE);
+        	break;
+        }
 		this.setContentView(R.layout.activity_list_layout);
 		
         adapter = new ReposListAdapter(this);
@@ -111,6 +127,9 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
 	        case REPOS_TYPE_USER:
 	        	userReposList();
 	        	break;
+	        case REPOS_TYPE_SHOWCASE:
+	        	showCaseReposList();
+	        	break;
         }
     }
 
@@ -127,13 +146,13 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
     }
     
 	@Override
-	public void onOK(Object ts) {   	
+	public void onOK(ArrayList<Repository> ts) {   	
 		if(page == 1){
-        	adapter.update((ArrayList<Repository>) ts);
+        	adapter.update(ts);
     	}
     	else{
             isLoadingMore = false;
-        	adapter.insertAtBack((ArrayList<Repository>) ts);
+        	adapter.insertAtBack(ts);
     	}
 		refreshHandler.sendEmptyMessage(END_UPDATE);
 	}
@@ -147,5 +166,28 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
 	private void userReposList(){
 		UsersClient.getNewInstance().setNetworkListener(this)
 		  .userReposList(user.getLogin(), "updated", page);
+	}
+
+	private void showCaseReposList(){
+		TrendingClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<ShowCaseSearch>(){
+
+			@Override
+			public void onOK(ShowCaseSearch ts) {   	
+				if(page == 1){
+		        	adapter.update((ArrayList<Repository>)ts.repositories);
+		    	}
+		    	else{
+		            isLoadingMore = false;
+		        	adapter.insertAtBack((ArrayList<Repository>)ts.repositories);
+		    	}
+				refreshHandler.sendEmptyMessage(END_UPDATE);
+			}
+
+			@Override
+			public void onError(String Message) {
+				MessageUtils.showErrorMessage(ReposListActivity.this, Message);
+				refreshHandler.sendEmptyMessage(END_ERROR);
+			}
+		}).trendingShowCase(showCase.slug);
 	}
 }

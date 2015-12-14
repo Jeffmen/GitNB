@@ -5,9 +5,13 @@ import java.util.List;
 
 import com.example.gitnb.R;
 import com.example.gitnb.app.BaseActivity;
+import com.example.gitnb.model.User;
 import com.example.gitnb.module.repos.HotReposFragment;
+import com.example.gitnb.module.trending.ShowCaseFragment;
 import com.example.gitnb.module.trending.TrendingReposFragment;
 import com.example.gitnb.module.user.HotUserFragment;
+import com.example.gitnb.module.user.ReceivedEventsFragment;
+import com.example.gitnb.utils.CurrentUser;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -31,6 +35,7 @@ public class MainActivity extends BaseActivity {
     private CoordinatorLayout layout;
 	private DisplayMetrics dm;
     private ViewPager pager;
+    private User currentUser;
 	
     public interface UpdateLanguageListener{
     	Void updateLanguage(String language);
@@ -63,10 +68,15 @@ public class MainActivity extends BaseActivity {
 		dm = getResources().getDisplayMetrics();
 		pager = (ViewPager) findViewById(R.id.pager);
 		tabs = (TabLayout) findViewById(R.id.tabs);
+		currentUser = CurrentUser.get(MainActivity.this);
 		pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
-		pagerAdapter.addFragment(new HotUserFragment(), "User");
+		pagerAdapter.addFragment(new ShowCaseFragment(), "ShowCase");
+		//pagerAdapter.addFragment(new HotUserFragment(), "User");
+		if(currentUser != null){
+			pagerAdapter.addFragment(new ReceivedEventsFragment(currentUser), "News");
+		}
 		pagerAdapter.addFragment(new TrendingReposFragment(), "Trending");
-		pagerAdapter.addFragment(new HotReposFragment(), "Repos");
+		//pagerAdapter.addFragment(new HotReposFragment(), "Repos");
 		pager.setAdapter(pagerAdapter);
 		tabs.setSelectedTabIndicatorColor(Color.WHITE);
 		tabs.setTabTextColors(getResources().getColor(R.color.transparent_dark_gray), Color.WHITE);

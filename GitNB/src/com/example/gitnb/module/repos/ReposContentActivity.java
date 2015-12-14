@@ -107,11 +107,11 @@ public class ReposContentActivity extends BaseActivity {
     
     private void requestContents(final String url){
     	mSwipeRefreshLayout.setRefreshing(true);
-    	OKHttpClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+    	OKHttpClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Content>() {
 
 			@Override
-			public void onOK(Object ts) {
-				content = (Content) ts;
+			public void onOK(Content ts) {
+				content = ts;
 				refreshHandler.sendEmptyMessage(END_UPDATE);
 			}
 

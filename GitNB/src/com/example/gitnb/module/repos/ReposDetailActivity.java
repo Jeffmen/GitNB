@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -252,11 +251,11 @@ public class ReposDetailActivity extends BaseActivity{
 			refreshHandler.sendEmptyMessage(END_UPDATE);
 			return;
     	}*/
-    	OKHttpClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+    	OKHttpClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Repository>() {
 
 			@Override
-			public void onOK(Object ts) {
-				repos = (Repository) ts;
+			public void onOK(Repository ts) {
+				repos = ts;
 		        checkIfRepoIsStarred();
 				refreshHandler.sendEmptyMessage(END_UPDATE);
 			}
@@ -271,7 +270,7 @@ public class ReposDetailActivity extends BaseActivity{
     }
     
 	private void checkIfRepoIsStarred(){
-		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Object>() {
 
 			@Override
 			public void onOK(Object ts) {
@@ -292,7 +291,7 @@ public class ReposDetailActivity extends BaseActivity{
 	private void starRepo(){
 		final Snackbar snackbar = Snackbar.make(mSwipeRefreshLayout, "UnStaring ...", Snackbar.LENGTH_INDEFINITE);
 		snackbar.show();
-		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Object>() {
 
 			@Override
 			public void onOK(Object ts) {
@@ -312,7 +311,7 @@ public class ReposDetailActivity extends BaseActivity{
 	private void unstarRepo(){
 		final Snackbar snackbar = Snackbar.make(mSwipeRefreshLayout, "Staring ...", Snackbar.LENGTH_INDEFINITE);
 		snackbar.show();
-		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Object>() {
 
 			@Override
 			public void onOK(Object ts) {

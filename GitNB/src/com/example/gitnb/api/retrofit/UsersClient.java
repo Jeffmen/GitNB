@@ -12,6 +12,10 @@ public class UsersClient extends RetrofitNetworkAbs{
         return new UsersClient();
     }
     
+	public void me(){
+		execute(usersService.me());
+	}
+    
 	public void getSingleUser(String username){
 		execute(usersService.getSingleUser(username));
 	}

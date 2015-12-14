@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs.NetworkListener;
-import com.example.gitnb.model.Content;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -16,7 +15,7 @@ public class OKHttpClient{
 	private static String TAG = "OKHttpClient";
     protected NetworkListener networkListener;
     private Gson gson = new Gson();
-    private Handler mDelivery = new Handler();
+    private Handler mDelivery = new Handler(Looper.getMainLooper());
 	private OKHttpClient(){
 	}
 	

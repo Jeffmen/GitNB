@@ -24,7 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ReceivedEventsFragment extends Fragment implements RetrofitNetworkAbs.NetworkListener, UpdateLanguageListener{
+public class ReceivedEventsFragment extends Fragment implements RetrofitNetworkAbs.NetworkListener<ArrayList<Event>>, UpdateLanguageListener{
 	private String TAG = "HotUserFragment";
 	public static String USER = "user_key";
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -33,7 +33,11 @@ public class ReceivedEventsFragment extends Fragment implements RetrofitNetworkA
 	private boolean isLoadingMore;
 	private User user;
 	private int page;
-
+	
+	public ReceivedEventsFragment(User user){
+		this.user = user;
+	}
+	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_data_fragment, container, false);
@@ -85,25 +89,27 @@ public class ReceivedEventsFragment extends Fragment implements RetrofitNetworkA
     }
 	
 	@Override
-	public void onOK(Object ts) {   	
+	public void onOK(ArrayList<Event> list) {   	
 		if(page == 1){
-        	adapter.update((ArrayList<Event>) ts);
+        	adapter.update(list);
     	}
     	else{
             isLoadingMore = false;
-        	adapter.insertAtBack((ArrayList<Event>) ts);
+        	adapter.insertAtBack(list);
     	}
+    	mSwipeRefreshLayout.setRefreshing(false);
 	}
 
 	@Override
 	public void onError(String Message) {
+    	mSwipeRefreshLayout.setRefreshing(false);
 		MessageUtils.showErrorMessage(getActivity(), Message);
 	}
 	
 	public void receivedEvents(){
-			UsersClient.getNewInstance().setNetworkListener(this)
-			  .createdEvents(user.getLogin(), page);
-		}
+    	mSwipeRefreshLayout.setRefreshing(true);
+		UsersClient.getNewInstance().setNetworkListener(this).events(user.getLogin(), page);
+	}
 
 	@Override
 	public Void updateLanguage(String language) {

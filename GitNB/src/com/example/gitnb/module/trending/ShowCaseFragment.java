@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.TrendingClient;
-import com.example.gitnb.model.Repository;
+import com.example.gitnb.model.ShowCase;
 import com.example.gitnb.module.MainActivity.UpdateLanguageListener;
-import com.example.gitnb.module.repos.HotReposFragment;
-import com.example.gitnb.module.repos.ReposDetailActivity;
+import com.example.gitnb.module.repos.ReposListActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
@@ -22,28 +21,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class TrendingReposFragment extends Fragment implements RetrofitNetworkAbs.NetworkListener<ArrayList<Repository>>, UpdateLanguageListener{
+public class ShowCaseFragment extends Fragment implements RetrofitNetworkAbs.NetworkListener<ArrayList<ShowCase>>, UpdateLanguageListener{
 	private String TAG = "TrendingReposFragment";
+	public static String SHOWCASE = "showcase_key";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLayoutManager;
-    private TrendingReposAdapter adapter;
+    private ShowCaseAdapter adapter;
     private RecyclerView recyclerView;
-    private String language;
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_data_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recylerView);
-        adapter = new TrendingReposAdapter(getActivity());
+        adapter = new ShowCaseAdapter(getActivity());
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).build());
-        adapter.SetOnItemClickListener(new TrendingReposAdapter.OnItemClickListener() {
+        adapter.SetOnItemClickListener(new ShowCaseAdapter.OnItemClickListener() {
 			
 			@Override
 			public void onItemClick(View view, int position) {
-				Intent intent = new Intent(getActivity(), ReposDetailActivity.class);
+
+				Intent intent = new Intent(getActivity(), ReposListActivity.class);
 				Bundle bundle = new Bundle();
-				bundle.putParcelable(HotReposFragment.REPOS, adapter.getItem(position));
+				bundle.putParcelable(SHOWCASE, adapter.getItem(position));
 				intent.putExtras(bundle);
+				intent.putExtra(ReposListActivity.REPOS_TYPE, ReposListActivity.REPOS_TYPE_SHOWCASE);
 				startActivity(intent);
 			}
 		});
@@ -59,15 +60,15 @@ public class TrendingReposFragment extends Fragment implements RetrofitNetworkAb
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-            	requestTrendingRepos();
+            	requeseShowCase();
             }
         });
-        requestTrendingRepos();
+        requeseShowCase();
         return view;
     }
 	
 	@Override
-	public void onOK(ArrayList<Repository> list) {  
+	public void onOK(ArrayList<ShowCase> list) {  
     	adapter.update(list);
     	mSwipeRefreshLayout.setRefreshing(false);
 	}
@@ -78,16 +79,13 @@ public class TrendingReposFragment extends Fragment implements RetrofitNetworkAb
 		MessageUtils.showErrorMessage(getActivity(), Message);
 	}
 	
-    private void requestTrendingRepos(){
+    private void requeseShowCase(){
     	mSwipeRefreshLayout.setRefreshing(true);
-    	TrendingClient.getNewInstance().setNetworkListener(this).trendingReposList(language, "daily");
+    	TrendingClient.getNewInstance().setNetworkListener(this).trendingShowCase();
     }
 
 	@Override
 	public Void updateLanguage(String language) {
-		this.language = language;
-    	mSwipeRefreshLayout.setRefreshing(true);
-		requestTrendingRepos();
 		return null;
 	}
 }

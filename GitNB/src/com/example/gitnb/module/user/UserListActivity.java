@@ -22,7 +22,7 @@ import com.example.gitnb.module.repos.HotReposFragment;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
-public class UserListActivity  extends BaseActivity implements RetrofitNetworkAbs.NetworkListener{
+public class UserListActivity  extends BaseActivity implements RetrofitNetworkAbs.NetworkListener<ArrayList<User>>{
 	private String TAG = "ReposStargzersActivity";
 	public static final String USER_TYPE = "user_type";
 	public static final String USER_TYPE_STARGZER = "Stargzer";
@@ -160,13 +160,13 @@ public class UserListActivity  extends BaseActivity implements RetrofitNetworkAb
     }
     
 	@Override
-	public void onOK(Object ts) {   	
+	public void onOK(ArrayList<User> ts) {   	
 		if(page == 1){
-        	adapter.update((ArrayList<User>) ts);
+        	adapter.update(ts);
     	}
     	else{
             isLoadingMore = false;
-        	adapter.insertAtBack((ArrayList<User>) ts);
+        	adapter.insertAtBack(ts);
     	}
 		refreshHandler.sendEmptyMessage(END_UPDATE);
 	}

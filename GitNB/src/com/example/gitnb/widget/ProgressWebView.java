@@ -33,6 +33,7 @@ public class ProgressWebView extends WebView {
                     //这个时候网页才显示  
                     }  
             }  
+            
             //https://github.com/login/oauth/authorize/?client_id=a4220ecd856ed8c01689&state=2015&redirect_uri=https://github.com/Jeffmen/GitNB&scope=user,public_repo
             //https://github.com/Jeffmen/GitNB?code=4b665f4f23462c2b91eb&state=2015
             @Override  
@@ -44,7 +45,7 @@ public class ProgressWebView extends WebView {
                     return true;  
             }  
 
-            //fix for webview can open the https
+            //fix for webview can not open the https
             @Override  
             public void onReceivedSslError(WebView view, SslErrorHandler handler, android.net.http.SslError error) {
             	handler.proceed();

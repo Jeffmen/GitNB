@@ -18,7 +18,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.format.DateFormat;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CompoundButton;
@@ -201,10 +200,10 @@ public class UserDetailActivity extends BaseActivity{
     }
     
 	private void getSingleUser(){
-    	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+    	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<User>() {
 
 			@Override
-			public void onOK(Object ts) {
+			public void onOK(User ts) {
 				user = (User) ts;
 		        refreshHandler.sendEmptyMessage(END_UPDATE);
 			}
@@ -219,7 +218,7 @@ public class UserDetailActivity extends BaseActivity{
 	} 
 	
 	private void checkFollowing(){
-    	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+    	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Object>() {
 
 			@Override
 			public void onOK(Object ts) {
@@ -238,7 +237,7 @@ public class UserDetailActivity extends BaseActivity{
 	}
 	
 	private void followUser(){
-    	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+    	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Object>() {
 
 			@Override
 			public void onOK(Object ts) {
@@ -254,7 +253,7 @@ public class UserDetailActivity extends BaseActivity{
 	}	
 	
 	private void unfollowUser(){
-    	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+    	UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Object>() {
 
 			@Override
 			public void onOK(Object ts) {

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Recycler;
@@ -13,7 +12,6 @@ import android.support.v7.widget.RecyclerView.State;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.MeasureSpec;
-import android.widget.Toast;
 
 import com.example.gitnb.R;
 import com.example.gitnb.utils.Utils;
@@ -41,7 +39,6 @@ public class LanguageActivity  extends Activity {
 			    intent.putExtra(LANGUAGE_KEY, adapter.getItemValue(position));
 			    setResult(RESULT_OK, intent);
 			    finish();
-				//Toast.makeText(LanguageActivity.this, "item:"+position, Toast.LENGTH_SHORT).show();
 			}
 		});
         recyclerView.setAdapter(adapter);

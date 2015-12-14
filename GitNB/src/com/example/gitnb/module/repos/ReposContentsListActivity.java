@@ -132,12 +132,12 @@ public class ReposContentsListActivity extends BaseActivity {
     }
     
     private void requestContents(){
-    	RepoClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+    	RepoClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<ArrayList<Content>>() {
 
 			@Override
-			public void onOK(Object ts) {
+			public void onOK(ArrayList<Content> ts) {
 				path += clickName + "/";
-				adapter.update((ArrayList<Content>) ts);
+				adapter.update(ts);
 				refreshHandler.sendEmptyMessage(END_UPDATE);
 			}
 

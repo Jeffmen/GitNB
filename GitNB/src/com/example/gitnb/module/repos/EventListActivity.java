@@ -24,7 +24,7 @@ import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
-public class EventListActivity  extends BaseActivity implements RetrofitNetworkAbs.NetworkListener{
+public class EventListActivity  extends BaseActivity implements RetrofitNetworkAbs.NetworkListener<ArrayList<Event>>{
 	private String TAG = "ReposEventsActivity";
 	public static final String EVENT_TYPE = "event_type";
 	public static final String EVENT_TYPE_REPOS = "Events_REPOS";
@@ -142,13 +142,13 @@ public class EventListActivity  extends BaseActivity implements RetrofitNetworkA
     }
     
 	@Override
-	public void onOK(Object ts) {   	
+	public void onOK(ArrayList<Event> ts) {   	
 		if(page == 1){
-        	adapter.update((ArrayList<Event>) ts);
+        	adapter.update(ts);
     	}
     	else{
             isLoadingMore = false;
-        	adapter.insertAtBack((ArrayList<Event>) ts);
+        	adapter.insertAtBack(ts);
     	}
 		refreshHandler.sendEmptyMessage(END_UPDATE);
 	}

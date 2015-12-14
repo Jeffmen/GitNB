@@ -4,8 +4,11 @@ import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.GitHub;
 import com.example.gitnb.api.retrofit.LoginClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
+import com.example.gitnb.api.retrofit.UsersClient;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.Token;
+import com.example.gitnb.model.User;
+import com.example.gitnb.utils.CurrentUser;
 import com.example.gitnb.utils.MessageUtils;
 import com.example.gitnb.widget.ProgressWebView;
 
@@ -43,14 +46,27 @@ public class GitHubAnthorizeActivity extends BaseActivity {
 					Uri uri = Uri.parse(url);
 					String code = uri.getQueryParameter(GitHub.CODE_KEY);
 					GitHub.getInstance().setCode(code);
-					LoginClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+					LoginClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Token>() {
 
 						@Override
-						public void onOK(Object ts) {
-
-							Token token = (Token)ts;
+						public void onOK(Token token) {
 							GitHub.getInstance().setToken(token.access_token);
-							finish();
+
+							UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<User>() {
+
+								@Override
+								public void onOK(User user) {
+									CurrentUser.save(GitHubAnthorizeActivity.this, user);
+									finish();
+								}
+
+								@Override
+								public void onError(String Message) {
+							        MessageUtils.showErrorMessage(GitHubAnthorizeActivity.this, Message);
+									finish();
+								}
+								
+					    	}).me();
 						}
 
 						@Override

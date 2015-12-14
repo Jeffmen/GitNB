@@ -11,22 +11,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.gitnb.R;
-import com.example.gitnb.model.Repository;
-import com.example.gitnb.module.viewholder.ReposViewHolder;
+import com.example.gitnb.model.ShowCase;
+import com.example.gitnb.module.viewholder.ShowCaseViewHolder;
 
-public class TrendingReposAdapter extends RecyclerView.Adapter<ViewHolder>{
+public class ShowCaseAdapter extends RecyclerView.Adapter<ViewHolder>{
 
 	private Context mContext;
     private static final int TYPE_NOMAL_VIEW = 0;
     protected final LayoutInflater mInflater;
-    private ArrayList<Repository> mRepos;
+    private ArrayList<ShowCase> showcaes;
     private OnItemClickListener mItemClickListener;
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
     }
     
-    public TrendingReposAdapter(Context context) {
+    public ShowCaseAdapter(Context context) {
     	mContext = context;
     	mInflater = LayoutInflater.from(mContext);
 	}
@@ -35,9 +35,9 @@ public class TrendingReposAdapter extends RecyclerView.Adapter<ViewHolder>{
         this.mItemClickListener = mItemClickListener;
     }
     
-	public Repository getItem(int position) {
+	public ShowCase getItem(int position) {
 
-		return mRepos == null ? null : mRepos.get(position);
+		return showcaes == null ? null : showcaes.get(position);
 	}
 
 	@Override
@@ -45,14 +45,14 @@ public class TrendingReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 		return position;
 	}
     
-    public void update(ArrayList<Repository> data){
-    	mRepos= data;
+    public void update(ArrayList<ShowCase> data){
+    	showcaes= data;
     	reset();
     }
     
-    public void insertAtBack(ArrayList<Repository> data){
+    public void insertAtBack(ArrayList<ShowCase> data){
         if (data != null && data.size() > 0){
-        	mRepos.addAll(data);
+        	showcaes.addAll(data);
         }
     	reset();
     }
@@ -63,7 +63,7 @@ public class TrendingReposAdapter extends RecyclerView.Adapter<ViewHolder>{
     
 	@Override
 	public int getItemCount() {
-		return mRepos == null ? 0 : mRepos.size();
+		return showcaes == null ? 0 : showcaes.size();
 	}
 	
     @Override
@@ -73,37 +73,29 @@ public class TrendingReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 
 	@Override
 	public ViewHolder onCreateViewHolder(ViewGroup viewgroup, int viewType) {
-		View v = mInflater.inflate(R.layout.repos_list_item,viewgroup,false);
-		return new ReposView(v);
+		View v = mInflater.inflate(R.layout.showcase_list_item,viewgroup,false);
+		return new ShowCaseView(v);
 	}
 	  
 	@Override
 	public void onBindViewHolder(ViewHolder vh, int position) {		
 		switch(getItemViewType(position)){
 		case TYPE_NOMAL_VIEW:
-			ReposView viewHolder = (ReposView) vh;
-			Repository item = getItem(position);
+			ShowCaseView viewHolder = (ShowCaseView) vh;
+			ShowCase item = getItem(position);
 			if(item != null){
-				viewHolder.repos_name.setText(item.getName());
-				viewHolder.repos_star.setText("Star:"+item.getStargazers_count());
-				viewHolder.repos_fork.setText(item.isFork()?"fork":"owner");
-				viewHolder.repos_language.setText(item.getLanguage());
-				viewHolder.repos_homepage.setText(item.getHomepage());
-				viewHolder.repos_discription.setText(item.getDescription());
+				viewHolder.showcase_name.setText(item.name);
+				viewHolder.showcase_discription.setText(item.description);
+				viewHolder.showcase_avatar.setImageURI(Uri.parse(item.image_url));
 			}
-			viewHolder.user_avatar.setVisibility(View.VISIBLE);
-			if(item.getOwner() != null){
-			    viewHolder.user_avatar.setImageURI(Uri.parse(item.getOwner().getAvatar_url()));
-			}
-			viewHolder.repos_rank.setText(String.valueOf(position+1)+".");
 			break;
 		}
 	}
 	
 	
-	private class ReposView extends ReposViewHolder implements View.OnClickListener{
+	private class ShowCaseView extends ShowCaseViewHolder implements View.OnClickListener{
 		
-		public ReposView(View view) {
+		public ShowCaseView(View view) {
 			super(view);
             view.setOnClickListener(this);
 		}

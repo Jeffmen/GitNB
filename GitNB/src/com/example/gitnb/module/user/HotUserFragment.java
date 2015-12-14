@@ -158,11 +158,10 @@ public class HotUserFragment extends Fragment implements HandlerInterface<ArrayL
 		}
     	//q += "+followers:%3E200";
     	
-    	SearchClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener() {
+    	SearchClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<UsersSearch>() {
 
 			@Override
-			public void onOK(Object ts) {
-				UsersSearch userSearch = (UsersSearch)ts;
+			public void onOK(UsersSearch userSearch) {
 				onSuccess((ArrayList<User>) userSearch.items);
 			}
 

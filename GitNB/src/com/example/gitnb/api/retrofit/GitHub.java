@@ -15,10 +15,10 @@ public class GitHub implements ApiClient {
     public static String CODE_KEY = "code";
     public static String STATE = "2015";
     public static String SCOPE = "user,public_repo";
+    private static GitHub me;
     private Context context;
     private String token;
     private String code;
-    private static GitHub me;
 
     private GitHub(Context context) { 
     	this.context = context;
