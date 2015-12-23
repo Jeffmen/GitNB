@@ -75,7 +75,7 @@ public class ReposContentActivity extends BaseActivity {
             requestContents(content_url+"/readme");
         } 
         if(content != null){
-        	updateContent();
+            requestContents(content.url);
         }
     }
 
