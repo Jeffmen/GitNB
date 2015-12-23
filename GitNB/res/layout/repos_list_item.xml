@@ -26,7 +26,8 @@
                 <TextView
                     android:id="@+id/repos_rank"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+	                android:layout_gravity="center"/>
 	            <com.facebook.drawee.view.SimpleDraweeView
 	                android:id="@+id/user_avatar"
 	                android:layout_width="30dp"

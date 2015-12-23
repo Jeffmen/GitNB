@@ -104,14 +104,6 @@ public class MainActivity extends BaseActivity {
         	String language = data.getStringExtra(LanguageActivity.LANGUAGE_KEY);
         	UpdateLanguageListener languageListener = (UpdateLanguageListener) pagerAdapter.getItem(pager.getCurrentItem());
         	languageListener.updateLanguage(language);
-//				Snackbar.make(layout, "connection error", Snackbar.LENGTH_LONG).setAction("retry", new View.OnClickListener() {
-//		              
-//					@Override
-//		              public void onClick(View v) {
-//		                  Toast.makeText(MainActivity.this, "aleady click snackbar", Toast.LENGTH_SHORT).show();
-//		              }
-//					
-//		         }).show();
         }
     }
     

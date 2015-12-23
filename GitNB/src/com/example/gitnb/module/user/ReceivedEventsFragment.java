@@ -12,6 +12,7 @@ import com.example.gitnb.module.repos.EventListAdapter;
 import com.example.gitnb.module.repos.HotReposFragment;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
+import com.example.gitnb.utils.Utils;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -97,17 +98,17 @@ public class ReceivedEventsFragment extends Fragment implements RetrofitNetworkA
             isLoadingMore = false;
         	adapter.insertAtBack(list);
     	}
-    	mSwipeRefreshLayout.setRefreshing(false);
+		Utils.setRefreshing(mSwipeRefreshLayout, false);
 	}
 
 	@Override
 	public void onError(String Message) {
-    	mSwipeRefreshLayout.setRefreshing(false);
+		Utils.setRefreshing(mSwipeRefreshLayout, false);
 		MessageUtils.showErrorMessage(getActivity(), Message);
 	}
 	
 	public void receivedEvents(){
-    	mSwipeRefreshLayout.setRefreshing(true);
+		Utils.setRefreshing(mSwipeRefreshLayout, true);
 		UsersClient.getNewInstance().setNetworkListener(this).events(user.getLogin(), page);
 	}
 

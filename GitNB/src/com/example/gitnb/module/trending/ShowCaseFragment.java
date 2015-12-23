@@ -10,6 +10,7 @@ import com.example.gitnb.module.MainActivity.UpdateLanguageListener;
 import com.example.gitnb.module.repos.ReposListActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
+import com.example.gitnb.utils.Utils;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 
 public class ShowCaseFragment extends Fragment implements RetrofitNetworkAbs.NetworkListener<ArrayList<ShowCase>>, UpdateLanguageListener{
 	private String TAG = "TrendingReposFragment";
+    private boolean isAlreadyLoadData = false;
 	public static String SHOWCASE = "showcase_key";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayoutManager mLayoutManager;
@@ -63,24 +65,34 @@ public class ShowCaseFragment extends Fragment implements RetrofitNetworkAbs.Net
             	requeseShowCase();
             }
         });
-        requeseShowCase();
         return view;
     }
 	
 	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+		super.setUserVisibleHint(isVisibleToUser);
+		if (isVisibleToUser && !isAlreadyLoadData) {
+			isAlreadyLoadData = true;
+	        requeseShowCase();
+		} else {
+	
+		}
+	}
+	
+	@Override
 	public void onOK(ArrayList<ShowCase> list) {  
     	adapter.update(list);
-    	mSwipeRefreshLayout.setRefreshing(false);
+		Utils.setRefreshing(mSwipeRefreshLayout, false);
 	}
 
 	@Override
 	public void onError(String Message) {
-    	mSwipeRefreshLayout.setRefreshing(false);
+		Utils.setRefreshing(mSwipeRefreshLayout, false);
 		MessageUtils.showErrorMessage(getActivity(), Message);
 	}
 	
     private void requeseShowCase(){
-    	mSwipeRefreshLayout.setRefreshing(true);
+		Utils.setRefreshing(mSwipeRefreshLayout, true);
     	TrendingClient.getNewInstance().setNetworkListener(this).trendingShowCase();
     }
 

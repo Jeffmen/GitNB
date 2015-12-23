@@ -20,9 +20,6 @@ import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.Interceptor.Chain;
-
-import android.content.Context;
 
 public class OauthUrlRetrofit {
 

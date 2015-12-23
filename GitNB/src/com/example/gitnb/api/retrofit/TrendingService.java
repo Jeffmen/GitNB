@@ -20,5 +20,5 @@ public interface TrendingService {
 	Call<List<ShowCase>> trendingShowCase();
 	
 	@GET("http://trending.codehub-app.com/v2/showcases/{slug}")
-	Call<List<ShowCaseSearch>> trendingShowCase(@Path("slug") String slug);
+	Call<ShowCaseSearch> trendingShowCase(@Path("slug") String slug);
 }
