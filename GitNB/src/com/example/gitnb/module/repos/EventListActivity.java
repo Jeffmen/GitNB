@@ -47,7 +47,7 @@ public class EventListActivity  extends BaseActivity implements RetrofitNetworkA
 	        	view.setText(repos.getName()+" / Events");    
 	        	break;
         	}
-        }else if(user != null && !user.getName().isEmpty()){    
+        }else if(user != null && !user.getLogin().isEmpty()){    
         	switch(type){
 	        case EVENT_TYPE_USER:
 	        	view.setText(user.getLogin()+" / Events");    

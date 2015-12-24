@@ -51,7 +51,7 @@ public class UserListActivity  extends BaseActivity implements RetrofitNetworkAb
 		        	break;
             }
         }
-        else if(user != null && !user.getName().isEmpty()){
+        else if(user != null && !user.getLogin().isEmpty()){
             switch(type){
 		        case USER_TYPE_FOLLOWER:
 		        	view.setText(user.getLogin() + " / " + USER_TYPE_FOLLOWER);

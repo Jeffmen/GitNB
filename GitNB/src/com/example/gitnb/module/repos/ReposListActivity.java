@@ -42,7 +42,7 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
 	
 	@Override
 	protected void setTitle(TextView view) {
-        if(user != null && !user.getName().isEmpty()){    
+        if(user != null && !user.getLogin().isEmpty()){    
         	switch(type){
 	        case REPOS_TYPE_USER:
 	        	view.setText(user.getLogin()+" / Repositorys");    

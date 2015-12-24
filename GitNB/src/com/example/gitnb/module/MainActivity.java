@@ -6,15 +6,22 @@ import java.util.List;
 import com.example.gitnb.R;
 import com.example.gitnb.app.BaseActivity;
 import com.example.gitnb.model.User;
+import com.example.gitnb.module.repos.EventListActivity;
 import com.example.gitnb.module.repos.HotReposFragment;
+import com.example.gitnb.module.repos.ReposListActivity;
 import com.example.gitnb.module.trending.ShowCaseFragment;
 import com.example.gitnb.module.trending.TrendingReposFragment;
 import com.example.gitnb.module.user.HotUserFragment;
+import com.example.gitnb.module.user.ImageShowerActivity;
 import com.example.gitnb.module.user.ReceivedEventsFragment;
+import com.example.gitnb.module.user.UserDetailActivity;
+import com.example.gitnb.module.user.UserListActivity;
 import com.example.gitnb.utils.CurrentUser;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -23,19 +30,23 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 public class MainActivity extends BaseActivity {
     private static int FOR_LANGUAGE = 200;
-    private TabPagerAdapter pagerAdapter;
-	private TabLayout tabs;
 	private FloatingActionButton faButton;
+    private TabPagerAdapter pagerAdapter;
+    private DrawerLayout drawerlayout;
     private CoordinatorLayout layout;
 	private DisplayMetrics dm;
     private ViewPager pager;
-    private User currentUser;
+	private TabLayout tabs;
+    private User me;
 	
     public interface UpdateLanguageListener{
     	Void updateLanguage(String language);
@@ -54,9 +65,8 @@ public class MainActivity extends BaseActivity {
     protected View.OnClickListener getNavigationOnClickListener(){
     	return new View.OnClickListener() {
 			@Override
-			public void onClick(View arg0) {
-				Intent intent = new Intent(MainActivity.this, GitHubAnthorizeActivity.class);
-				startActivity(intent);
+			public void onClick(View view) {
+				drawerlayout.openDrawer(Gravity.LEFT);
 			}
 		};
     }
@@ -68,12 +78,13 @@ public class MainActivity extends BaseActivity {
 		dm = getResources().getDisplayMetrics();
 		pager = (ViewPager) findViewById(R.id.pager);
 		tabs = (TabLayout) findViewById(R.id.tabs);
-		currentUser = CurrentUser.get(MainActivity.this);
+		me = CurrentUser.get(MainActivity.this);
+		drawerlayout = (DrawerLayout) findViewById(R.id.drawerlayout);
 		pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
 		pagerAdapter.addFragment(new ShowCaseFragment(), "ShowCase");
 		//pagerAdapter.addFragment(new HotUserFragment(), "User");
-		if(currentUser != null){
-			pagerAdapter.addFragment(new ReceivedEventsFragment(currentUser), "News");
+		if(me != null){
+			pagerAdapter.addFragment(new ReceivedEventsFragment(me), "News");
 		}
 		pagerAdapter.addFragment(new TrendingReposFragment(), "Trending");
 		//pagerAdapter.addFragment(new HotReposFragment(), "Repos");
@@ -95,6 +106,7 @@ public class MainActivity extends BaseActivity {
 				startActivityForResult(intent, FOR_LANGUAGE);
 			}
 		});
+		setMeDetail();
     }
 
     @Override  
@@ -107,19 +119,89 @@ public class MainActivity extends BaseActivity {
         }
     }
     
-//	private void setTabsValue() {
-//		tabs.setShouldExpand(true);
-//		//tabs.setDividerColor(ContextCompat.getColor(this,R.color.contacts_theme_color));
-//		tabs.setUnderlineHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, dm));
-//		tabs.setIndicatorHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, dm));
-//		tabs.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, dm));
-//		tabs.setTabPaddingLeftRight(0);
-//		tabs.setIndicatorColor(Color.WHITE);
-//		tabs.setSelectedTextColor(Color.WHITE);
-//		//tabs.setBackgroundColor(ContextCompat.getColor(this,R.color.contacts_theme_color));
-//		tabs.setTextColor(getResources().getColor(R.color.transparent_dark_gray));
-//		tabs.setTabBackground(0);
-//	}
+    private void setMeDetail(){
+		SimpleDraweeView me_avatar = (SimpleDraweeView) findViewById(R.id.me_avatar);
+		TextView me_login = (TextView) findViewById(R.id.me_login);
+		if(me == null){
+			me_login.setText("Login...");
+			me_avatar.setOnClickListener(new OnClickListener(){
+
+				@Override
+				public void onClick(View arg0) {
+					Intent intent = new Intent(MainActivity.this, GitHubAnthorizeActivity.class);
+					startActivity(intent);
+				}
+	        	
+	        });
+		}
+		else{
+			me_login.setText(me.getLogin());
+			me_avatar.setImageURI(Uri.parse(me.getAvatar_url()));
+			me_avatar.setOnClickListener(null);    	
+			
+			TextView events = (TextView) findViewById(R.id.events);
+	    	TextView organizations = (TextView) findViewById(R.id.organizations);
+	    	TextView followers = (TextView) findViewById(R.id.followers);
+	    	TextView following = (TextView) findViewById(R.id.following);
+	    	TextView repositorys = (TextView) findViewById(R.id.repositorys);
+
+	    	events.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(MainActivity.this, EventListActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putParcelable(HotUserFragment.USER, me);
+					intent.putExtras(bundle);
+					intent.putExtra(EventListActivity.EVENT_TYPE, EventListActivity.EVENT_TYPE_USER);
+					startActivity(intent);
+				}
+			});
+	    	organizations.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+				}
+			});
+	    	followers.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(MainActivity.this, UserListActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putParcelable(HotUserFragment.USER, me);
+					intent.putExtras(bundle);
+					intent.putExtra(UserListActivity.USER_TYPE, UserListActivity.USER_TYPE_FOLLOWER);
+					startActivity(intent);
+				}
+			});
+	    	following.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(MainActivity.this, UserListActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putParcelable(HotUserFragment.USER, me);
+					intent.putExtras(bundle);
+					intent.putExtra(UserListActivity.USER_TYPE, UserListActivity.USER_TYPE_FOLLOWING);
+					startActivity(intent);
+				}
+			});
+	    	repositorys.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(MainActivity.this, ReposListActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putParcelable(HotUserFragment.USER, me);
+					intent.putExtras(bundle);
+					intent.putExtra(ReposListActivity.REPOS_TYPE, ReposListActivity.REPOS_TYPE_USER);
+					startActivity(intent);
+				}
+			});
+		}
+    }
     
     public class TabPagerAdapter extends FragmentPagerAdapter {
 

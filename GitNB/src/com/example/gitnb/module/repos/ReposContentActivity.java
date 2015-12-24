@@ -24,7 +24,7 @@ public class ReposContentActivity extends BaseActivity {
 	private ProgressWebView web_content;
     private Content content;
     private String content_url;
-    private boolean isShowInWeb = false;
+    private boolean isShowInWeb = true;
     
     protected void setTitle(TextView view){
         if(content == null || content.name.isEmpty()){
@@ -55,7 +55,8 @@ public class ReposContentActivity extends BaseActivity {
             	refreshHandler.sendEmptyMessage(START_UPDATE);
             }
         });
-        swithBt = (Switch) findViewById(R.id.switch_bt);  
+        swithBt = (Switch) findViewById(R.id.switch_bt); 
+        swithBt.setChecked(this.isShowInWeb); 
         swithBt.setVisibility(View.VISIBLE);
         swithBt.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
         
