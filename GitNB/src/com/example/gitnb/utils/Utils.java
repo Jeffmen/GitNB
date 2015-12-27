@@ -37,13 +37,15 @@ public class Utils {
 	
     public static void setRefreshing(final SwipeRefreshLayout swipeRefreshLayout, final boolean isRefreshing)
     {
-        swipeRefreshLayout.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                swipeRefreshLayout.setRefreshing(isRefreshing);
-            }
-        });
+    	if(swipeRefreshLayout != null){
+	        swipeRefreshLayout.post(new Runnable()
+	        {
+	            @Override
+	            public void run()
+	            {
+	                swipeRefreshLayout.setRefreshing(isRefreshing);
+	            }
+	        });
+    	}
     }
 }

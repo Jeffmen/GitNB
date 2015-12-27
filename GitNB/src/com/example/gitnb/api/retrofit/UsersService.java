@@ -8,7 +8,6 @@ import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.User;
 
 import retrofit.Call;
-import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Headers;

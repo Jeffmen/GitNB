@@ -1,9 +1,11 @@
 package com.example.gitnb.utils;
 
 import com.example.gitnb.app.Application;
+import com.example.gitnb.module.GitHubAnthorizeActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -15,10 +17,15 @@ public class MessageUtils {
 
     public static void showErrorMessage(Context cxt, String errorString) {
         Activity activity = (Activity) cxt;
-        if (activity == null)
+        if(errorString == "Requires authentication" && activity != null){
+			Intent intent = new Intent(activity, GitHubAnthorizeActivity.class);
+			activity.startActivity(intent);
+        }
+        else if (activity == null){
             Toast.makeText(Application.getContext(), errorString, Toast.LENGTH_LONG).show();
-        else
+        }else{
             Toast.makeText(cxt, errorString, Toast.LENGTH_LONG).show();
+        }
     }
 
     public static void showMiddleToast(Context cxt, String msg) {

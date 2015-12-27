@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.gitnb.R;
-import com.example.gitnb.app.BaseActivity;
+import com.example.gitnb.app.BaseNormalActivity;
 import com.example.gitnb.model.User;
 import com.example.gitnb.module.repos.EventListActivity;
 import com.example.gitnb.module.repos.HotReposFragment;
@@ -12,9 +12,7 @@ import com.example.gitnb.module.repos.ReposListActivity;
 import com.example.gitnb.module.trending.ShowCaseFragment;
 import com.example.gitnb.module.trending.TrendingReposFragment;
 import com.example.gitnb.module.user.HotUserFragment;
-import com.example.gitnb.module.user.ImageShowerActivity;
 import com.example.gitnb.module.user.ReceivedEventsFragment;
-import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.module.user.UserListActivity;
 import com.example.gitnb.utils.CurrentUser;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -37,7 +35,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseNormalActivity {
     private static int FOR_LANGUAGE = 200;
 	private FloatingActionButton faButton;
     private TabPagerAdapter pagerAdapter;
@@ -82,12 +80,12 @@ public class MainActivity extends BaseActivity {
 		drawerlayout = (DrawerLayout) findViewById(R.id.drawerlayout);
 		pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
 		pagerAdapter.addFragment(new ShowCaseFragment(), "ShowCase");
-		//pagerAdapter.addFragment(new HotUserFragment(), "User");
 		if(me != null){
 			pagerAdapter.addFragment(new ReceivedEventsFragment(me), "News");
 		}
 		pagerAdapter.addFragment(new TrendingReposFragment(), "Trending");
-		//pagerAdapter.addFragment(new HotReposFragment(), "Repos");
+		pagerAdapter.addFragment(new HotReposFragment(), "Repos");
+		pagerAdapter.addFragment(new HotUserFragment(), "User");
 		pager.setAdapter(pagerAdapter);
 		tabs.setSelectedTabIndicatorColor(Color.WHITE);
 		tabs.setTabTextColors(getResources().getColor(R.color.transparent_dark_gray), Color.WHITE);

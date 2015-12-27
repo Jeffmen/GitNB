@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.UsersClient;
+import com.example.gitnb.app.BaseFragment;
 import com.example.gitnb.model.Event;
 import com.example.gitnb.model.User;
 import com.example.gitnb.module.MainActivity.UpdateLanguageListener;
@@ -12,12 +13,9 @@ import com.example.gitnb.module.repos.EventListAdapter;
 import com.example.gitnb.module.repos.HotReposFragment;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
-import com.example.gitnb.utils.Utils;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,15 +23,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ReceivedEventsFragment extends Fragment implements RetrofitNetworkAbs.NetworkListener<ArrayList<Event>>, UpdateLanguageListener{
+public class ReceivedEventsFragment extends BaseFragment implements RetrofitNetworkAbs.NetworkListener<ArrayList<Event>>, UpdateLanguageListener{
 	private String TAG = "HotUserFragment";
 	public static String USER = "user_key";
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView recyclerView;
     private EventListAdapter adapter;
 	private boolean isLoadingMore;
 	private User user;
-	private int page;
 	
 	public ReceivedEventsFragment(User user){
 		this.user = user;
@@ -42,8 +38,8 @@ public class ReceivedEventsFragment extends Fragment implements RetrofitNetworkA
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_data_fragment, container, false);
+        initSwipeRefreshLayout(view);
         recyclerView = (RecyclerView) view.findViewById(R.id.recylerView);
-        page = 1;
         adapter = new EventListAdapter(getActivity());
         adapter.setOnItemClickListener(new EventListAdapter.OnItemClickListener() {
 			
@@ -65,30 +61,33 @@ public class ReceivedEventsFragment extends Fragment implements RetrofitNetworkA
 	            } else{
 	             	page++;
 	                isLoadingMore = true;
-	                receivedEvents();
+	                startRefresh();
 	            }
 			}
 		});        
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).build());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
-        mSwipeRefreshLayout.setColorSchemeResources(
-        		android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-            	page = 1;
-            	receivedEvents();
-            }
-        });
-        receivedEvents();
+        startRefresh();
         return view;
     }
-	
+
+	@Override
+    protected void startRefresh(){
+		super.startRefresh();
+    	receivedEvents();
+    }
+
+	@Override
+    protected void endRefresh(){
+    	super.endRefresh();
+    }
+
+	@Override
+    protected void endError(){
+    	super.endError();
+    }
+    
 	@Override
 	public void onOK(ArrayList<Event> list) {   	
 		if(page == 1){
@@ -98,17 +97,16 @@ public class ReceivedEventsFragment extends Fragment implements RetrofitNetworkA
             isLoadingMore = false;
         	adapter.insertAtBack(list);
     	}
-		Utils.setRefreshing(mSwipeRefreshLayout, false);
+		endRefresh();
 	}
 
 	@Override
 	public void onError(String Message) {
-		Utils.setRefreshing(mSwipeRefreshLayout, false);
+		endError();
 		MessageUtils.showErrorMessage(getActivity(), Message);
 	}
 	
 	public void receivedEvents(){
-		Utils.setRefreshing(mSwipeRefreshLayout, true);
 		UsersClient.getNewInstance().setNetworkListener(this).events(user.getLogin(), page);
 	}
 

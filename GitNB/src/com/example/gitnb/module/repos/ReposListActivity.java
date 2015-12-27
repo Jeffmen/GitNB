@@ -2,7 +2,6 @@ package com.example.gitnb.module.repos;
 
 import java.util.ArrayList;
 
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
@@ -15,7 +14,7 @@ import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.TrendingClient;
 import com.example.gitnb.api.retrofit.UsersClient;
-import com.example.gitnb.app.BaseActivity;
+import com.example.gitnb.app.BaseSwipeActivity;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.ShowCase;
 import com.example.gitnb.model.User;
@@ -25,12 +24,11 @@ import com.example.gitnb.module.user.HotUserFragment;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
-public class ReposListActivity  extends BaseActivity implements RetrofitNetworkAbs.NetworkListener<ArrayList<Repository>>{
+public class ReposListActivity  extends BaseSwipeActivity implements RetrofitNetworkAbs.NetworkListener<ArrayList<Repository>>{
 	private String TAG = "ReposListActivity";
 	public static final String REPOS_TYPE = "repos_type";
 	public static final String REPOS_TYPE_USER = "user_repository";
 	public static final String REPOS_TYPE_SHOWCASE = "showcase_epository";
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private ReposListAdapter adapter;
     private RecyclerView recyclerView;
 	private boolean isLoadingMore;
@@ -95,7 +93,7 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
 	            } else{
 	             	page++;
 	                isLoadingMore = true;
-	                refreshHandler.sendEmptyMessage(START_UPDATE);
+	                getRefreshdler().sendEmptyMessage(START_UPDATE);
 	            }
 			}
 		}); 
@@ -104,25 +102,12 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        mSwipeRefreshLayout.setColorSchemeResources(
-        		android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-            	page = 1;
-                refreshHandler.sendEmptyMessage(START_UPDATE);
-            }
-        });
 	}
 	 
     @Override
     protected void startRefresh(){
-        mSwipeRefreshLayout.setRefreshing(true);
+    	super.startRefresh();
+    	page = 1;
         switch(type){
 	        case REPOS_TYPE_USER:
 	        	userReposList();
@@ -135,14 +120,14 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
 
     @Override
     protected void endRefresh(){
+    	super.endRefresh();
         isLoadingMore = false;
-    	mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     protected void endError(){
+    	super.endError();
         isLoadingMore = false;
-    	mSwipeRefreshLayout.setRefreshing(false);
     }
     
 	@Override
@@ -154,13 +139,13 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
             isLoadingMore = false;
         	adapter.insertAtBack(ts);
     	}
-		refreshHandler.sendEmptyMessage(END_UPDATE);
+		getRefreshdler().sendEmptyMessage(END_UPDATE);
 	}
 
 	@Override
 	public void onError(String Message) {
 		MessageUtils.showErrorMessage(ReposListActivity.this, Message);
-		refreshHandler.sendEmptyMessage(END_ERROR);
+		getRefreshdler().sendEmptyMessage(END_ERROR);
 	}
 	
 	private void userReposList(){
@@ -180,13 +165,13 @@ public class ReposListActivity  extends BaseActivity implements RetrofitNetworkA
 		            isLoadingMore = false;
 		        	adapter.insertAtBack((ArrayList<Repository>)ts.repositories);
 		    	}
-				refreshHandler.sendEmptyMessage(END_UPDATE);
+				getRefreshdler().sendEmptyMessage(END_UPDATE);
 			}
 
 			@Override
 			public void onError(String Message) {
 				MessageUtils.showErrorMessage(ReposListActivity.this, Message);
-				refreshHandler.sendEmptyMessage(END_ERROR);
+				getRefreshdler().sendEmptyMessage(END_ERROR);
 			}
 		}).trendingShowCase(showCase.slug);
 	}

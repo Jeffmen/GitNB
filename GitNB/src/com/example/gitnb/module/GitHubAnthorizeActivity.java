@@ -5,7 +5,7 @@ import com.example.gitnb.api.retrofit.GitHub;
 import com.example.gitnb.api.retrofit.LoginClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.UsersClient;
-import com.example.gitnb.app.BaseActivity;
+import com.example.gitnb.app.BaseSwipeActivity;
 import com.example.gitnb.model.Token;
 import com.example.gitnb.model.User;
 import com.example.gitnb.utils.CurrentUser;
@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
-public class GitHubAnthorizeActivity extends BaseActivity {
+public class GitHubAnthorizeActivity extends BaseSwipeActivity {
 	private ProgressWebView web_content;
     
     protected void setTitle(TextView view){

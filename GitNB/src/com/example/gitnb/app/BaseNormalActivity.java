@@ -17,7 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-public abstract class BaseActivity  extends AppCompatActivity {
+public abstract class BaseNormalActivity  extends AppCompatActivity {
 	protected static int START_UPDATE = 100;
 	protected static int END_UPDATE = 200;
 	protected static int END_ERROR = 300;

@@ -77,7 +77,7 @@ public class Repository extends TModel implements Parcelable {
     private int open_issues;
     private int watchers;
     private String default_branch;
-    private int score;
+    private double score;
 
     public Repository() {}
     
@@ -238,7 +238,7 @@ public class Repository extends TModel implements Parcelable {
         dest.writeInt(open_issues);
         dest.writeInt(watchers);
         dest.writeString(default_branch);
-        dest.writeInt(score);
+        dest.writeDouble(score);
     }
 
     public int getId() {
@@ -777,7 +777,7 @@ public class Repository extends TModel implements Parcelable {
         this.default_branch = default_branch;
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 

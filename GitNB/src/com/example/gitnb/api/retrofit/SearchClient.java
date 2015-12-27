@@ -20,11 +20,11 @@ public class SearchClient extends RetrofitNetworkAbs{
 		execute(searchService.usersPaginated(query, sort, order, page));
 	}
 	
-	public void reposPaginated(String query, int page){
+	public void repos(String query, int page){
 		execute(searchService.reposPaginated(query, page));
 	}
 	
-	public void reposPaginated(String query, String sort, String order, int page){
+	public void repos(String query, String sort, String order, int page){
 		execute(searchService.reposPaginated(query, sort, order, page));
 	}
 	

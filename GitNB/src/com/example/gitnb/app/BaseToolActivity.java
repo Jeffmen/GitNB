@@ -1,10 +1,6 @@
 package com.example.gitnb.app;
 
 import com.example.gitnb.R;
-import com.example.gitnb.R.attr;
-import com.example.gitnb.R.dimen;
-import com.example.gitnb.R.id;
-import com.example.gitnb.R.layout;
 
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -21,11 +17,7 @@ public abstract class BaseToolActivity extends AppCompatActivity {
     private FrameLayout mContentView;
     private View mUserView;
     private LayoutInflater mInflater;
-    /*
-    * 两个属�??
-    * 1、toolbar是否悬浮在窗口之�?
-    * 2、toolbar的高度获�?
-    * */
+
     private static int[] ATTRS = {
             R.attr.windowActionBarOverlay,
             R.attr.actionBarSize
@@ -62,7 +54,7 @@ public abstract class BaseToolActivity extends AppCompatActivity {
         boolean overly = typedArray.getBoolean(0, false);
         int toolBarSize = (int) typedArray.getDimension(1,(int) this.getResources().getDimension(R.dimen.abc_action_bar_default_height_material));
         typedArray.recycle();
-        /*如果是悬浮状态，则不�?要设置间�?*/
+        /*如果是悬浮状态，则不�?要设置间�?*/
         params.topMargin = overly ? 0 : toolBarSize;
         mContentView.addView(mUserView, params);
 

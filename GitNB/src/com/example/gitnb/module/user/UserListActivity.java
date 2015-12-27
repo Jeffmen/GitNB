@@ -2,7 +2,6 @@ package com.example.gitnb.module.user;
 
 import java.util.ArrayList;
 
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
@@ -15,21 +14,20 @@ import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.RepoClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.UsersClient;
-import com.example.gitnb.app.BaseActivity;
+import com.example.gitnb.app.BaseSwipeActivity;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.User;
 import com.example.gitnb.module.repos.HotReposFragment;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
-public class UserListActivity  extends BaseActivity implements RetrofitNetworkAbs.NetworkListener<ArrayList<User>>{
+public class UserListActivity  extends BaseSwipeActivity implements RetrofitNetworkAbs.NetworkListener<ArrayList<User>>{
 	private String TAG = "ReposStargzersActivity";
 	public static final String USER_TYPE = "user_type";
 	public static final String USER_TYPE_STARGZER = "Stargzer";
 	public static final String USER_TYPE_CONTRIBUTOR = "Contributor";
 	public static final String USER_TYPE_FOLLOWER = "Follower";
 	public static final String USER_TYPE_FOLLOWING = "Following";
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private UserListAdapter adapter;
     private RecyclerView recyclerView;
 	private boolean isLoadingMore;
@@ -103,7 +101,7 @@ public class UserListActivity  extends BaseActivity implements RetrofitNetworkAb
 	            } else{
 	             	page++;
 	                isLoadingMore = true;
-	                refreshHandler.sendEmptyMessage(START_UPDATE);
+	                getRefreshdler().sendEmptyMessage(START_UPDATE);
 	            }
 			}
 		}); 
@@ -112,25 +110,12 @@ public class UserListActivity  extends BaseActivity implements RetrofitNetworkAb
         recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).build());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        mSwipeRefreshLayout.setColorSchemeResources(
-        		android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-            	page = 1;
-                refreshHandler.sendEmptyMessage(START_UPDATE);
-            }
-        });
 	}
 	 
     @Override
     protected void startRefresh(){
-        mSwipeRefreshLayout.setRefreshing(true);
+    	super.startRefresh();
+    	page = 1;
         switch(type){
 	        case USER_TYPE_STARGZER:
 	        	getStargzers();
@@ -149,14 +134,14 @@ public class UserListActivity  extends BaseActivity implements RetrofitNetworkAb
 
     @Override
     protected void endRefresh(){
+    	super.endRefresh();
         isLoadingMore = false;
-    	mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     protected void endError(){
+    	super.endError();
         isLoadingMore = false;
-    	mSwipeRefreshLayout.setRefreshing(false);
     }
     
 	@Override
@@ -168,13 +153,13 @@ public class UserListActivity  extends BaseActivity implements RetrofitNetworkAb
             isLoadingMore = false;
         	adapter.insertAtBack(ts);
     	}
-		refreshHandler.sendEmptyMessage(END_UPDATE);
+		getRefreshdler().sendEmptyMessage(END_UPDATE);
 	}
 
 	@Override
 	public void onError(String Message) {
 		MessageUtils.showErrorMessage(UserListActivity.this, Message);
-		refreshHandler.sendEmptyMessage(END_ERROR);
+		getRefreshdler().sendEmptyMessage(END_ERROR);
 	}
 	
 	private void getContributors(){

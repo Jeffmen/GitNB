@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.UsersClient;
-import com.example.gitnb.app.BaseActivity;
+import com.example.gitnb.app.BaseSwipeActivity;
 import com.example.gitnb.model.User;
 import com.example.gitnb.module.repos.EventListActivity;
 import com.example.gitnb.module.repos.ReposListActivity;
@@ -17,7 +17,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CompoundButton;
@@ -25,12 +24,11 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
-public class UserDetailActivity extends BaseActivity{
+public class UserDetailActivity extends BaseSwipeActivity{
 
 	private String TAG = "UserDetailActivity";
 	public static String AVATAR_URL = "avatar_url";
 	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayout main;
     private Switch swithBt;
 	private User user;
@@ -51,20 +49,7 @@ public class UserDetailActivity extends BaseActivity{
         setContentView(R.layout.activity_user_detail);
         main = (LinearLayout) findViewById(R.id.main);
         main.setVisibility(View.GONE);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        mSwipeRefreshLayout.setColorSchemeResources(
-        		android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-        	
-            @Override
-            public void onRefresh() {
-                refreshHandler.sendEmptyMessage(START_UPDATE);
-            }
-            
-        });        
+      
         swithBt = (Switch) findViewById(R.id.switch_bt); 
     }
 	
@@ -182,21 +167,21 @@ public class UserDetailActivity extends BaseActivity{
     
 	@Override
     protected void startRefresh(){
-        mSwipeRefreshLayout.setRefreshing(true);
+		super.startRefresh();
         getSingleUser();
         checkFollowing();
     }
 
 	@Override
     protected void endRefresh(){
+		super.endRefresh();
         setUserInfo();
         main.setVisibility(View.VISIBLE);
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
 	@Override
     protected void endError(){
-        mSwipeRefreshLayout.setRefreshing(false);
+		super.endError();
     }
     
 	private void getSingleUser(){
@@ -205,13 +190,13 @@ public class UserDetailActivity extends BaseActivity{
 			@Override
 			public void onOK(User ts) {
 				user = (User) ts;
-		        refreshHandler.sendEmptyMessage(END_UPDATE);
+				getRefreshdler().sendEmptyMessage(END_UPDATE);
 			}
 
 			@Override
 			public void onError(String Message) {
 				MessageUtils.showErrorMessage(UserDetailActivity.this, Message);
-		        refreshHandler.sendEmptyMessage(END_ERROR);
+				getRefreshdler().sendEmptyMessage(END_ERROR);
 			}
 			
     	}).getSingleUser(user.getLogin());
@@ -241,7 +226,7 @@ public class UserDetailActivity extends BaseActivity{
 
 			@Override
 			public void onOK(Object ts) {
-				Snackbar.make(mSwipeRefreshLayout, "Already Followed", Snackbar.LENGTH_LONG).show();
+				Snackbar.make(getSwipeRefreshLayout(), "Already Followed", Snackbar.LENGTH_LONG).show();
 			}
 
 			@Override
@@ -257,7 +242,7 @@ public class UserDetailActivity extends BaseActivity{
 
 			@Override
 			public void onOK(Object ts) {
-				Snackbar.make(mSwipeRefreshLayout, "Already unFollowed", Snackbar.LENGTH_LONG).show();
+				Snackbar.make(getSwipeRefreshLayout(), "Already unFollowed", Snackbar.LENGTH_LONG).show();
 			}
 
 			@Override

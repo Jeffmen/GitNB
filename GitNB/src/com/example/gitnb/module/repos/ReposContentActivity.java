@@ -3,22 +3,20 @@ package com.example.gitnb.module.repos;
 import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.OKHttpClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
-import com.example.gitnb.app.BaseActivity;
+import com.example.gitnb.app.BaseSwipeActivity;
 import com.example.gitnb.model.Content;
 import com.example.gitnb.utils.MessageUtils;
 import com.example.gitnb.widget.ProgressWebView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-public class ReposContentActivity extends BaseActivity {
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+public class ReposContentActivity extends BaseSwipeActivity {
     private Switch swithBt;
 	private TextView text_content;
 	private ProgressWebView web_content;
@@ -43,18 +41,7 @@ public class ReposContentActivity extends BaseActivity {
         setContentView(R.layout.activity_repo_content);
         text_content = (TextView) findViewById(R.id.text_content);
         web_content = (ProgressWebView) findViewById(R.id.web_content);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        mSwipeRefreshLayout.setColorSchemeResources(
-        		android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {    
-            	refreshHandler.sendEmptyMessage(START_UPDATE);
-            }
-        });
+        
         swithBt = (Switch) findViewById(R.id.switch_bt); 
         swithBt.setChecked(this.isShowInWeb); 
         swithBt.setVisibility(View.VISIBLE);
@@ -71,7 +58,7 @@ public class ReposContentActivity extends BaseActivity {
 
     @Override
     protected void startRefresh(){
-        mSwipeRefreshLayout.setRefreshing(true);
+    	super.startRefresh();
         if(content_url != null){
             requestContents(content_url+"/readme");
         } 
@@ -82,17 +69,17 @@ public class ReposContentActivity extends BaseActivity {
 
     @Override
     protected void endRefresh(){
+    	super.endRefresh();
     	updateContent();
     }
 
     @Override
     protected void endError(){
-    	mSwipeRefreshLayout.setRefreshing(false);
+    	super.endError();
     }
     
     
     private void updateContent(){
-    	mSwipeRefreshLayout.setRefreshing(false);
     	if(isShowInWeb){
     		text_content.setVisibility(View.GONE);
     		web_content.setVisibility(View.VISIBLE);
@@ -107,19 +94,18 @@ public class ReposContentActivity extends BaseActivity {
     }
     
     private void requestContents(final String url){
-    	mSwipeRefreshLayout.setRefreshing(true);
     	OKHttpClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Content>() {
 
 			@Override
 			public void onOK(Content ts) {
 				content = ts;
-				refreshHandler.sendEmptyMessage(END_UPDATE);
+				getRefreshdler().sendEmptyMessage(END_UPDATE);
 			}
 
 			@Override
 			public void onError(String Message) {
 				MessageUtils.showErrorMessage(ReposContentActivity.this, Message);
-				refreshHandler.sendEmptyMessage(END_ERROR);
+				getRefreshdler().sendEmptyMessage(END_ERROR);
 			}
 			
     	}).request(url, Content.class);

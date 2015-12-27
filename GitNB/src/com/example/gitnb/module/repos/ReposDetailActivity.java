@@ -6,7 +6,7 @@ import com.example.gitnb.R;
 import com.example.gitnb.api.retrofit.OKHttpClient;
 import com.example.gitnb.api.retrofit.RepoActionsClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
-import com.example.gitnb.app.BaseActivity;
+import com.example.gitnb.app.BaseSwipeActivity;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.module.user.HotUserFragment;
 import com.example.gitnb.module.user.UserDetailActivity;
@@ -19,18 +19,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
-public class ReposDetailActivity extends BaseActivity{
+public class ReposDetailActivity extends BaseSwipeActivity{
 
 	private String TAG = "ReposDetailActivity";
 	public static String CONTENT_URL = "content_url";
 	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayout main;
 	private Repository repos;
     private Switch swithBt;
@@ -51,20 +49,7 @@ public class ReposDetailActivity extends BaseActivity{
         setContentView(R.layout.activity_repo_detail);
         main = (LinearLayout) findViewById(R.id.main);
         main.setVisibility(View.GONE);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        mSwipeRefreshLayout.setColorSchemeResources(
-        		android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-        	
-            @Override
-            public void onRefresh() {
-                refreshHandler.sendEmptyMessage(START_UPDATE);
-            }
-            
-        });
+
         swithBt = (Switch) findViewById(R.id.switch_bt);  
     }
 
@@ -228,42 +213,36 @@ public class ReposDetailActivity extends BaseActivity{
     
     @Override
     protected void startRefresh(){
-        mSwipeRefreshLayout.setRefreshing(true);
+    	super.startRefresh();
         getRepositoryInfo();
     }
 
     @Override
     protected void endRefresh(){
+    	super.endRefresh();
         main.setVisibility(View.VISIBLE);
     	setRepository();
-    	mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     protected void endError(){
-    	mSwipeRefreshLayout.setRefreshing(false);
+    	super.endError();
     }
     
     private void getRepositoryInfo(){
-    	/*
-    	if(repos.getOwner() != null){
-            checkIfRepoIsStarred();
-			refreshHandler.sendEmptyMessage(END_UPDATE);
-			return;
-    	}*/
     	OKHttpClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Repository>() {
 
 			@Override
 			public void onOK(Repository ts) {
 				repos = ts;
 		        checkIfRepoIsStarred();
-				refreshHandler.sendEmptyMessage(END_UPDATE);
+		        getRefreshdler().sendEmptyMessage(END_UPDATE);
 			}
 
 			@Override
 			public void onError(String Message) {
 				MessageUtils.showErrorMessage(ReposDetailActivity.this, Message);
-				refreshHandler.sendEmptyMessage(END_ERROR);
+				getRefreshdler().sendEmptyMessage(END_ERROR);
 			}
 			
     	}).request(repos.getUrl(), Repository.class);
@@ -289,7 +268,7 @@ public class ReposDetailActivity extends BaseActivity{
 	}
 	
 	private void starRepo(){
-		final Snackbar snackbar = Snackbar.make(mSwipeRefreshLayout, "UnStaring ...", Snackbar.LENGTH_INDEFINITE);
+		final Snackbar snackbar = Snackbar.make(getSwipeRefreshLayout(), "UnStaring ...", Snackbar.LENGTH_INDEFINITE);
 		snackbar.show();
 		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Object>() {
 
@@ -309,7 +288,7 @@ public class ReposDetailActivity extends BaseActivity{
 	}	
 	
 	private void unstarRepo(){
-		final Snackbar snackbar = Snackbar.make(mSwipeRefreshLayout, "Staring ...", Snackbar.LENGTH_INDEFINITE);
+		final Snackbar snackbar = Snackbar.make(getSwipeRefreshLayout(), "Staring ...", Snackbar.LENGTH_INDEFINITE);
 		snackbar.show();
 		RepoActionsClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Object>() {
 
