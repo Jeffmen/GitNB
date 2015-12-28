@@ -33,6 +33,7 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 public class MainActivity extends BaseNormalActivity {
@@ -119,6 +120,8 @@ public class MainActivity extends BaseNormalActivity {
     
     private void setMeDetail(){
 		SimpleDraweeView me_avatar = (SimpleDraweeView) findViewById(R.id.me_avatar);
+		FrameLayout bg_frame = (FrameLayout) findViewById(R.id.bg_frame);
+		bg_frame.setOnClickListener(null);
 		TextView me_login = (TextView) findViewById(R.id.me_login);
 		if(me == null){
 			me_login.setText("Login...");
@@ -134,6 +137,7 @@ public class MainActivity extends BaseNormalActivity {
 		}
 		else{
 			me_login.setText(me.getLogin());
+			me_login.setOnClickListener(null);
 			me_avatar.setImageURI(Uri.parse(me.getAvatar_url()));
 			me_avatar.setOnClickListener(null);    	
 			

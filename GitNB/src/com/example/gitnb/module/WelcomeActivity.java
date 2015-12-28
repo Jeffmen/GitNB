@@ -3,11 +3,13 @@ package com.example.gitnb.module;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,24 +24,27 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.example.gitnb.widget.FormView;
+import com.example.gitnb.model.User;
+import com.example.gitnb.utils.CurrentUser;
 import com.example.gitnb.R;
 
-public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
+public class WelcomeActivity extends Activity{
 
     public static final String VIDEO_NAME = "welcome_video.mp4";
+    private static int FOR_ANTHORIZE = 300;
     private VideoView mVideoView;
-    private InputType inputType = InputType.NONE;
-    private Button buttonLeft, buttonRight;
-    private FormView formView;
+    private ObjectAnimator anim;
+    private Button buttonLeft;
     private TextView appName;
+    private User me;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		me = CurrentUser.get(WelcomeActivity.this);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window window = getWindow();
-            window.setFlags(
+            getWindow().setFlags(
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
@@ -57,27 +62,43 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         playAnim();
     }
 
+    @Override  
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) { 
+        if (requestCode == FOR_ANTHORIZE && resultCode == RESULT_OK) { 
+			jumpToManiActivity();
+        }
+    }
+
     private void findView() {
         mVideoView = (VideoView) findViewById(R.id.videoView);
         buttonLeft = (Button) findViewById(R.id.buttonLeft);
-        buttonRight = (Button) findViewById(R.id.buttonRight);
-        formView = (FormView) findViewById(R.id.formView);
         appName = (TextView) findViewById(R.id.appName);
-        /*
-        //At first time the form doesn't show after clicking the login BUTTON
-        formView.post(new Runnable() {
-            @Override
-            public void run() {
-                int delta = formView.getTop()+formView.getHeight();
-                formView.setTranslationY(-1 * delta);
-            }
-        });*/
     }
 
     private void initView() {
-
-        buttonRight.setOnClickListener(this);
-        buttonLeft.setOnClickListener(this);
+		if(me != null){
+	    	buttonLeft.setText("WELCOME");
+	    	/*buttonLeft.setOnClickListener(new View.OnClickListener(){
+	
+				@Override
+				public void onClick(View arg0) {
+					jumpToManiActivity();
+				}
+	        	
+	        });*/
+		}
+		else{
+	    	buttonLeft.setText("LOGIN");
+	    	buttonLeft.setOnClickListener(new View.OnClickListener(){
+	
+				@Override
+				public void onClick(View arg0) {
+					Intent intent = new Intent(WelcomeActivity.this, GitHubAnthorizeActivity.class);
+					startActivityForResult(intent, FOR_ANTHORIZE);
+				}
+	        	
+	        });
+		}
     }
 
     private void playVideo(File videoFile) {
@@ -93,17 +114,25 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void playAnim() {
-        ObjectAnimator anim = ObjectAnimator.ofFloat(appName, "alpha", 0,1);
-        anim.setDuration(4000);
-        anim.setRepeatCount(1);
-        anim.setRepeatMode(ObjectAnimator.REVERSE);
+        anim = ObjectAnimator.ofFloat(appName, "alpha", 0, 1, 0);
+        anim.setDuration(8000);
         anim.start();
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                appName.setVisibility(View.INVISIBLE);
-            }
-        });
+		if(me != null){
+	        anim.addListener(new AnimatorListenerAdapter() {
+	            @Override
+	            public void onAnimationEnd(Animator animation) {
+	            	Log.i("","onAnimationEnd");
+					jumpToManiActivity();
+	            }
+	        });
+		}
+    }
+    
+    private void jumpToManiActivity() {
+		Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+		startActivity(intent);
+		overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+		finish();
     }
 
     @NonNull
@@ -134,52 +163,4 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         mVideoView.stopPlayback();
     }
 
-    @Override
-    public void onClick(View view) {
-        int delta = formView.getTop()+formView.getHeight();
-        switch (inputType) {
-            case NONE:
-
-                formView.animate().translationY(0).alpha(1).setDuration(500).start();
-                if (view == buttonLeft) {
-                    inputType = InputType.LOGIN;
-                    buttonLeft.setText(R.string.button_confirm_login);
-                    buttonRight.setText(R.string.button_cancel_login);
-                } else if (view == buttonRight) {
-                    inputType = InputType.SIGN_UP;
-                    buttonLeft.setText(R.string.button_confirm_signup);
-                    buttonRight.setText(R.string.button_cancel_signup);
-                }
-
-                break;
-            case LOGIN:
-
-                formView.animate().translationY(-1 * delta).alpha(0).setDuration(500).start();
-                if (view == buttonLeft) {
-
-                } else if (view == buttonRight) {
-
-                }
-                inputType = InputType.NONE;
-                buttonLeft.setText(R.string.button_login);
-                buttonRight.setText(R.string.button_signup);
-                break;
-            case SIGN_UP:
-
-                formView.animate().translationY(-1 * delta).alpha(0).setDuration(500).start();
-                if (view == buttonLeft) {
-
-                } else if (view == buttonRight) {
-
-                }
-                inputType = InputType.NONE;
-                buttonLeft.setText(R.string.button_login);
-                buttonRight.setText(R.string.button_signup);
-                break;
-        }
-    }
-
-    enum InputType {
-        NONE, LOGIN, SIGN_UP;
-    }
 }

@@ -12,6 +12,7 @@ import com.example.gitnb.utils.CurrentUser;
 import com.example.gitnb.utils.MessageUtils;
 import com.example.gitnb.widget.ProgressWebView;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -57,12 +58,14 @@ public class GitHubAnthorizeActivity extends BaseSwipeActivity {
 								@Override
 								public void onOK(User user) {
 									CurrentUser.save(GitHubAnthorizeActivity.this, user);
-									finish();
+								    setResult(Activity.RESULT_OK, null);
+								    finish();
 								}
 
 								@Override
 								public void onError(String Message) {
 							        MessageUtils.showErrorMessage(GitHubAnthorizeActivity.this, Message);
+								    setResult(Activity.RESULT_CANCELED, null);
 									finish();
 								}
 								
@@ -72,6 +75,7 @@ public class GitHubAnthorizeActivity extends BaseSwipeActivity {
 						@Override
 						public void onError(String Message) {
 					        MessageUtils.showErrorMessage(GitHubAnthorizeActivity.this, Message);
+						    setResult(Activity.RESULT_CANCELED, null);
 							finish();
 						}
 						
