@@ -17,7 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-public abstract class BaseNormalActivity  extends AppCompatActivity {
+public class BaseNormalActivity  extends AppCompatActivity {
 	protected static int START_UPDATE = 100;
 	protected static int END_UPDATE = 200;
 	protected static int END_ERROR = 300;
@@ -61,15 +61,19 @@ public abstract class BaseNormalActivity  extends AppCompatActivity {
         	}        
         });
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setTitle((TextView) toolbar.findViewById(R.id.title));         
-        setSupportActionBar(toolbar);
-        //setNavigationOnClickListener must be at the back of setSupportActionBar and the function is valid
-        toolbar.setNavigationIcon(getNavigationIcon());
-        toolbar.setNavigationOnClickListener(getNavigationOnClickListener());
+        if(toolbar != null){
+	        setTitle((TextView) toolbar.findViewById(R.id.title));         
+	        setSupportActionBar(toolbar);
+	        //setNavigationOnClickListener must be at the back of setSupportActionBar and the function is valid
+	        toolbar.setNavigationIcon(getNavigationIcon());
+	        toolbar.setNavigationOnClickListener(getNavigationOnClickListener());
+        }
         //refreshHandler.sendEmptyMessageDelayed(START_UPDATE, 300);
     }
     
-    abstract protected void setTitle(TextView view);
+    protected void setTitle(TextView view){
+    	
+    }
     
     protected int getNavigationIcon(){
     	return R.drawable.ic_arrow_back_white_48dp;

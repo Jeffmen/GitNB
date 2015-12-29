@@ -10,7 +10,7 @@
         
 		 <FrameLayout
 		     android:layout_width="match_parent"
-		     android:layout_height="110dp">
+		     android:layout_height="55dp">
 		 
 			<LinearLayout 
 			    android:orientation="vertical"  
@@ -39,8 +39,6 @@
 				    android:layout_width="match_parent"  
 				    android:layout_height="25dp"> 
 				</LinearLayout> 
-				
-				<include layout="@layout/toolbar" />
 				
 			    <android.support.design.widget.TabLayout
 		            android:id="@+id/tabs"

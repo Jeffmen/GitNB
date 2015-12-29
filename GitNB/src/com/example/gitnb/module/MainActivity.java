@@ -50,15 +50,6 @@ public class MainActivity extends BaseNormalActivity {
     public interface UpdateLanguageListener{
     	Void updateLanguage(String language);
     }
-    
-    protected void setTitle(TextView view){
-    	view.setText("GitNB");
-    }
-
-    @Override
-    protected int getNavigationIcon(){
-    	return R.drawable.ic_git_white_50;
-    }
 
     @Override
     protected View.OnClickListener getNavigationOnClickListener(){
