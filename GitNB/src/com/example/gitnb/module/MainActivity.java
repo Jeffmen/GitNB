@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.gitnb.R;
-import com.example.gitnb.app.BaseNormalActivity;
 import com.example.gitnb.model.User;
 import com.example.gitnb.module.repos.EventListActivity;
 import com.example.gitnb.module.repos.HotReposFragment;
@@ -21,6 +20,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -29,14 +30,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-public class MainActivity extends BaseNormalActivity {
+public class MainActivity extends AppCompatActivity {
     private static int FOR_LANGUAGE = 200;
 	private FloatingActionButton faButton;
     private TabPagerAdapter pagerAdapter;
@@ -50,7 +51,7 @@ public class MainActivity extends BaseNormalActivity {
     public interface UpdateLanguageListener{
     	Void updateLanguage(String language);
     }
-
+    /*
     @Override
     protected View.OnClickListener getNavigationOnClickListener(){
     	return new View.OnClickListener() {
@@ -59,11 +60,14 @@ public class MainActivity extends BaseNormalActivity {
 				drawerlayout.openDrawer(Gravity.LEFT);
 			}
 		};
-    }
+    }*/
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+        	getWindow().setStatusBarColor(getResources().getColor((R.color.orange_yellow)));
+        }
         setContentView(R.layout.activity_main);
 		dm = getResources().getDisplayMetrics();
 		pager = (ViewPager) findViewById(R.id.pager);
@@ -72,20 +76,21 @@ public class MainActivity extends BaseNormalActivity {
 		drawerlayout = (DrawerLayout) findViewById(R.id.drawerlayout);
 		pagerAdapter = new TabPagerAdapter(getSupportFragmentManager());
 		pagerAdapter.addFragment(new ShowCaseFragment(), "ShowCase");
+		pagerAdapter.addFragment(new TrendingReposFragment(), "Trending");
 		if(me != null){
 			pagerAdapter.addFragment(new ReceivedEventsFragment(me), "News");
 		}
-		pagerAdapter.addFragment(new TrendingReposFragment(), "Trending");
 		pagerAdapter.addFragment(new HotReposFragment(), "Repos");
 		pagerAdapter.addFragment(new HotUserFragment(), "User");
 		pager.setAdapter(pagerAdapter);
-		tabs.setSelectedTabIndicatorColor(Color.WHITE);
-		tabs.setTabTextColors(getResources().getColor(R.color.transparent_dark_gray), Color.WHITE);
 		tabs.setupWithViewPager(pager);
+		tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
+		//tabs.setSelectedTabIndicatorColor(Color.WHITE);
+		//tabs.setTabTextColors(getResources().getColor(R.color.transparent_dark_gray), Color.WHITE);
 		//tabs.setOnPageChangeListener(new PageListener());
 		//setTabsValue();
 		pager.setCurrentItem(1);
-		pager.setOffscreenPageLimit(2);
+		pager.setOffscreenPageLimit(4);
 		layout = (CoordinatorLayout) findViewById(R.id.layout);
 		faButton = (FloatingActionButton) findViewById(R.id.faButton);
 		faButton.setOnClickListener(new View.OnClickListener() {
