@@ -1,10 +1,12 @@
 package com.example.gitnb.module;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Recycler;
@@ -16,7 +18,7 @@ import android.view.View.MeasureSpec;
 import com.example.gitnb.R;
 import com.example.gitnb.utils.Utils;
 
-public class LanguageActivity  extends Activity {
+public class LanguageActivity  extends AppCompatActivity {
     public static String LANGUAGE_KEY = "language_key";
     private RecyclerView recyclerView;
     private LanguageAdapter adapter;
@@ -27,6 +29,9 @@ public class LanguageActivity  extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+        	getWindow().setStatusBarColor(getResources().getColor((R.color.transparent_dark_gray)));
+        }
         setContentView(R.layout.activity_language);
         item_space = Utils.dpToPx(this, ITEM_SPACE);
         recyclerView = (RecyclerView) findViewById(R.id.recylerView);
@@ -35,9 +40,12 @@ public class LanguageActivity  extends Activity {
 			
 			@Override
 			public void onItemClick(View view, int position) {
-				Intent intent=new Intent();
-			    intent.putExtra(LANGUAGE_KEY, adapter.getItemValue(position));
-			    setResult(RESULT_OK, intent);
+				String value = adapter.getItemValue(position);
+				if(value != null && !value.equals("cancel")){
+					Intent intent=new Intent();
+				    intent.putExtra(LANGUAGE_KEY, value);
+				    setResult(RESULT_OK, intent);
+				}
 			    finish();
 			}
 		});

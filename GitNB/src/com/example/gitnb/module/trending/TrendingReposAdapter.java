@@ -86,7 +86,7 @@ public class TrendingReposAdapter extends RecyclerView.Adapter<ViewHolder>{
 			if(item != null){
 				viewHolder.repos_name.setText(item.getName());
 				viewHolder.repos_star.setText("Star:"+item.getStargazers_count());
-				viewHolder.repos_fork.setText(item.isFork()?"fork":"owner");
+				viewHolder.repos_fork.setText("owner:"+item.getOwner().getLogin());
 				viewHolder.repos_language.setText(item.getLanguage());
 				viewHolder.repos_homepage.setText(item.getHomepage());
 				viewHolder.repos_discription.setText(item.getDescription());

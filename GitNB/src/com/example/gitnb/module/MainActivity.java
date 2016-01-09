@@ -11,13 +11,13 @@ import com.example.gitnb.module.repos.ReposListActivity;
 import com.example.gitnb.module.trending.ShowCaseFragment;
 import com.example.gitnb.module.trending.TrendingReposFragment;
 import com.example.gitnb.module.user.HotUserFragment;
+import com.example.gitnb.module.user.OrganizationListActivity;
 import com.example.gitnb.module.user.ReceivedEventsFragment;
 import com.example.gitnb.module.user.UserListActivity;
 import com.example.gitnb.utils.CurrentUser;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Build.VERSION;
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 		//tabs.setTabTextColors(getResources().getColor(R.color.transparent_dark_gray), Color.WHITE);
 		//tabs.setOnPageChangeListener(new PageListener());
 		//setTabsValue();
-		pager.setCurrentItem(1);
+		pager.setCurrentItem(2);
 		pager.setOffscreenPageLimit(4);
 		layout = (CoordinatorLayout) findViewById(R.id.layout);
 		faButton = (FloatingActionButton) findViewById(R.id.faButton);
@@ -159,7 +159,12 @@ public class MainActivity extends AppCompatActivity {
 				
 				@Override
 				public void onClick(View v) {
-					
+					Intent intent = new Intent(MainActivity.this, OrganizationListActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putParcelable(HotUserFragment.USER, me);
+					intent.putExtras(bundle);
+					intent.putExtra(OrganizationListActivity.ORGANIZATION_TYPE, OrganizationListActivity.ORGANIZATION_TYPE_USER);
+					startActivity(intent);
 				}
 			});
 	    	followers.setOnClickListener(new View.OnClickListener() {

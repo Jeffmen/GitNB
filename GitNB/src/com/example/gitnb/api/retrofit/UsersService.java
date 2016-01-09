@@ -6,6 +6,7 @@ import com.example.gitnb.model.Email;
 import com.example.gitnb.model.Event;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.User;
+import com.example.gitnb.model.Organization;
 
 import retrofit.Call;
 import retrofit.http.DELETE;
@@ -97,6 +98,22 @@ public interface UsersService {
 	Call<List<Event>> events(@Path("username") String username, @Query("page") int page);
 	
 	@GET("/users/{username}/events")
-	Call<List<Event>> createdEvents(@Path("username") String username, @Query("page") int page);
+	Call<List<Event>> createdEvents(@Path("username") String username, @Query("page") int page);	
+	
+	//organization
+	@GET("/users/{username}/orgs")
+	Call<List<Organization>> orgsByUser(@Path("username") String username, @Query("page") int page);
+	
+	@GET("/orgs/{username}")
+	Call<Organization> orgs(@Path("username") String username);
+
+	@GET("/orgs/{orgsname}/repos")
+	Call<List<Repository>> reposByOrgs(@Path("orgsname") String orgsname, @Query("sort") String sort, @Query("page") int page);
+
+	@GET("/orgs/{orgsname}/events")
+	Call<List<Event>> eventsByOrgs(@Path("orgsname") String orgsname, @Query("page") int page);
+	
+	@GET("/orgs/{orgsname}/members")
+	Call<List<User>> members(@Path("orgsname") String orgsname, @Query("page") int page);
 
 }

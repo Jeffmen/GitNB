@@ -15,6 +15,7 @@ import com.example.gitnb.api.retrofit.RepoClient;
 import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.UsersClient;
 import com.example.gitnb.app.BaseSwipeActivity;
+import com.example.gitnb.model.Organization;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.User;
 import com.example.gitnb.module.repos.HotReposFragment;
@@ -22,15 +23,17 @@ import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
 public class UserListActivity  extends BaseSwipeActivity implements RetrofitNetworkAbs.NetworkListener<ArrayList<User>>{
-	private String TAG = "ReposStargzersActivity";
+	private String TAG = "UserListActivity";
 	public static final String USER_TYPE = "user_type";
 	public static final String USER_TYPE_STARGZER = "Stargzer";
 	public static final String USER_TYPE_CONTRIBUTOR = "Contributor";
 	public static final String USER_TYPE_FOLLOWER = "Follower";
 	public static final String USER_TYPE_FOLLOWING = "Following";
+	public static final String USER_TYPE_MEMBER = "Member";
     private UserListAdapter adapter;
     private RecyclerView recyclerView;
 	private boolean isLoadingMore;
+	private Organization orgs;
 	private Repository repos;
 	private User user;
 	private String type;
@@ -58,6 +61,13 @@ public class UserListActivity  extends BaseSwipeActivity implements RetrofitNetw
 		        	view.setText(user.getLogin() + " / " + USER_TYPE_FOLLOWING);
 		        	break;
             }
+        }
+        else if(orgs != null && !orgs.login.isEmpty()){
+            switch(type){
+		        case USER_TYPE_MEMBER:
+		        	view.setText(orgs.login + " / " + USER_TYPE_FOLLOWER);
+		        	break;
+            }
         }else{
         	view.setText("NULL");
         }
@@ -76,6 +86,9 @@ public class UserListActivity  extends BaseSwipeActivity implements RetrofitNetw
 	        case USER_TYPE_FOLLOWER:
 	        case USER_TYPE_FOLLOWING:
 	    		user = (User) intent.getParcelableExtra(HotUserFragment.USER);
+	        	break;
+	        case USER_TYPE_MEMBER:
+	    		orgs = (Organization) intent.getParcelableExtra(OrganizationDetailActivity.ORGS);
 	        	break;
 	    }
         
@@ -129,6 +142,9 @@ public class UserListActivity  extends BaseSwipeActivity implements RetrofitNetw
 	        case USER_TYPE_FOLLOWING:
 	        	getFollowing();
 	        	break;
+	        case USER_TYPE_MEMBER:
+	        	getMembers();
+	        	break;
         }
     }
 
@@ -180,5 +196,10 @@ public class UserListActivity  extends BaseSwipeActivity implements RetrofitNetw
 	private void getFollowing(){
 		UsersClient.getNewInstance().setNetworkListener(this)
 		  .following(user.getLogin(), page);
+	}
+	
+	private void getMembers(){
+		UsersClient.getNewInstance().setNetworkListener(this)
+		  .members(orgs.login, page);
 	}
 }

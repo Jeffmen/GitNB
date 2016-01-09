@@ -74,6 +74,14 @@
             android:name="com.example.gitnb.module.GitHubAnthorizeActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity 
+            android:name="com.example.gitnb.module.user.OrganizationListActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity 
+            android:name="com.example.gitnb.module.user.OrganizationDetailActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

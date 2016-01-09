@@ -23,6 +23,7 @@ public class Organization extends ShaUrl {
 	public String blog;
 	public String bio;
 	public String email;
+	public String description;
 
 	public String location;
 	public UserType type;
@@ -50,6 +51,7 @@ public class Organization extends ShaUrl {
 		bio = in.readString();
 		email = in.readString();
 		location = in.readString();
+		description = in.readString();
 		try {
 			type = UserType.valueOf(in.readString());
 		} catch (IllegalArgumentException x) {
@@ -98,6 +100,7 @@ public class Organization extends ShaUrl {
 		dest.writeString(bio);
 		dest.writeString(email);
 		dest.writeString(location);
+		dest.writeString(description);
 		dest.writeString(type != null ? type.toString() : "");
 		dest.writeByte((byte) (site_admin ? 0x01 : 0x00));
 		dest.writeInt(public_repos);

@@ -16,9 +16,11 @@ import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.UsersClient;
 import com.example.gitnb.app.BaseSwipeActivity;
 import com.example.gitnb.model.Event;
+import com.example.gitnb.model.Organization;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.User;
 import com.example.gitnb.module.user.HotUserFragment;
+import com.example.gitnb.module.user.OrganizationDetailActivity;
 import com.example.gitnb.module.user.UserDetailActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
@@ -28,9 +30,11 @@ public class EventListActivity  extends BaseSwipeActivity implements RetrofitNet
 	public static final String EVENT_TYPE = "event_type";
 	public static final String EVENT_TYPE_REPOS = "Events_REPOS";
 	public static final String EVENT_TYPE_USER = "Events_USER";
+	public static final String EVENT_TYPE_ORGS = "Orgs_USER";
     private EventListAdapter adapter;
     private RecyclerView recyclerView;
 	private boolean isLoadingMore;
+	private Organization orgs;
 	private Repository repos;
 	private User user;
 	private String type;
@@ -51,6 +55,13 @@ public class EventListActivity  extends BaseSwipeActivity implements RetrofitNet
 	        	view.setText(user.getLogin()+" / Events");    
 	        	break;
         	}
+        }
+        else if(orgs != null && !orgs.login.isEmpty()){
+            switch(type){
+		        case EVENT_TYPE_ORGS:
+		        	view.setText(orgs.login + " / Events");
+		        	break;
+            }
         }else{
         	view.setText("NULL");
         }
@@ -68,6 +79,9 @@ public class EventListActivity  extends BaseSwipeActivity implements RetrofitNet
 	        	break;
 	        case EVENT_TYPE_USER:
 	    		user = (User) intent.getParcelableExtra(HotUserFragment.USER);
+	        	break;
+	        case EVENT_TYPE_ORGS:
+	    		orgs = (Organization) intent.getParcelableExtra(OrganizationDetailActivity.ORGS);
 	        	break;
 	    }
 		this.setContentView(R.layout.activity_list_layout);
@@ -114,6 +128,9 @@ public class EventListActivity  extends BaseSwipeActivity implements RetrofitNet
 	        case EVENT_TYPE_USER:
 	        	getUserEvents();
 	        	break;
+	        case EVENT_TYPE_ORGS:
+	        	getOrgsEvents();
+	        	break;
         }
     }
 
@@ -155,5 +172,10 @@ public class EventListActivity  extends BaseSwipeActivity implements RetrofitNet
 	private void getUserEvents(){
 		UsersClient.getNewInstance().setNetworkListener(this)
 		  .createdEvents(user.getLogin(), page);
+	}
+	
+	private void getOrgsEvents(){
+		UsersClient.getNewInstance().setNetworkListener(this)
+		  .eventsByOrgs(orgs.login, page);
 	}
 }

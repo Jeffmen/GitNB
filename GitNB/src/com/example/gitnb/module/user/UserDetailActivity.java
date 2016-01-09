@@ -124,7 +124,12 @@ public class UserDetailActivity extends BaseSwipeActivity{
 			
 			@Override
 			public void onClick(View v) {
-				
+				Intent intent = new Intent(UserDetailActivity.this, OrganizationListActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable(HotUserFragment.USER, user);
+				intent.putExtras(bundle);
+				intent.putExtra(OrganizationListActivity.ORGANIZATION_TYPE, OrganizationListActivity.ORGANIZATION_TYPE_USER);
+				startActivity(intent);
 			}
 		});
     	followers.setOnClickListener(new View.OnClickListener() {

@@ -56,6 +56,26 @@ public class UsersClient extends RetrofitNetworkAbs{
 		execute(usersService.createdEvents(username, page));
 	}
 	
+	public void orgsByUser(String username, int page){
+		execute(usersService.orgsByUser(username, page));
+	}
+	
+	public void orgs(String username){
+		execute(usersService.orgs(username));
+	}
+	
+	public void reposByOrgs(String username, String sort, int page){
+		execute(usersService.reposByOrgs(username, sort, page));
+	}
+	
+	public void eventsByOrgs(String username, int page){
+		execute(usersService.eventsByOrgs(username, page));
+	}
+	
+	public void members(String username, int page){
+		execute(usersService.members(username, page));
+	}
+	
 	@Override
 	public UsersClient setNetworkListener(NetworkListener networkListener) {
         return setNetworkListener(networkListener, this);

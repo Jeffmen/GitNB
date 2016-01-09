@@ -32,6 +32,7 @@ public class WelcomeActivity extends Activity{
 
     public static final String VIDEO_NAME = "welcome_video.mp4";
     private static int FOR_ANTHORIZE = 300;
+    private boolean alreadyJump = false;
     private VideoView mVideoView;
     private ObjectAnimator anim;
     private Button buttonLeft;
@@ -78,14 +79,14 @@ public class WelcomeActivity extends Activity{
     private void initView() {
 		if(me != null){
 	    	buttonLeft.setText("WELCOME");
-	    	/*buttonLeft.setOnClickListener(new View.OnClickListener(){
+	    	buttonLeft.setOnClickListener(new View.OnClickListener(){
 	
 				@Override
 				public void onClick(View arg0) {
 					jumpToManiActivity();
 				}
 	        	
-	        });*/
+	        });
 		}
 		else{
 	    	buttonLeft.setText("LOGIN");
@@ -129,10 +130,13 @@ public class WelcomeActivity extends Activity{
     }
     
     private void jumpToManiActivity() {
-		Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-		startActivity(intent);
-		overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
-		finish();
+    	if(!alreadyJump){
+	    	alreadyJump = true;
+			Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+			startActivity(intent);
+			overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+			finish();
+    	}
     }
 
     @NonNull

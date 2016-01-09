@@ -16,7 +16,7 @@
         <item>HTML</item>
         <item>Scala</item>
         <item>Go</item>
-        <item>ALL</item>
+        <item>Cancel</item>
     </string-array>    
     <string-array name="all_language_value">
         <item>javascript</item>
@@ -34,6 +34,6 @@
         <item>html</item>
         <item>scala</item>
         <item>go</item>
-        <item></item>
+        <item>cancel</item>
     </string-array>
 </resources>

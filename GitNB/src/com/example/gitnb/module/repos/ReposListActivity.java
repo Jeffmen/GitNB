@@ -15,12 +15,14 @@ import com.example.gitnb.api.retrofit.RetrofitNetworkAbs;
 import com.example.gitnb.api.retrofit.TrendingClient;
 import com.example.gitnb.api.retrofit.UsersClient;
 import com.example.gitnb.app.BaseSwipeActivity;
+import com.example.gitnb.model.Organization;
 import com.example.gitnb.model.Repository;
 import com.example.gitnb.model.ShowCase;
 import com.example.gitnb.model.User;
 import com.example.gitnb.model.search.ShowCaseSearch;
 import com.example.gitnb.module.trending.ShowCaseFragment;
 import com.example.gitnb.module.user.HotUserFragment;
+import com.example.gitnb.module.user.OrganizationDetailActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.MessageUtils;
 
@@ -28,10 +30,12 @@ public class ReposListActivity  extends BaseSwipeActivity implements RetrofitNet
 	private String TAG = "ReposListActivity";
 	public static final String REPOS_TYPE = "repos_type";
 	public static final String REPOS_TYPE_USER = "user_repository";
-	public static final String REPOS_TYPE_SHOWCASE = "showcase_epository";
+	public static final String REPOS_TYPE_SHOWCASE = "showcase_repository";
+	public static final String REPOS_TYPE_ORGS = "orgs_repository";
     private ReposListAdapter adapter;
     private RecyclerView recyclerView;
 	private boolean isLoadingMore;
+	private Organization orgs;
 	private ShowCase showCase;
 	private User user;
 	private String type;
@@ -53,6 +57,13 @@ public class ReposListActivity  extends BaseSwipeActivity implements RetrofitNet
 	        	view.setText(showCase.name +" / Repositorys");    
 	        	break;
             }
+        }
+        else if(orgs != null && !orgs.login.isEmpty()){
+            switch(type){
+		        case REPOS_TYPE_ORGS:
+		        	view.setText(orgs.login + " / Repositorys");
+		        	break;
+            }
         }else{
         	view.setText("NULL");
         }
@@ -69,6 +80,9 @@ public class ReposListActivity  extends BaseSwipeActivity implements RetrofitNet
         	break;
         case REPOS_TYPE_SHOWCASE:
     		showCase = (ShowCase) intent.getParcelableExtra(ShowCaseFragment.SHOWCASE);
+        	break;
+        case REPOS_TYPE_ORGS:
+    		orgs = (Organization) intent.getParcelableExtra(OrganizationDetailActivity.ORGS);
         	break;
         }
 		this.setContentView(R.layout.activity_list_layout);
@@ -115,6 +129,9 @@ public class ReposListActivity  extends BaseSwipeActivity implements RetrofitNet
 	        case REPOS_TYPE_SHOWCASE:
 	        	showCaseReposList();
 	        	break;
+	        case REPOS_TYPE_ORGS:
+	        	orgsReposList();
+	        	break;
         }
     }
 
@@ -151,6 +168,11 @@ public class ReposListActivity  extends BaseSwipeActivity implements RetrofitNet
 	private void userReposList(){
 		UsersClient.getNewInstance().setNetworkListener(this)
 		  .userReposList(user.getLogin(), "updated", page);
+	}
+	
+	private void orgsReposList(){
+		UsersClient.getNewInstance().setNetworkListener(this)
+		  .reposByOrgs(orgs.login, "updated", page);
 	}
 
 	private void showCaseReposList(){
