@@ -15,4 +15,8 @@ public class CurrentUser {
 	public static User get(Context context){
        return PersistenceHelper.loadModel(context, FILE_NAME); 
 	}
+	
+	public static boolean detete(Context context){
+       return PersistenceHelper.deleteObject(context, FILE_NAME); 
+	}
 }

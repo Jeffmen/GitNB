@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
 	    	TextView followers = (TextView) findViewById(R.id.followers);
 	    	TextView following = (TextView) findViewById(R.id.following);
 	    	TextView repositorys = (TextView) findViewById(R.id.repositorys);
+	    	TextView sign_out = (TextView) findViewById(R.id.sign_out);
 
 	    	events.setOnClickListener(new View.OnClickListener() {
 				
@@ -200,6 +201,17 @@ public class MainActivity extends AppCompatActivity {
 					bundle.putParcelable(HotUserFragment.USER, me);
 					intent.putExtras(bundle);
 					intent.putExtra(ReposListActivity.REPOS_TYPE, ReposListActivity.REPOS_TYPE_USER);
+					startActivity(intent);
+				}
+			});
+	    	sign_out.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					CurrentUser.detete(MainActivity.this);
+					me = null;
+					finish();
+					Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
 					startActivity(intent);
 				}
 			});

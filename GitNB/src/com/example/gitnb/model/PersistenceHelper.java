@@ -44,6 +44,16 @@ public class PersistenceHelper {
             }
         }
     }
+    
+    public static boolean deleteObject(Context cxt, String file) {
+        try {
+        	return cxt.deleteFile(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+        }
+    }
 
     public static <T extends TModel> boolean saveModel(Context cxt, T obj, String file) {
         return saveObject(cxt, obj, file);

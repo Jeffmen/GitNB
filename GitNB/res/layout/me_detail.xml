@@ -198,6 +198,36 @@
 				       android:tint="@color/search_gray"
 				       android:src="@drawable/ic_chevron_right_white_48dp"/>
 			   </LinearLayout>
+        		<LinearLayout 
+			       android:layout_width="match_parent"
+			       android:layout_height="wrap_content"
+			       android:layout_marginTop="20dp"
+				   android:orientation="horizontal"
+				   android:gravity="center_vertical"
+				   android:background="@drawable/view_border">
+			       <ImageView 
+			           android:layout_width="wrap_content"
+			           android:layout_height="match_parent"
+				       android:layout_marginLeft="25dp"
+			           android:tint="@color/search_gray"
+			           android:src="@drawable/ic_chevron_right_white_18dp"/>
+			       <TextView 
+			           android:id="@+id/sign_out"
+				       android:layout_width="0dp"
+				       android:layout_height="45dp"
+				       android:layout_weight="1"
+				       android:gravity="center_vertical"
+				       android:paddingLeft="20dp"
+			           android:singleLine="true"
+			           android:text="Sign out"
+			           android:textColor="?android:attr/textColorPrimary"
+			           android:textSize="16sp"/>
+			       <ImageView 
+				       android:layout_width="wrap_content"
+				       android:layout_height="match_parent"
+				       android:tint="@color/search_gray"
+				       android:src="@drawable/ic_chevron_right_white_48dp"/>
+			   </LinearLayout>
     </LinearLayout>
     
 </LinearLayout>
