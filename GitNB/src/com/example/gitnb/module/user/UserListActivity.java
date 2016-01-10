@@ -77,7 +77,7 @@ public class UserListActivity  extends BaseSwipeActivity implements RetrofitNetw
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
-		type = USER_TYPE_STARGZER;
+		type = intent.getStringExtra(USER_TYPE);
         switch(type){
 	        case USER_TYPE_STARGZER:
 	        case USER_TYPE_CONTRIBUTOR:
