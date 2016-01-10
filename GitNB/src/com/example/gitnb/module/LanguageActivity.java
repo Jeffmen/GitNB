@@ -40,12 +40,9 @@ public class LanguageActivity  extends AppCompatActivity {
 			
 			@Override
 			public void onItemClick(View view, int position) {
-				String value = adapter.getItemValue(position);
-				if(value != null && !value.equals("cancel")){
-					Intent intent=new Intent();
-				    intent.putExtra(LANGUAGE_KEY, value);
-				    setResult(RESULT_OK, intent);
-				}
+				Intent intent=new Intent();
+			    intent.putExtra(LANGUAGE_KEY, adapter.getItemValue(position));
+			    setResult(RESULT_OK, intent);
 			    finish();
 			}
 		});

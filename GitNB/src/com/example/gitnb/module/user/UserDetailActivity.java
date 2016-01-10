@@ -51,6 +51,8 @@ public class UserDetailActivity extends BaseSwipeActivity{
         main.setVisibility(View.GONE);
       
         swithBt = (Switch) findViewById(R.id.switch_bt); 
+        swithBt.setTextOn("UnFollow");
+        swithBt.setTextOff("Follow");
     }
 	
     private void setSwitchClicker(){

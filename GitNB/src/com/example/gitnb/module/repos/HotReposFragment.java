@@ -142,8 +142,10 @@ public class HotReposFragment extends BaseFragment implements RetrofitNetworkAbs
 
 	@Override
 	public Void updateLanguage(String language) { 
-		this.language = language;
-    	startRefresh();
+		if(language != null && !language.isEmpty()){
+			this.language = language;
+	    	startRefresh();
+		}
 		return null;
 	}
 }

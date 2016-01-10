@@ -149,7 +149,7 @@ public class Repository extends TModel implements Parcelable {
         open_issues = in.readInt();
         watchers = in.readInt();
         default_branch = in.readString();
-        score = in.readInt();
+        score = in.readDouble();
     }
 
     public static final Creator<Repository> CREATOR = new Creator<Repository>() {
@@ -781,7 +781,7 @@ public class Repository extends TModel implements Parcelable {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
 
