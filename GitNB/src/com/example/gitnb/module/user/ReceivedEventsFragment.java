@@ -12,6 +12,7 @@ import com.example.gitnb.module.MainActivity.UpdateLanguageListener;
 import com.example.gitnb.module.repos.EventListAdapter;
 import com.example.gitnb.module.repos.HotReposFragment;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
+import com.example.gitnb.utils.CurrentUser;
 import com.example.gitnb.utils.MessageUtils;
 
 import android.content.Intent;
@@ -29,14 +30,11 @@ public class ReceivedEventsFragment extends BaseFragment implements RetrofitNetw
     private RecyclerView recyclerView;
     private EventListAdapter adapter;
 	private boolean isLoadingMore;
-	private User user;
-	
-	public ReceivedEventsFragment(User user){
-		this.user = user;
-	}
+    private User me;
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		me = CurrentUser.get(this.getActivity());
         View view = inflater.inflate(R.layout.list_data_fragment, container, false);
         initSwipeRefreshLayout(view);
         recyclerView = (RecyclerView) view.findViewById(R.id.recylerView);
@@ -107,7 +105,7 @@ public class ReceivedEventsFragment extends BaseFragment implements RetrofitNetw
 	}
 	
 	public void receivedEvents(){
-		UsersClient.getNewInstance().setNetworkListener(this).events(user.getLogin(), page);
+		UsersClient.getNewInstance().setNetworkListener(this).events(me.getLogin(), page);
 	}
 
 	@Override

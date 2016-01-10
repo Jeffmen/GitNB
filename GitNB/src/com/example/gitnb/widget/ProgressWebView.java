@@ -7,6 +7,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.webkit.SslErrorHandler;
+import com.example.gitnb.R;
 
 @SuppressWarnings("deprecation")
 public class ProgressWebView extends WebView {
@@ -21,6 +22,7 @@ public class ProgressWebView extends WebView {
 	public ProgressWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
         progressbar = new ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal);
+        progressbar.setProgressDrawable(getResources().getDrawable(R.drawable.progressbar_color));
         progressbar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 5, 0, 0));
         addView(progressbar);
 		setWebViewClient(new WebViewClient(){  
@@ -57,7 +59,15 @@ public class ProgressWebView extends WebView {
 		    public void onProgressChanged(WebView view, int newProgress) {
 	            super.onProgressChanged(view, newProgress);  
 	            if (newProgress == 100) {
-	                progressbar.setVisibility(GONE);
+	                progressbar.setProgress(newProgress);
+	                progressbar.postDelayed(new Runnable(){
+
+						@Override
+						public void run() {
+			                progressbar.setVisibility(GONE);
+						}
+	                	
+	                }, 200);
 	            } else {
 	                if (progressbar.getVisibility() == GONE)
 	                    progressbar.setVisibility(VISIBLE);

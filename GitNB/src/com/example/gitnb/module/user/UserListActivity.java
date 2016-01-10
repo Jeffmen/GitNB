@@ -65,7 +65,7 @@ public class UserListActivity  extends BaseSwipeActivity implements RetrofitNetw
         else if(orgs != null && !orgs.login.isEmpty()){
             switch(type){
 		        case USER_TYPE_MEMBER:
-		        	view.setText(orgs.login + " / " + USER_TYPE_FOLLOWER);
+		        	view.setText(orgs.login + " / " + USER_TYPE_MEMBER);
 		        	break;
             }
         }else{

@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 		pagerAdapter.addFragment(new ShowCaseFragment(), "ShowCase");
 		pagerAdapter.addFragment(new TrendingReposFragment(), "Trending");
 		if(me != null){
-			pagerAdapter.addFragment(new ReceivedEventsFragment(me), "News");
+			pagerAdapter.addFragment(new ReceivedEventsFragment(), "News");
 		}
 		pagerAdapter.addFragment(new HotReposFragment(), "Repos");
 		pagerAdapter.addFragment(new HotUserFragment(), "User");

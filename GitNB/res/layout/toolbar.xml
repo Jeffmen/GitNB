@@ -3,8 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"  
     android:layout_width="match_parent"  
-    android:layout_height="55dp"
-    android:elevation="6dp">  
+    android:layout_height="80dp"> 
+	<View 
+	    android:orientation="vertical"  
+	    android:layout_width="match_parent"  
+	    android:layout_height="25dp"> 
+	</View>  
 	<LinearLayout 
         android:layout_width="match_parent"
 	    android:layout_height="match_parent"
@@ -26,19 +30,5 @@
 	        android:layout_width="80dp"
 	        android:layout_height="wrap_content"
 			android:visibility="gone"/>
-        <!-- 
-        <com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch
-	        android:id="@+id/switch_bt"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-			android:visibility="gone"
-	        app:base_release_color="@color/md_deep_orange_900"
-	        app:base_press_color="@color/md_deep_orange_50"
-	        app:ball_release_color="@color/md_deep_orange_500"
-	        app:ball_press_color="@color/md_white_1000"
-	        app:icon_release="@drawable/ic_play_arrow_white_36dp"
-	        app:icon_press="@drawable/ic_stop_deep_orange_500_36dp"
-	        />
-	         -->
     </LinearLayout>
 </android.support.v7.widget.Toolbar>
