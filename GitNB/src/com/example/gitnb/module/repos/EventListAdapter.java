@@ -401,7 +401,7 @@ public class EventListAdapter extends RecyclerView.Adapter<ViewHolder>{
 		
 		public EventView(View view) {
 			super(view);
-            //view.setOnClickListener(this);
+            view.setOnClickListener(this);
 			event_user.setMovementMethod(LinkMovementMethod.getInstance());
 		}
 	

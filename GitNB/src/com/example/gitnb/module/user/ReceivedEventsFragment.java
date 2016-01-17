@@ -11,6 +11,7 @@ import com.example.gitnb.model.User;
 import com.example.gitnb.module.MainActivity.UpdateLanguageListener;
 import com.example.gitnb.module.repos.EventListAdapter;
 import com.example.gitnb.module.repos.HotReposFragment;
+import com.example.gitnb.module.repos.ReposDetailActivity;
 import com.example.gitnb.module.viewholder.HorizontalDividerItemDecoration;
 import com.example.gitnb.utils.CurrentUser;
 import com.example.gitnb.utils.MessageUtils;
@@ -43,7 +44,7 @@ public class ReceivedEventsFragment extends BaseFragment implements RetrofitNetw
 			
 			@Override
 			public void onItemClick(View view, int position) {
-				Intent intent = new Intent(getActivity(), UserDetailActivity.class);
+				Intent intent = new Intent(getActivity(), ReposDetailActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putParcelable(HotReposFragment.REPOS, adapter.getItem(position).repo);
 				intent.putExtras(bundle);
