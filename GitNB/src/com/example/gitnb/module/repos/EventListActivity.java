@@ -90,7 +90,7 @@ public class EventListActivity  extends BaseSwipeActivity implements RetrofitNet
         adapter.setOnItemClickListener(new EventListAdapter.OnItemClickListener() {
 			@Override
 			public void onItemClick(View view, int position) {
-				Intent intent = new Intent(EventListActivity.this, UserDetailActivity.class);
+				Intent intent = new Intent(EventListActivity.this, ReposDetailActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putParcelable(HotReposFragment.REPOS, adapter.getItem(position).repo);
 				intent.putExtras(bundle);
