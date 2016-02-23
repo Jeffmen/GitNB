@@ -15,7 +15,7 @@
             <shape>
 		        <size 
 		            android:height="5dp"/>
-                <solid android:color="#FF8080" />
+                <solid android:color="@android:color/black" />
             </shape>
         </clip>
     </item> 

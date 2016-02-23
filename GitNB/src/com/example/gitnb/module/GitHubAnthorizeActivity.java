@@ -11,16 +11,21 @@ import com.example.gitnb.model.User;
 import com.example.gitnb.utils.CurrentUser;
 import com.example.gitnb.utils.MessageUtils;
 import com.example.gitnb.widget.ProgressWebView;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Switch;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 public class GitHubAnthorizeActivity extends BaseSwipeActivity {
 	private ProgressWebView web_content;
+	private SimpleDraweeView loading_gif;
+	private FrameLayout loading_bg;
     
     protected void setTitle(TextView view){
         view.setText("Authorize");
@@ -31,7 +36,9 @@ public class GitHubAnthorizeActivity extends BaseSwipeActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_github_authorize);
         web_content = (ProgressWebView) findViewById(R.id.web_content);
-        ((Switch)findViewById(R.id.switch_bt)).setVisibility(View.GONE);
+        loading_gif = (SimpleDraweeView) findViewById(R.id.loading_gif);
+        loading_bg = (FrameLayout) findViewById(R.id.loading_bg);
+
         String url = GitHub.API_AUTHORIZE_URL;
         url += "?client_id=" + GitHub.CLIENT_ID;
         url += "&state=" + GitHub.STATE;
@@ -47,44 +54,70 @@ public class GitHubAnthorizeActivity extends BaseSwipeActivity {
 					Uri uri = Uri.parse(url);
 					String code = uri.getQueryParameter(GitHub.CODE_KEY);
 					GitHub.getInstance().setCode(code);
-					LoginClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Token>() {
+					
+					loading_gif.post(new Runnable(){
 
 						@Override
-						public void onOK(Token token) {
-							GitHub.getInstance().setToken(token.access_token);
-
-							UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<User>() {
-
-								@Override
-								public void onOK(User user) {
-									CurrentUser.save(GitHubAnthorizeActivity.this, user);
-								    setResult(Activity.RESULT_OK, null);
-								    finish();
-								}
-
-								@Override
-								public void onError(String Message) {
-							        MessageUtils.showErrorMessage(GitHubAnthorizeActivity.this, Message);
-								    setResult(Activity.RESULT_CANCELED, null);
-									finish();
-								}
-								
-					    	}).me();
-						}
-
-						@Override
-						public void onError(String Message) {
-					        MessageUtils.showErrorMessage(GitHubAnthorizeActivity.this, Message);
-						    setResult(Activity.RESULT_CANCELED, null);
-							finish();
+						public void run() {
+							loadingInfo();
 						}
 						
-			    	}).requestTokenAsync();
+					});
+					getToken();
 				}
 			}
 		});
     }
 
+    private void loadingInfo(){
+    	loading_bg.setVisibility(View.VISIBLE);
+		Uri path = (new Uri.Builder()).scheme("res").path(String.valueOf(R.drawable.github_loading)).build();
+		DraweeController  draweeController= Fresco.newDraweeControllerBuilder()
+				.setAutoPlayAnimations(true)
+                .setUri(path)
+                .build();
+		loading_gif.setController(draweeController);
+    }
+
+    private void getToken(){
+		LoginClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<Token>() {
+
+			@Override
+			public void onOK(Token token) {
+				GitHub.getInstance().setToken(token.access_token);
+				getMeInfo();
+			}
+
+			@Override
+			public void onError(String Message) {
+		        MessageUtils.showErrorMessage(GitHubAnthorizeActivity.this, Message);
+			    setResult(Activity.RESULT_CANCELED, null);
+				finish();
+			}
+			
+    	}).requestTokenAsync();
+    }
+    
+    private void getMeInfo(){
+		UsersClient.getNewInstance().setNetworkListener(new RetrofitNetworkAbs.NetworkListener<User>() {
+
+			@Override
+			public void onOK(User user) {
+				CurrentUser.save(GitHubAnthorizeActivity.this, user);
+			    setResult(Activity.RESULT_OK, null);
+			    finish();
+			}
+
+			@Override
+			public void onError(String Message) {
+		        MessageUtils.showErrorMessage(GitHubAnthorizeActivity.this, Message);
+			    setResult(Activity.RESULT_CANCELED, null);
+				finish();
+			}
+			
+    	}).me();
+    }
+    
     @Override
     protected void startRefresh(){
     }

@@ -17,6 +17,9 @@ import com.example.gitnb.module.user.UserListActivity;
 import com.example.gitnb.utils.CurrentUser;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,13 +28,18 @@ import android.os.Build.VERSION_CODES;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.design.widget.TabLayout.OnTabSelectedListener;
+import android.support.design.widget.TabLayout.Tab;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
@@ -91,6 +99,22 @@ public class MainActivity extends AppCompatActivity {
 		//setTabsValue();
 		pager.setCurrentItem(2);
 		pager.setOffscreenPageLimit(4);
+		tabs.setOnTabSelectedListener(new OnTabSelectedListener() {
+			
+			@Override
+			public void onTabUnselected(Tab tab) {
+				pager.setCurrentItem(tab.getPosition());
+			}
+			
+			@Override
+			public void onTabSelected(Tab arg0) {
+			}
+			
+			@Override
+			public void onTabReselected(Tab arg0) {
+				
+			}
+		});
 		layout = (CoordinatorLayout) findViewById(R.id.layout);
 		faButton = (FloatingActionButton) findViewById(R.id.faButton);
 		faButton.setOnClickListener(new View.OnClickListener() {
@@ -207,12 +231,22 @@ public class MainActivity extends AppCompatActivity {
 	    	sign_out.setOnClickListener(new View.OnClickListener() {
 				
 				@Override
-				public void onClick(View v) {
-					CurrentUser.detete(MainActivity.this);
-					me = null;
-					finish();
-					Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
-					startActivity(intent);
+				public void onClick(View v) {				
+					Dialog dialog = new AlertDialog.Builder(MainActivity.this).setTitle("Caution")
+							.setMessage("Are you sure to sign out?")
+							.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									CurrentUser.detete(MainActivity.this);
+									me = null;
+									finish();
+									Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+									startActivity(intent);
+								}
+							})
+							.setNegativeButton("N0", null)
+							.setCancelable(false).create();
+					dialog.show();
 				}
 			});
 		}
