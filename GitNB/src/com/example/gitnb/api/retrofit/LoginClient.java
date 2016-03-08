@@ -22,19 +22,7 @@ public class LoginClient extends RetrofitNetworkAbs{
     }
     
 	public void requestTokenAsync(){
-        loginService.requestToken(getTokenDTO()).enqueue(new Callback<Token>() {
-
-            @Override
-            public void onFailure(Throwable t) {
-                myOnFailure(t);
-            }
-
-			@Override
-			public void onResponse(retrofit.Response<Token> response, Retrofit retrofit) {
-                myOnResponse(response);
-			}
-        });
-
+        this.execute(loginService.requestToken(getTokenDTO()));
 	}
 	
 	public Response<Token> requestTokenSync() throws IOException{

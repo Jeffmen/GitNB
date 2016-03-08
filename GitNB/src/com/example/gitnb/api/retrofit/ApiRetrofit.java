@@ -15,6 +15,7 @@ import javax.net.ssl.TrustManager;
 import retrofit.Retrofit;
 
 import com.example.gitnb.api.FakeX509TrustManager;
+import com.example.gitnb.api.RequestManager;
 import com.example.gitnb.api.retrofit.converter.GsonConverterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,6 +31,7 @@ public class ApiRetrofit{
 
     static final int CONNECT_TIMEOUT_MILLIS = 30 * 1000;
     static final int READ_TIMEOUT_MILLIS = 30 * 1000;
+	private static Retrofit retrofit;
 	
     public static OkHttpClient getOkClient() {
         OkHttpClient client = new OkHttpClient();
@@ -71,16 +73,25 @@ public class ApiRetrofit{
     }
     
     public static Retrofit getRetrofit(){
-    	Gson gson = new GsonBuilder()
-    	.setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-    	.create();
-        Retrofit retrofit = new Retrofit.Builder()
-         	.baseUrl(getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .client(getOkClient()).build();
-        return retrofit;
-    }
-    
+		if(retrofit == null){
+			synchronized(RequestManager.class){
+				if(retrofit == null){
+			    	Gson gson = new GsonBuilder()
+			    	.setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+			    	.create();
+			        retrofit = new Retrofit.Builder()
+			         	.baseUrl(getBaseUrl())
+			            .addConverterFactory(GsonConverterFactory.create(gson))
+			            .client(getOkClient()).build();
+				}
+			}
+		}
+		return retrofit;
+	}
+	 
+	public static void initialize(Context context) {
+		getRetrofit();
+	}
 
 	public static String getBaseUrl() {
 		return GitHub.API_URL;
