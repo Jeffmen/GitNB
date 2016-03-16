@@ -21,7 +21,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
+//adb shell monkey -p XXX --throttle 200 50000 --ignore-crashes --ignore-timeouts
 public class GitHubAnthorizeActivity extends BaseSwipeActivity {
 	private ProgressWebView web_content;
 	private SimpleDraweeView loading_gif;
